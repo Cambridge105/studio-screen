@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Cambridge 105: Studio clock</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="Scripts/jquery-2.1.1.min.js"></script>
+    <!--[if IE]><script type="text/javascript" src="clock/excanvas.js"></script><![endif]-->
+<script type="text/javascript" src="clock/coolclock.js"></script>
+<script type="text/javascript" src="clock/moreskins.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="micLive.js"></script>
+</head>
+<body onload="CoolClock.findAndCreateClocks()" onunload="unloadTimeout()">
+    <div id="columnLeft">
+        <div id="clock">
+            <canvas id="clockid" class="CoolClock:chunkySwissOnBlack:180"></canvas>
+        </div>
+        <div id="clockText"><span id="time">00:00:00</span><br /><span id="date">Monday, 1st January 1970</span></div>
+    </div>
+    <div id="columnRight">
+        <div id="studioLive" class="light">ON AIR</div>
+        <div id="micLive" class="light">MIC LIVE</div>
+        <div class="light" id="message"></div>
+    </div>
+    <div id="footer">
+        Failed to load schedule
+    </div>
+    <div id="contact"> <span class="contactInfo">07919 070490</span>  <span class="contactInfo">studio@cambridge105.fm</span>  <span class="contactInfo">@cambridge105</span>
+    </div>
+</body>
+</html>
