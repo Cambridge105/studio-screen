@@ -91,7 +91,7 @@ function checkForScheduledNotices(dateParts) {
 function displayTOTHNotice(mins,secs) {
     $('#footer').css('color', 'yellow');
     secsToTOTH = ((59 - mins) * 60) + (60 - secs);
-    secsToTOTH = secsToTOTH - 8; // News intro
+    secsToTOTH = secsToTOTH - 9; // News intro
     if (secsToTOTH < 0) {
         $('#footer').html('&quot;This is community radio in your city, Cambridge 105&quot;');
     }
@@ -99,7 +99,7 @@ function displayTOTHNotice(mins,secs) {
         minsToTOTH = Math.floor(secsToTOTH / 60);
         secsToTOTH = secsToTOTH - (minsToTOTH * 60);
         countToNews = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
-        $('#footer').html('NEWS INTRO in: <span class="countdown">' + countToNews + '</span>');
+        $('#footer').html('IRN NEWS INTRO in: <span class="countdown">' + countToNews + '</span>');
     }
 }
 
