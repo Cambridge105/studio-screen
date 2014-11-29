@@ -13,7 +13,14 @@ div#columnRight {
     margin: 0 auto;
 }
 div#message {
+    text-align:center;
+    font-size:32pt;
+    margin-top:40px;
     color: coral;
+}
+span.engNotice {
+    font-size: 28pt;
+    font-weight: bold;
 }
 div#clock {
     margin: 20px;

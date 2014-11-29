@@ -28,7 +28,7 @@ function updateTimer() {
     // Only load the schedule at xx:00:00, xx:30:00
     if (((dateParts[1] == 0 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule(); }
     // Only update the engineering notice at xx:00:15 and xx:30:15
-    if ((dateParts[1] == 0 && dateParts[2] == 15) || (dateParts[1] == 30 && dateParts[2] == 15))  { displayMessage(); }
+    if ((dateParts[1] == 0 && dateParts[2] == 15) || (dateParts[1] == 30 && dateParts[2] == 15)) { getEngineeringMessage(); }
     return true;
 }
 
@@ -76,7 +76,7 @@ function checkForScheduledNotices(dateParts) {
     else if (dateParts[2] == 1) {
         // Update only once a minute so we don't degrade performance
         // NB: This is a bit of a hack but it's done at xx:xx:01 to ensure we reset after schedule loads at xx:00:00 and xx:30:00
-            // Is it time for travel?
+        // Is it time for travel?
         if ((((dateParts[0] >= 7 && dateParts[0] < 10) || (dateParts[0] >= 16 && dateParts[0] < 19))) && ((dateParts[1] >= 19 && dateParts[1] <= 21) || (dateParts[1] >= 39 && dateParts[1] <= 41) || (dateParts[1] >= 54 && dateParts[1] <= 56))) { displayTravelNotice(); }
             // Display fire alarm test due if it is
         else if (dateParts[5] == "Wednesday" && dateParts[0] == 10 && dateParts[1] >= 22 && dateParts[1] < 28) { displayFireAlarmTestDue(); }
@@ -170,13 +170,31 @@ function padZeros(num) {
     return num;
 }
 
+function getEngineeringMessage() {
+    var req = $.ajax({
+        url: "http://www.domsmith.co.uk/c105/studioMessage.js",
+        dataType: "jsonp",
+        timeout: 10000,
+        jsonpCallback: "displayMessage"
+    });
+
+    req.success(function () {
+        //console.log('JSONP OK');
+    });
+
+    req.error(function () {
+        //console.log('JSONP failed');
+    });
+}
+
+
 function displayMessage(response) {
-    $('#message').html(response.message);
+    $('#message').html('<span class=\"engNotice\">Engineering notice:</span><br />' + response.message);
     if (response.message.length < 1) { $('#message').hide(); } else { $('#message').show(); }
 };
 
 
 // -------- JSONP magic
-var tag = document.createElement("script");
-tag.src = 'http://www.domsmith.co.uk/c105/studioMessage.js?callback=displayMessage&nocache=' + (new Date()).getTime();
-document.getElementsByTagName("head")[0].appendChild(tag);
+//var tag = document.createElement("script");
+//tag.src = 'http://www.domsmith.co.uk/c105/studioMessage.js?callback=displayMessage&nocache=' + (new Date()).getTime();
+//document.getElementsByTagName("head")[0].appendChild(tag);
