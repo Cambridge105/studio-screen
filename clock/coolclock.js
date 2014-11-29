@@ -6,7 +6,7 @@ window.CoolClock = function(options) {
 
 // Config contains some defaults, and clock skins
 CoolClock.config = {
-	tickDelay: 1000,
+	tickDelay: 250,
 	longTickDelay: 15000,
 	defaultRadius: 85,
 	renderRadius: 100,

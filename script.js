@@ -1,5 +1,6 @@
 ﻿var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var clockTimer = setInterval(function () { updateClock() }, 250);
 var mainTimer = setInterval(function () { updateTimer() }, 1000);
 var thisProg = "";
 var nextProg = "";
@@ -10,12 +11,18 @@ loadSchedule();
 
 function unloadTimeout() {
     clearInterval(mainTimer);
+    clearInterval(clockTimer);
+}
+
+function updateClock() {
+    var dateParts = [0, 0, 0, 'Monday', 1, 'January', 1970];
+    dateParts = getDateParts();
+    updateTextClock(dateParts);
 }
 
 function updateTimer() {
-    var dateParts = [0,0,0,'Monday',1,'January',1970];
+    var dateParts = [0, 0, 0, 'Monday', 1, 'January', 1970];
     dateParts = getDateParts();
-    updateTextClock(dateParts);
     micLiveStatus = getMicLiveStatus();
     checkForScheduledNotices(dateParts);
     // Only load the schedule at xx:00:00, xx:30:00
