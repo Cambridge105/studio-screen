@@ -1,0 +1,13 @@
+[
+	{"h":8,"m":19,"msg":"TRAVEL","d":2},
+	{"h":8,"m":29,"msg":"HEADLINES","d":2},
+	{"h":8,"m":39,"msg":"TRAVEL","d":2},
+	{"h":8,"m":54,"msg":"TRAVEL","d":2},
+	{"h":9,"m":19,"msg":"TRAVEL","d":2},
+	{"h":9,"m":29,"msg":"HEADLINES","d":2},
+	{"h":9,"m":39,"msg":"TRAVEL","d":2},
+	{"h":10,"m":19,"msg":"TRAVEL","d":2},
+	{"h":10,"m":39,"msg":"TRAVEL","d":2},
+	{"h":11,"m":19,"msg":"TRAVEL","d":2},
+	{"h":11,"m":39,"msg":"TRAVEL","d":2}
+]

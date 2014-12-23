@@ -7,7 +7,19 @@ var nextProg = "";
 var thisProgIsLive = false;
 var thisProgEnds = 0;
 var nextProgType = "";
+var scheduledMessages = [];
+loadScheduledMessages();
 loadSchedule();
+
+function loadScheduledMessages() {
+	d = new Date();
+	scheduledMessages = [];
+	messageFile = "messages/"+days[d.getDay()].toLowerCase() + ".js" //"messages/" +     ?nocache=" + d.getTime();
+	//console.log("Fetching " + messageFile);
+	$.getJSON(messageFile, function (schedMsgs) {
+			scheduledMessages = schedMsgs;
+		});
+}
 
 function unloadTimeout() {
     clearInterval(mainTimer);
@@ -71,22 +83,28 @@ function updateStudioLiveLight() {
 }
 
 function checkForScheduledNotices(dateParts) {
-    // Is it nearly the TOTH?
-    if (dateParts[1] >= 55) { displayTOTHNotice(dateParts[1], dateParts[2]); }
-    else if (dateParts[2] == 1) {
+	messageSet = false;
+	if (dateParts[1] >= 55) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
+	else if (dateParts[2] == 1) {
         // Update only once a minute so we don't degrade performance
         // NB: This is a bit of a hack but it's done at xx:xx:01 to ensure we reset after schedule loads at xx:00:00 and xx:30:00
         // Is it time for travel?
-        if ((((dateParts[0] >= 7 && dateParts[0] < 10) || (dateParts[0] >= 16 && dateParts[0] < 19))) && ((dateParts[1] >= 19 && dateParts[1] <= 21) || (dateParts[1] >= 39 && dateParts[1] <= 41) || (dateParts[1] >= 54 && dateParts[1] <= 56))) { displayTravelNotice(); }
-            // Display fire alarm test due if it is
-        else if (dateParts[5] == "Wednesday" && dateParts[0] == 10 && dateParts[1] >= 22 && dateParts[1] < 28) { displayFireAlarmTestDue(); }
-            // Is it time for headlines?
-        else if ((((dateParts[0] >= 7 && dateParts[0] < 10) || (dateParts[0] >= 16 && dateParts[0] < 19))) && ((dateParts[1] >= 29 && dateParts[1] <= 31))) { displayHeadlinesNotice(); }
-            // Display next programme if within 15 mins of the end of this one
-        else if (dateParts[1] >= 45 && endOfProgInNext15Mins()) { displayNextProgramme(); }
-        else { displayProgrammeName(); }
-    }
+		//console.log("Scheduled messages; " + scheduledMessages);
+		$.each(scheduledMessages, function (key, schedMsg) {
+					//console.log(schedMsg);
+					offtime = schedMsg["m"] + schedMsg["d"];
+					if (dateParts[0] == schedMsg["h"] && dateParts[1] >= schedMsg["m"] && dateParts[1] < offtime)
+						{displayNotice(schedMsg["msg"],schedMsg["c"]); messageSet = true;}
+				});
+		if (messageSet == false)
+		{
+			if (dateParts[1] >= 45 && endOfProgInNext15Mins()) { displayNextProgramme(); }
+			else { displayProgrammeName(); }
+		}
+	}
 }
+		
+
 
 function displayTOTHNotice(mins,secs) {
     $('#footer').css('color', 'yellow');
@@ -103,19 +121,10 @@ function displayTOTHNotice(mins,secs) {
     }
 }
 
-function displayTravelNotice() {
-    $('#footer').css('color', 'yellow');
-    $('#footer').html('TRAVEL NEWS?');
-}
-
-function displayHeadlinesNotice() {
-    $('#footer').css('color', 'yellow');
-    $('#footer').html('HEADLINES?');
-}
-
-function displayFireAlarmTestDue() {
-    $('#footer').css('color', 'coral');
-    $('#footer').html('FIRE ALARM TEST DUE');
+function displayNotice(message,color) {
+	if (color === undefined || color.length<1) {color = "yellow";}
+    $('#footer').css('color', color);
+    $('#footer').html(message);
 }
 
 function displayNextProgramme() {
@@ -138,8 +147,8 @@ function loadSchedule() {
     nextProgType = "";
     timeNow = new Date().getTime();
     $.getJSON("schedule.js?nocache=" + (new Date()).getTime(), function (sched) {
-        $.each(sched, function (key, progInfo) {
-            $.each(progInfo, function (progInfoKey, progInfoValue) {
+	    $.each(sched, function (key, progInfo) {
+            //$.each(progInfo, function (progInfoKey, progInfoValue) {
                 //console.log("Loading: " + progInfo['title']);
                 if ((progInfo['start'] * 1000) <= timeNow && (progInfo['end'] * 1000) > timeNow) {
                     thisProg = progInfo['title'];
@@ -153,7 +162,7 @@ function loadSchedule() {
                     nextProg = progInfo['title'];
                     nextProgType = progInfo['type'];
                 }
-            });
+            //});
         });
     });
 }
