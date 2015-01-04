@@ -43,12 +43,12 @@ div#footer {
     padding-top:30px;
     border-top: solid 3px #808080;
     text-align:center;
-    font-size:70px;
+    font-size:60px;
 }
 div#contact {
     margin-top:55px;
     text-align: center;
-    font-size: 40pt;
+    font-size: 34pt;
     color: mediumseagreen;
 }
 div.light {
