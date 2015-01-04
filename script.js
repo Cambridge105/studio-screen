@@ -14,8 +14,7 @@ loadSchedule();
 function loadScheduledMessages() {
 	d = new Date();
 	scheduledMessages = [];
-	messageFile = "messages/"+days[d.getDay()].toLowerCase() + ".js" //"messages/" +     ?nocache=" + d.getTime();
-	//console.log("Fetching " + messageFile);
+	messageFile = "messages/"+days[d.getDay()].toLowerCase() + ".js?nocache=" + d.getTime();
 	$.getJSON(messageFile, function (schedMsgs) {
 			scheduledMessages = schedMsgs;
 		});
@@ -117,7 +116,7 @@ function displayTOTHNotice(mins,secs) {
         minsToTOTH = Math.floor(secsToTOTH / 60);
         secsToTOTH = secsToTOTH - (minsToTOTH * 60);
         countToNews = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
-        $('#footer').html('IRN NEWS INTRO in: <span class="countdown">' + countToNews + '</span>');
+        $('#footer').html('NEWS INTRO in: <span class="countdown">' + countToNews + '</span>');
     }
 }
 
