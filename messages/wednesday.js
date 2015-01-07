@@ -10,7 +10,7 @@
 	{"h":9,"m":19,"msg":"TRAVEL","d":3},
 	{"h":9,"m":39,"msg":"TRAVEL","d":3},
 	{"h":10,"m":19,"msg":"TRAVEL","d":3},
-	{"h":10,"m":21,"msg":"FIRE ALARM TEST DUE SOON","d":9,"c":"coral"},
+	{"h":10,"m":22,"msg":"FIRE ALARM TEST DUE SOON","d":8,"c":"coral"},
 	{"h":10,"m":39,"msg":"TRAVEL","d":3},
 	{"h":11,"m":19,"msg":"TRAVEL","d":3},
 	{"h":11,"m":39,"msg":"TRAVEL","d":3},
