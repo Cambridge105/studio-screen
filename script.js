@@ -38,8 +38,8 @@ function updateTimer() {
     checkForScheduledNotices(dateParts);
     // Only load the schedule at xx:00:00, xx:30:00
     if (((dateParts[1] == 0 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule(); }
-    // Only update the engineering notice at xx:00:15 and xx:30:15
-    if ((dateParts[1] == 0 && dateParts[2] == 15) || (dateParts[1] == 30 && dateParts[2] == 15)) { getEngineeringMessage(); }
+    // Only update the engineering notice at xx:00:15, xx:10:15, xx:20:15 etc.
+    if ((dateParts[1] == 0 || dateParts[1] == 10 || dateParts[1] == 20 || dateParts[1] == 30 || dateParts[1] == 40 || dateParts[1] == 50) && dateParts[2] == 15) { getEngineeringMessage(); }
     return true;
 }
 
@@ -180,7 +180,7 @@ function padZeros(num) {
 
 function getEngineeringMessage() {
     var req = $.ajax({
-        url: "http://www.domsmith.co.uk/c105/studioMessage.js",
+        url: "http://cambridge105.github.io/studio-screen/studioMessage.js",
         dataType: "jsonp",
         timeout: 10000,
         jsonpCallback: "displayMessage"
