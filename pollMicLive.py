@@ -12,7 +12,7 @@ urls = (
 
 app = web.application(urls, globals())
 
-class miclive(self):
+class miclive:
 	
 	#Handler for the GET requests
 	def GET(self):
@@ -24,12 +24,13 @@ class miclive(self):
 		# f.write(json)
 		# f.close
 				
-		self.send_response(200)
-		self.send_header('Content-type',"application/json")
-		self.end_headers()
-		self.wfile.write(json)
+		#self.send_response(200)
+		#self.send_header('Content-type',"application/json")
+		#self.end_headers()
+		#self.wfile.write(json)
 
 		GPIO.cleanup()
+		return json
 
-if _name_ == "_main_":
-    app.run("0.0.0.0:8081")
+if __name__ == '__main__':
+    app.run()
