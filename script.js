@@ -54,7 +54,7 @@ function updateTextClock(dateParts) {
 }
 
 function getMicLiveStatus() {
-    $.getJSON("micLive.js?nocache=" + (new Date()).getTime(), function (data) {
+    $.getJSON("http://localhost:8081/miclive", function (data) {
         if (data['micLiveState'] == '1') { updateMicLiveLight(true); } else { updateMicLiveLight(false); }
     });
 }
