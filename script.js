@@ -8,8 +8,13 @@ var thisProgIsLive = false;
 var thisProgEnds = 0;
 var nextProgType = "";
 var scheduledMessages = [];
+var clock = null;
 loadScheduledMessages();
 loadSchedule();
+
+$(function() {
+	createClock();
+});
 
 function loadScheduledMessages() {
 	d = new Date();
@@ -29,6 +34,7 @@ function updateClock() {
     var dateParts = [0, 0, 0, 'Monday', 1, 'January', 1970];
     dateParts = getDateParts();
     updateTextClock(dateParts);
+	refreshClock();
 }
 
 function updateTimer() {
@@ -201,6 +207,20 @@ function displayMessage(response) {
     if (response.message.length < 1) { $('#message').hide(); } else { $('#message').show(); }
 };
 
+function createClock() {
+	clock = new CoolClock({
+		canvasId:       'clockid',
+		skinId:         'chunkySwissOnBlack',
+		displayRadius:  200
+	});
+	clock.stop(); // stop the internal timer so we can refresh manually
+}
+
+function refreshClock() {
+	if(clock) {
+		clock.refreshDisplay();
+	}
+}
 
 // -------- JSONP magic
 //var tag = document.createElement("script");
