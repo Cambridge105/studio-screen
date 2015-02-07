@@ -8,16 +8,21 @@ var thisProgIsLive = false;
 var thisProgEnds = 0;
 var nextProgType = "";
 var scheduledMessages = [];
+var clock = null;
 loadScheduledMessages();
 loadSchedule();
 
+$(function() {
+    createClock();
+});
+
 function loadScheduledMessages() {
-	d = new Date();
-	scheduledMessages = [];
-	messageFile = "messages/"+days[d.getDay()].toLowerCase() + ".js?nocache=" + d.getTime();
-	$.getJSON(messageFile, function (schedMsgs) {
-			scheduledMessages = schedMsgs;
-		});
+    d = new Date();
+    scheduledMessages = [];
+    messageFile = "messages/"+days[d.getDay()].toLowerCase() + ".js?nocache=" + d.getTime();
+    $.getJSON(messageFile, function (schedMsgs) {
+        scheduledMessages = schedMsgs;
+    });
 }
 
 function unloadTimeout() {
@@ -29,6 +34,7 @@ function updateClock() {
     var dateParts = [0, 0, 0, 'Monday', 1, 'January', 1970];
     dateParts = getDateParts();
     updateTextClock(dateParts);
+    refreshClock();
 }
 
 function updateTimer() {
@@ -82,27 +88,27 @@ function updateStudioLiveLight() {
 }
 
 function checkForScheduledNotices(dateParts) {
-	messageSet = false;
-	if (dateParts[1] >= 55) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
-	else if (dateParts[2] == 1) {
+    messageSet = false;
+    if (dateParts[1] >= 55) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
+    else if (dateParts[2] == 1) {
         // Update only once a minute so we don't degrade performance
         // NB: This is a bit of a hack but it's done at xx:xx:01 to ensure we reset after schedule loads at xx:00:00 and xx:30:00
         // Is it time for travel?
-		//console.log("Scheduled messages; " + scheduledMessages);
-		$.each(scheduledMessages, function (key, schedMsg) {
-					//console.log(schedMsg);
-					offtime = schedMsg["m"] + schedMsg["d"];
-					if (dateParts[0] == schedMsg["h"] && dateParts[1] >= schedMsg["m"] && dateParts[1] < offtime)
-						{displayNotice(schedMsg["msg"],schedMsg["c"]); messageSet = true;}
-				});
-		if (messageSet == false)
-		{
-			if (dateParts[1] >= 45 && endOfProgInNext15Mins()) { displayNextProgramme(); }
-			else { displayProgrammeName(); }
-		}
-	}
+        //console.log("Scheduled messages; " + scheduledMessages);
+        $.each(scheduledMessages, function (key, schedMsg) {
+                    //console.log(schedMsg);
+                    offtime = schedMsg["m"] + schedMsg["d"];
+                    if (dateParts[0] == schedMsg["h"] && dateParts[1] >= schedMsg["m"] && dateParts[1] < offtime)
+                        {displayNotice(schedMsg["msg"],schedMsg["c"]); messageSet = true;}
+                });
+        if (messageSet == false)
+        {
+            if (dateParts[1] >= 45 && endOfProgInNext15Mins()) { displayNextProgramme(); }
+            else { displayProgrammeName(); }
+        }
+    }
 }
-		
+        
 
 
 function displayTOTHNotice(mins,secs) {
@@ -121,7 +127,7 @@ function displayTOTHNotice(mins,secs) {
 }
 
 function displayNotice(message,color) {
-	if (color === undefined || color.length<1) {color = "yellow";}
+    if (color === undefined || color.length<1) {color = "yellow";}
     $('#footer').css('color', color);
     $('#footer').html(message);
 }
@@ -146,7 +152,7 @@ function loadSchedule() {
     nextProgType = "";
     timeNow = new Date().getTime() + 5000; // Pretend we're 5 secs in the future to avoid race condition if we load exactly when a prog ends
     $.getJSON("schedule.js?nocache=" + (new Date()).getTime(), function (sched) {
-	    $.each(sched, function (key, progInfo) {
+        $.each(sched, function (key, progInfo) {
             //$.each(progInfo, function (progInfoKey, progInfoValue) {
                 //console.log("Loading: " + progInfo['title']);
                 if ((progInfo['start'] * 1000) <= timeNow && (progInfo['end'] * 1000) > timeNow) {
@@ -201,6 +207,20 @@ function displayMessage(response) {
     if (response.message.length < 1) { $('#message').hide(); } else { $('#message').show(); }
 };
 
+function createClock() {
+    clock = new CoolClock({
+        canvasId:       'clockid',
+        skinId:         'chunkySwissOnBlack',
+        displayRadius:  200
+    });
+    clock.stop(); // stop the internal timer so we can refresh manually
+}
+
+function refreshClock() {
+    if(clock) {
+        clock.refreshDisplay();
+    }
+}
 
 // -------- JSONP magic
 //var tag = document.createElement("script");
