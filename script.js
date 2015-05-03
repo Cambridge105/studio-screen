@@ -76,7 +76,7 @@ function getMicLiveStatus() {
 }
 
 function getStudioStatus() {
-	$.getJSON("http://greenroom-pi:8080/studios", function (data) {
+	$.getJSON("http://greenroom-pi:8081/studios", function (data) {
 		if (data['a'] == 'true') {updateLight('studioA',true);} else {updateLight('studioA',false);}
 		if (data['b'] == 'true') {updateLight('studioB',true);} else {updateLight('studioB',false);}
 		if (data['remote'] == 'true') {updateLight('remote',true);} else {updateLight('remote',false);}
