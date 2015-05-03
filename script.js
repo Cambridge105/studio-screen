@@ -43,6 +43,7 @@ function updateTimer() {
     var dateParts = [0, 0, 0, 'Monday', 1, 'January', 1970];
     dateParts = getDateParts();
     micLiveStatus = getMicLiveStatus();
+	getStudioStatus();
     checkForScheduledNotices(dateParts);
     // Only load the schedule at xx:00:00, xx:30:00
     if (((dateParts[1] == 0 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule(); }
