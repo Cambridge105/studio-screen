@@ -16,9 +16,9 @@ class miclive:
 	
 	#Handler for the GET requests
 	def GET(self):
-		GPIO.setup("P9_11", GPIO.IN) #AKA GPIO_30 see diagram at http://kilobaser.com/blog/2014-07-15-beaglebone-black-gpios
+		GPIO.setup(7, GPIO.IN) 
 
-		newstate = 1 - GPIO.input("P9_11")
+		newstate = 1 - GPIO.input(7)
 		json = '{ "micLiveState": ' + str(newstate) + '}'
 		web.header('Access-Control-Allow-Origin', '*')
 
