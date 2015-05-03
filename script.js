@@ -82,16 +82,6 @@ function updateMicLiveLight(micLiveStatus) {
     }
 }
 
-function updateStudioLiveLight() {
-    if (thisProgIsLive == true) {
-        $('#studioLive').css("color", "black");
-        $('#studioLive').css("background-color", "orange");
-    }
-    else {
-        $('#studioLive').css("color", "#808080");
-        $('#studioLive').css("background-color", "black");
-    }
-}
 
 function checkForScheduledNotices(dateParts) {
     messageSet = false;
@@ -167,7 +157,6 @@ function loadSchedule() {
                     console.log("Current programme " + thisProg);
                     if (progInfo['type'] == "LIVE") { thisProgIsLive = true; } else { thisProgIsLive = false; }
                     thisProgEnds = progInfo['end'] * 1000;
-                    updateStudioLiveLight();
                     displayProgrammeName();
                 }
                 else if ((progInfo['start'] * 1000) == thisProgEnds) {
