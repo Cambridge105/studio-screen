@@ -27,7 +27,7 @@ class studios:
 		remstate = 1 - GPIO.input(18)
 		web.header('Access-Control-Allow-Origin', '*')
 
-		json = '{ "a": ' + str(astate) + ', "b": ' + str(bstate) + ', "remote" :' + str(remstate) + '}'
+		json = '{ "a": ' + str(astate) + ', "b": ' + str(bstate) + ', "remote": ' + str(remstate) + '}'
 
 		return json
 
