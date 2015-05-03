@@ -9,6 +9,8 @@ var thisProgEnds = 0;
 var nextProgType = "";
 var scheduledMessages = [];
 var clock = null;
+var hasIrnNextHour = false;
+var hasNewsNextHour = false;
 loadScheduledMessages();
 loadSchedule();
 
@@ -46,6 +48,10 @@ function updateTimer() {
     if (((dateParts[1] == 0 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule(); }
     // Only update the engineering notice at xx:00:15, xx:10:15, xx:20:15 etc.
     if ((dateParts[1] == 0 || dateParts[1] == 10 || dateParts[1] == 20 || dateParts[1] == 30 || dateParts[1] == 40 || dateParts[1] == 50) && dateParts[2] == 15) { getEngineeringMessage(); }
+	// At xx:51:00 check whether the next hour has news
+	if ((dateParts[1] == 51) && (dateParts[2] == 0)) {hasNewsNextHour = checkForNewsNextHour((dateParts[0] + 1), dateParts[3]);}
+	// At xx:52:00 check whether IRN is scheduled
+	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {hasIrnNextHour = checkForIrn();}
     return true;
 }
 
@@ -89,7 +95,7 @@ function updateStudioLiveLight() {
 
 function checkForScheduledNotices(dateParts) {
     messageSet = false;
-    if (dateParts[1] >= 55) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
+    if (dateParts[1] >= 55 && hasNewsNextHour == true) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
     else if (dateParts[2] == 1) {
         // Update only once a minute so we don't degrade performance
         // NB: This is a bit of a hack but it's done at xx:xx:01 to ensure we reset after schedule loads at xx:00:00 and xx:30:00
@@ -122,7 +128,8 @@ function displayTOTHNotice(mins,secs) {
         minsToTOTH = Math.floor(secsToTOTH / 60);
         secsToTOTH = secsToTOTH - (minsToTOTH * 60);
         countToNews = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
-        $('#footer').html('NEWS INTRO in: <span class="countdown">' + countToNews + '</span>');
+		if (hasIrnNextHour == true) {newsType = "SKY";} else {newsType="LOCAL";}
+        $('#footer').html(newsType + ' NEWS INTRO in: <span class="countdown">' + countToNews + '</span>');
     }
 }
 
@@ -201,6 +208,27 @@ function getEngineeringMessage() {
     });
 }
 
+function checkForIrn() {
+    var req = $.ajax({
+        url: "http://fileserver1/trackdata/irnnext",
+        timeout: 3000"
+    });
+
+    req.success(function () {
+        return true;
+    });
+
+    req.error(function () {
+        return false;
+    });
+}
+
+function checkForNewsNextHour(nextHour,day) {
+	if ((day == "Sunday") && (nextHour>7 && nextHour<11)) {return true;}
+	else if ((day == "Saturday") && (nextHour>7 && nextHour<10)) {return true;}
+	else if ((nextHour>6 && nextHour<10) || (nextHour==13) || (nextHour>15 && nextHour<19)) {return true;}
+	return false;
+}
 
 function displayMessage(response) {
     $('#message').html('<span class=\"engNotice\">Engineering notice:</span><br />' + response.message);
