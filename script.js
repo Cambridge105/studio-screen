@@ -242,11 +242,11 @@ function checkForNewsNextHour(nextHour,day) {
 	console.log(nextHour + ":" + day);
 	if (day == "Sunday") 
 	{
-		if (nextHour>7 && nextHour<11)) {return true;}
+		if (nextHour>7 && nextHour<11) {return true;}
 	}
 	else if (day == "Saturday")
 	{
-		if (nextHour>7 && nextHour<10)) {return true;}
+		if (nextHour>7 && nextHour<10) {return true;}
 	}
 	else if (day != "Saturday" && day != "Sunday")
 	{
