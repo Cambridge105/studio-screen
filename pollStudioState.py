@@ -15,7 +15,7 @@ urls = (
 app = web.application(urls, globals())
 web.header('Access-Control-Allow-Origin', '*')
 
-class miclive:
+class studios:
 	
 	#Handler for the GET requests
 	def GET(self):
