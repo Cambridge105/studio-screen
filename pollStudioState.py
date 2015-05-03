@@ -22,9 +22,9 @@ class studios:
 		GPIO.setup(16, GPIO.IN) 
 		GPIO.setup(18, GPIO.IN) 
 
-		astate = 1 - GPIO.input(15)
-		bstate = 1 - GPIO.input(16)
-		remstate = 1 - GPIO.input(18)
+		astate = GPIO.input(15)
+		bstate = GPIO.input(16)
+		remstate = GPIO.input(18)
 		web.header('Access-Control-Allow-Origin', '*')
 
 		json = '{ "a": ' + str(astate) + ', "b": ' + str(bstate) + ', "remote": ' + str(remstate) + '}'
