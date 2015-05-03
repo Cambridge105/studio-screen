@@ -122,6 +122,7 @@ function checkForScheduledNotices(dateParts) {
 
 function displayTOTHNotice(mins,secs) {
     $('#footer').css('color', 'yellow');
+	console.log("IRN" + hasIrnNextHour + "News" + hasNewsNextHour);
     secsToTOTH = ((59 - mins) * 60) + (60 - secs);
     secsToTOTH = secsToTOTH - 9; // News intro
     if (secsToTOTH < 0) {
@@ -238,9 +239,19 @@ function checkForIrn() {
 }
 
 function checkForNewsNextHour(nextHour,day) {
-	if ((day == "Sunday") && (nextHour>7 && nextHour<11)) {return true;}
-	else if ((day == "Saturday") && (nextHour>7 && nextHour<10)) {return true;}
-	else if ((nextHour>6 && nextHour<10) || (nextHour==13) || (nextHour>15 && nextHour<19)) {return true;}
+	console.log(nextHour + ":" + day);
+	if (day == "Sunday") 
+	{
+		if (nextHour>7 && nextHour<11)) {return true;}
+	}
+	else if (day == "Saturday")
+	{
+		if (nextHour>7 && nextHour<10)) {return true;}
+	}
+	else if (day != "Saturday" && day != "Sunday")
+	{
+		if ((nextHour>6 && nextHour<10) || (nextHour==13) || (nextHour>15 && nextHour<19)) {return true;}
+	}
 	return false;
 }
 
