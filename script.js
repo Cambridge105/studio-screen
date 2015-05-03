@@ -46,13 +46,16 @@ function updateTimer() {
 	getStudioStatus();
     checkForScheduledNotices(dateParts);
     // Only load the schedule at xx:00:00, xx:30:00
-    if (((dateParts[1] == 0 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule(); }
+    if (((dateParts[1] == 0 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule();}
     // Only update the engineering notice at xx:00:15, xx:10:15, xx:20:15 etc.
     if ((dateParts[1] == 0 || dateParts[1] == 10 || dateParts[1] == 20 || dateParts[1] == 30 || dateParts[1] == 40 || dateParts[1] == 50) && dateParts[2] == 15) { getEngineeringMessage(); }
 	// At xx:51:00 check whether the next hour has news
 	if ((dateParts[1] == 51) && (dateParts[2] == 0)) {hasNewsNextHour = checkForNewsNextHour((dateParts[0] + 1), dateParts[3]);}
 	// At xx:52:00 check whether IRN is scheduled
 	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {hasIrnNextHour = checkForIrn();}
+	// At xx:49:00 unset the IRN/News check
+	if (dateParts[1] == 49 && dateParts[2] == 0) { hasNewsNextHour=false; hasIrnNextHour = false;}
+    
     return true;
 }
 
