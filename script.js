@@ -76,7 +76,7 @@ function getStudioStatus() {
 		if (data['a'] == 'true') {updateLight('studioA',true);} else {updateLight('studioA',false);}
 		if (data['b'] == 'true') {updateLight('studioB',true);} else {updateLight('studioB',false);}
 		if (data['remote'] == 'true') {updateLight('remote',true);} else {updateLight('remote',false);}
-	}
+	});
 }	
 
 function updateLight(divid,status) {
