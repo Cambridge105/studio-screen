@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# Run this on studioa-pi during autostart script
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BOARD)
 import time
