@@ -86,6 +86,7 @@ function updateMicLiveLight(micLiveStatus) {
 function checkForScheduledNotices(dateParts) {
     messageSet = false;
     if (dateParts[1] >= 55 && (hasNewsNextHour == true || hasIrnNextHour == true)) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
+    else if (dateParts[1] >= 55 && endOfProgInNext15Mins) { displayProgEndCountdown(); messageSet = true;}
     else if (dateParts[2] == 1) {
         // Update only once a minute so we don't degrade performance
         // NB: This is a bit of a hack but it's done at xx:xx:01 to ensure we reset after schedule loads at xx:00:00 and xx:30:00
@@ -121,6 +122,17 @@ function displayTOTHNotice(mins,secs) {
 		if (hasIrnNextHour == true) {newsType = "SKY";} else {newsType="LOCAL";}
         $('#footer').html(newsType + ' NEWS INTRO in: <span class="countdown">' + countToNews + '</span>');
     }
+}
+
+
+function displayProgEndCountdown() {
+    $('#footer').css('color', 'yellow');
+    secsToEnd = Math.floor((thisProgEnds - getTime())/1000);
+    minsToEnd = Math.floor(secsToEnd / 60);
+    secsToEnd = secsToEnd - (minsToEnd * 60);
+    countToEnd = padZeros(minsToEnd) + ":" + padZeros(secsToEnd);
+	$('#footer').html('Programme ends in: <span class="countdown">' + countToEnd + '</span>');
+
 }
 
 function displayNotice(message,color) {
