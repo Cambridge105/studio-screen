@@ -66,19 +66,27 @@ function updateTextClock(dateParts) {
 }
 
 function getMicLiveStatus() {
-    $.getJSON("http://localhost:8081/miclive", function (data) {
-        if (data['micLiveState'] == '1') { updateMicLiveLight(true); } else { updateMicLiveLight(false); }
+    $.getJSON("http://studioa-pi:8081/miclive", function (data) {
+        if (data['micLiveState'] == '1') { updateLight('micLive',true); } else { updateLight('micLive',false); }
     });
 }
 
-function updateMicLiveLight(micLiveStatus) {
-    if (micLiveStatus == true) {
-        $('#micLive').css("color","black");
-        $('#micLive').css("background-color","red");
+function getStudioStatus() {
+	$.getJSON("http://greenroom-pi:8080/studios", function (data) {
+		if (data['a'] == 'true') {updateLight('studioA',true);} else {updateLight('studioA',false);}
+		if (data['b'] == 'true') {updateLight('studioB',true);} else {updateLight('studioB',false);}
+		if (data['remote'] == 'true') {updateLight('remote',true);} else {updateLight('remote',false);}
+	}
+}	
+
+function updateLight(divid,status) {
+    if (status == true) {
+        $('#'+divid).css("color","black");
+        $('#'+divid).css("background-color","red");
     }
     else {
-        $('#micLive').css("color", "#808080");
-        $('#micLive').css("background-color", "black");
+        $('#'+divid).css("color", "#808080");
+        $('#'+divid).css("background-color", "black");
     }
 }
 
@@ -86,7 +94,7 @@ function updateMicLiveLight(micLiveStatus) {
 function checkForScheduledNotices(dateParts) {
     messageSet = false;
     if (dateParts[1] >= 55 && (hasNewsNextHour == true || hasIrnNextHour == true)) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
-	else if (dateParts[1] >= 55 && endOfProgInNext15Mins) { displayProgEndCountdown(); messageSet = true;}
+	else if (dateParts[1] >= 55 && endOfProgInNext15Mins == true) { displayProgEndCountdown(); messageSet = true;}
     else if (dateParts[2] == 1) {
         // Update only once a minute so we don't degrade performance
         // NB: This is a bit of a hack but it's done at xx:xx:01 to ensure we reset after schedule loads at xx:00:00 and xx:30:00
