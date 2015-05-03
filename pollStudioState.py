@@ -13,7 +13,6 @@ urls = (
 )
 
 app = web.application(urls, globals())
-#web.header('Access-Control-Allow-Origin', '*')
 
 class studios:
 	
@@ -26,6 +25,8 @@ class studios:
 		astate = 1 - GPIO.input(15)
 		bstate = 1 - GPIO.input(16)
 		remstate = 1 - GPIO.input(18)
+		web.header('Access-Control-Allow-Origin', '*')
+
 		json = '{ "a": ' + str(astate) + ', "b": ' + str(bstate) + ', "remote" :' + str(remstate) + '}'
 
 		return json

@@ -26,7 +26,6 @@ class miclive:
 		json = '{ "micLiveState": ' + str(newstate) + '}'
 		web.header('Access-Control-Allow-Origin', '*')
 
-		GPIO.cleanup()
 		return json
 
 if __name__ == '__main__':
