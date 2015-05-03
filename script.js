@@ -211,7 +211,7 @@ function getEngineeringMessage() {
 function checkForIrn() {
     var req = $.ajax({
         url: "http://fileserver1/trackdata/irnnext",
-        timeout: 3000"
+        timeout: 3000
     });
 
     req.success(function () {
