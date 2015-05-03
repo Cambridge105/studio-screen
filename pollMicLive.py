@@ -18,6 +18,8 @@ class miclive:
 	
 	#Handler for the GET requests
 	def GET(self):
+		GPIO.setmode(GPIO.BOARD)
+
 		GPIO.setup(7, GPIO.IN) 
 
 		newstate = 1 - GPIO.input(7)

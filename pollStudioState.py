@@ -19,13 +19,13 @@ class studios:
 	
 	#Handler for the GET requests
 	def GET(self):
-		GPIO.setup(0, GPIO.IN) 
-		GPIO.setup(1, GPIO.IN) 
-		GPIO.setup(2, GPIO.IN) 
+		GPIO.setup(15, GPIO.IN) 
+		GPIO.setup(16, GPIO.IN) 
+		GPIO.setup(18, GPIO.IN) 
 
-		astate = 1 - GPIO.input(0)
-		bstate = 1 - GPIO.input(1)
-		remstate = 1 - GPIO.input(2)
+		astate = 1 - GPIO.input(15)
+		bstate = 1 - GPIO.input(16)
+		remstate = 1 - GPIO.input(18)
 		json = '{ "a": ' + str(astate) + ', "b": ' + str(bstate) + ', "remote" ' + str(remstate) + '}'
 
 		GPIO.cleanup()
