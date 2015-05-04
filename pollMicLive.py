@@ -11,6 +11,7 @@ PORT_NUMBER = 8081
 urls = (
     '/miclive', 'miclive'
 )
+GPIO.setup(7, GPIO.IN) 
 
 app = web.application(urls, globals())
 
@@ -18,10 +19,6 @@ class miclive:
 	
 	#Handler for the GET requests
 	def GET(self):
-		GPIO.setmode(GPIO.BOARD)
-
-		GPIO.setup(7, GPIO.IN) 
-
 		newstate = 1 - GPIO.input(7)
 		json = '{ "micLiveState": ' + str(newstate) + '}'
 		web.header('Access-Control-Allow-Origin', '*')
