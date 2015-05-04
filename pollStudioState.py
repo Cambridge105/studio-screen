@@ -11,6 +11,9 @@ PORT_NUMBER = 8081
 urls = (
     '/studios', 'studios'
 )
+GPIO.setup(15, GPIO.IN) 
+GPIO.setup(16, GPIO.IN) 
+GPIO.setup(18, GPIO.IN) 
 
 app = web.application(urls, globals())
 
@@ -18,10 +21,6 @@ class studios:
 	
 	#Handler for the GET requests
 	def GET(self):
-		GPIO.setup(15, GPIO.IN) 
-		GPIO.setup(16, GPIO.IN) 
-		GPIO.setup(18, GPIO.IN) 
-
 		astate = GPIO.input(15)
 		bstate = GPIO.input(16)
 		remstate = GPIO.input(18)
