@@ -59,7 +59,9 @@ function updateTimer() {
 	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {checkForIrn();}
 	// At xx:49:00 unset the IRN/News check
 	if (dateParts[1] == 49 && dateParts[2] == 0) { hasNewsNextHour=false; hasIrnNextHour = false;}
-    
+    // At 03:25:00, reload the whole page so we hopefully drop any DOM objects we've leaked
+    if (dateParts[0] == 3 && dateParts[1] == 25 && dateParts[2] == 0) { location.reload(true); }
+
     return true;
 }
 
