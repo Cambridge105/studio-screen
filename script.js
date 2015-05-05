@@ -22,7 +22,11 @@ function loadScheduledMessages() {
     d = new Date();
     scheduledMessages = [];
     messageFile = "messages/"+days[d.getDay()].toLowerCase() + ".js?nocache=" + d.getTime();
-    $.getJSON(messageFile, function (schedMsgs) {
+    $.ajax({
+        url: messageFile, 
+        dataType: 'json',
+        timeout: 5000
+    }).success(function (schedMsgs) {
         scheduledMessages = schedMsgs;
     });
 }
@@ -70,13 +74,21 @@ function updateTextClock(dateParts) {
 }
 
 function getMicLiveStatus() {
-    $.getJSON("http://studioa-pi:8081/miclive", function (data) {
+    $.ajax({
+        url: "http://studioa-pi:8081/miclive",
+        dataType: "json",
+        timeout: 2000
+    }).success(function (data) {
         if (data['micLiveState'] == '1') { updateLight('micLive',true); } else { updateLight('micLive',false); }
     });
 }
 
 function getStudioStatus() {
-	$.getJSON("http://greenroom-pi:8081/studios", function (data) {
+	$.ajax({
+        url: "http://greenroom-pi:8081/studios", 
+        dataType: "json",
+        timeout: 2000
+    }).success(function (data) {
 		if (data['a'] == '1') {updateLight('studioA',true);} else {updateLight('studioA',false);}
 		if (data['b'] == '1') {updateLight('studioB',true);} else {updateLight('studioB',false);}
 		if (data['remote'] == '1') {updateLight('remote',true);} else {updateLight('remote',false);}
@@ -174,7 +186,11 @@ function loadSchedule() {
     thisProgIsLive = false;
     nextProgType = "";
     timeNow = new Date().getTime() + 5000; // Pretend we're 5 secs in the future to avoid race condition if we load exactly when a prog ends
-    $.getJSON("schedule.js?nocache=" + (new Date()).getTime(), function (sched) {
+    $.ajax({
+        url: "schedule.js?nocache=" + (new Date()).getTime(),
+        dataType: "json",
+        timeout: 10000
+    }).success(function (sched) {
         $.each(sched, function (key, progInfo) {
             //$.each(progInfo, function (progInfoKey, progInfoValue) {
                 //console.log("Loading: " + progInfo['title']);
