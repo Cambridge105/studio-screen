@@ -112,7 +112,7 @@ function updateLight(divid,status) {
 function checkForScheduledNotices(dateParts) {
     messageSet = false;
     if (dateParts[1] >= 55 && (hasNewsNextHour == true || hasIrnNextHour == true)) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
-	else if (dateParts[1] >= 55 && endOfProgInNext15Mins == true) { displayProgEndCountdown(); messageSet = true;}
+	else if (dateParts[1] >= 55 && endOfProgInNext15Mins() == true) { displayProgEndCountdown(); messageSet = true;}
     else if (dateParts[2] == 1) {
         // Update only once a minute so we don't degrade performance
         // NB: This is a bit of a hack but it's done at xx:xx:01 to ensure we reset after schedule loads at xx:00:00 and xx:30:00
