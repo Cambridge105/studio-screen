@@ -22,6 +22,7 @@ class miclive:
 		newstate = 1 - GPIO.input(7)
 		json = '{ "micLiveState": ' + str(newstate) + '}'
 		web.header('Access-Control-Allow-Origin', '*')
+		web.header('Content-Type', 'application/json')
 
 		return json
 
