@@ -56,7 +56,7 @@ function updateTimer() {
 	// At xx:51:00 check whether the next hour has news
 	if ((dateParts[1] == 51) && (dateParts[2] == 0)) {hasNewsNextHour = checkForNewsNextHour((dateParts[0] + 1), dateParts[3]);}
 	// At xx:52:00 check whether IRN is scheduled
-	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {hasIrnNextHour = checkForIrn();}
+	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {checkForIrn();}
 	// At xx:49:00 unset the IRN/News check
 	if (dateParts[1] == 49 && dateParts[2] == 0) { hasNewsNextHour=false; hasIrnNextHour = false;}
     
@@ -246,11 +246,11 @@ function checkForIrn() {
     });
 
     req.success(function () {
-        return true;
+        hasIrnNextHour = true;
     });
 
-    req.error(function () {
-        return false;
+    req.fail(function () {
+        hasIrnNextHour = false;
     });
 }
 
