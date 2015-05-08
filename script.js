@@ -146,7 +146,7 @@ function displayTOTHNotice(mins,secs) {
         minsToTOTH = Math.floor(secsToTOTH / 60);
         secsToTOTH = secsToTOTH - (minsToTOTH * 60);
         countToNews = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
-		if (hasIrnNextHour == true) {newsType = "SKY";} else {newsType="LOCAL";}
+		if (hasNewsNextHour == true) {newsType = "LOCAL";} else {newsType="SKY";}
         $('#footer').html(newsType + ' NEWS INTRO in: <span class="countdown">' + countToNews + '</span>');
     }
 }
