@@ -138,7 +138,7 @@ function displayTOTHNotice(mins,secs) {
     $('#footer').css('color', 'yellow');
 	console.log("IRN" + hasIrnNextHour + "News" + hasNewsNextHour);
     secsToTOTH = ((59 - mins) * 60) + (60 - secs);
-    secsToTOTH = secsToTOTH - 9; // News intro
+    secsToTOTH = secsToTOTH - 12; // News intro
     if (secsToTOTH < 0) {
         $('#footer').html('&quot;This is community radio in your city, Cambridge 105&quot;');
     }
