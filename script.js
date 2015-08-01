@@ -229,7 +229,7 @@ function getEngineeringMessage() {
         url: "http://cambridge105.github.io/studio-screen/studioMessage.js",
         dataType: "jsonp",
         timeout: 10000,
-        jsonpCallback: "displayMessage"
+        jsonpCallback: "displayMessageFromResponse"
     });
 
     req.success(function () {
@@ -273,10 +273,14 @@ function checkForNewsNextHour(nextHour,day) {
 	return false;
 }
 
-function displayMessage(response) {
-    $('#message').html('<span class=\"engNotice\">Engineering notice:</span><br />' + response.message);
-    if (response.message.length < 1) { $('#message').hide(); } else { $('#message').show(); }
-};
+function displayMessageFromResponse(response) {
+    displayMessage('<span class=\"engNotice\">Engineering notice:</span><br />' + response.message);
+}
+
+function displayMessage(message) {
+	$('#message').html(message);
+    if (message.length < 1) { $('#message').hide(); } else { $('#message').show(); }
+}
 
 function createClock() {
     clock = new CoolClock({
@@ -292,8 +296,3 @@ function refreshClock() {
         clock.refreshDisplay();
     }
 }
-
-// -------- JSONP magic
-//var tag = document.createElement("script");
-//tag.src = 'http://www.domsmith.co.uk/c105/studioMessage.js?callback=displayMessage&nocache=' + (new Date()).getTime();
-//document.getElementsByTagName("head")[0].appendChild(tag);
