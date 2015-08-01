@@ -11,6 +11,9 @@ var scheduledMessages = [];
 var clock = null;
 var hasIrnNextHour = false;
 var hasNewsNextHour = false;
+var networkGreenroomOK = true;
+var networkStudioAOK = true;
+var networkExternalOK = true;
 loadScheduledMessages();
 loadSchedule();
 
@@ -49,6 +52,7 @@ function updateTimer() {
     micLiveStatus = getMicLiveStatus();
 	getStudioStatus();
     checkForScheduledNotices(dateParts);
+	displayNetworkMessage();
     // Only load the schedule at xx:00:00, xx:30:00
     if (((dateParts[1] == 0 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule();}
     // Only update the engineering notice at xx:00:15, xx:10:15, xx:20:15 etc.
@@ -80,9 +84,14 @@ function getMicLiveStatus() {
         url: "http://studioa-pi:8081/miclive",
         dataType: "json",
         timeout: 2000
-    }).success(function (data) {
+    })
+	.success(function (data) {
         if (data['micLiveState'] == '1') { updateLight('micLive',true); } else { updateLight('micLive',false); }
-    });
+		networkStudioAOK = true;
+    })
+	.fail(
+		networkStudioAOK = false
+	);
 }
 
 function getStudioStatus() {
@@ -90,11 +99,16 @@ function getStudioStatus() {
         url: "http://greenroom-pi:8081/studios", 
         dataType: "json",
         timeout: 2000
-    }).success(function (data) {
+    })
+	.success(function (data) {
 		if (data['a'] == '1') {updateLight('studioA',true);} else {updateLight('studioA',false);}
 		if (data['b'] == '1') {updateLight('studioB',true);} else {updateLight('studioB',false);}
 		if (data['remote'] == '1') {updateLight('remote',true);} else {updateLight('remote',false);}
-	});
+		networkGreenroomOK = true;
+	})
+	.fail(
+		networkGreenroomOK = false
+	);
 }	
 
 function updateLight(divid,status) {
@@ -229,15 +243,15 @@ function getEngineeringMessage() {
         url: "http://cambridge105.github.io/studio-screen/studioMessage.js",
         dataType: "jsonp",
         timeout: 10000,
-        jsonpCallback: "displayMessageFromResponse"
+        jsonpCallback: "displayMessage"
     });
 
     req.success(function () {
-        //console.log('JSONP OK');
+		// Nothing
     });
 
-    req.error(function () {
-        //console.log('JSONP failed');
+    req.fail(function () {
+		networkExternalOK = false; 
     });
 }
 
@@ -273,11 +287,13 @@ function checkForNewsNextHour(nextHour,day) {
 	return false;
 }
 
-function displayMessageFromResponse(response) {
-    displayMessage('<span class=\"engNotice\">Engineering notice:</span><br />' + response.message);
+function displayMessage(response) {
+	networkExternalOK = true;
+	if (response.message.length > 1)
+		{displayMessageText('<span class=\"engNotice\">Engineering notice:</span><br />' + response.message);}
 }
 
-function displayMessage(message) {
+function displayMessageText(message) {
 	$('#message').html(message);
     if (message.length < 1) { $('#message').hide(); } else { $('#message').show(); }
 }
@@ -295,4 +311,18 @@ function refreshClock() {
     if(clock) {
         clock.refreshDisplay();
     }
+}
+
+function displayNetworkMessage() {
+	if (networkExternalOK == true)
+	{
+		if (networkGreenroomOK == false) {displayMessageText('ERROR: Green Room Pi offline. Studio switching status may be inaccurate.');}
+		else if (networkStudioAOK == false) {displayMessageText('ERROR: Studio A Pi offline. Mic live status may be inaccurate.');}
+		else {displayMessageText('')};
+	}
+	else
+	{
+		if (networkStudioAOK == false || networkGreenroomOK == false) {displayMessageText('ERROR: No network connection. All info may be inaccurate.');}
+		else (displayMessageText('ERROR: No WAN connection. Schedule may be inaccurate.'));
+	}
 }
