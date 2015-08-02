@@ -318,7 +318,7 @@ function displayNetworkMessage() {
 	{
 		if (networkGreenroomOK == false) {displayMessageText('ERROR: Green Room Pi offline. Studio switching status may be inaccurate.');}
 		else if (networkStudioAOK == false) {displayMessageText('ERROR: Studio A Pi offline. Mic live status may be inaccurate.');}
-		else {displayMessageText('')};
+		else { };
 	}
 	else
 	{
