@@ -90,7 +90,7 @@ function getMicLiveStatus() {
 		networkStudioAOK = true;
     })
 	.fail(
-		networkStudioAOK = false
+		//networkStudioAOK = false
 	);
 }
 
@@ -107,7 +107,7 @@ function getStudioStatus() {
 		networkGreenroomOK = true;
 	})
 	.fail(
-		networkGreenroomOK = false
+		//networkGreenroomOK = false
 	);
 }	
 
