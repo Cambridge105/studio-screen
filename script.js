@@ -84,14 +84,12 @@ function getMicLiveStatus() {
         url: "http://studioa-pi:8081/miclive",
         dataType: "json",
         timeout: 2000
-    })
-	.success(function (data) {
+    }).done(function (data) {
         if (data['micLiveState'] == '1') { updateLight('micLive',true); } else { updateLight('micLive',false); }
 		networkStudioAOK = true;
-    })
-	.fail(
-		//networkStudioAOK = false
-	);
+    }).fail(function() {
+		networkStudioAOK = false;
+	});
 }
 
 function getStudioStatus() {
@@ -99,16 +97,14 @@ function getStudioStatus() {
         url: "http://greenroom-pi:8081/studios", 
         dataType: "json",
         timeout: 2000
-    })
-	.success(function (data) {
+    }).done(function (data) {
 		if (data['a'] == '1') {updateLight('studioA',true);} else {updateLight('studioA',false);}
 		if (data['b'] == '1') {updateLight('studioB',true);} else {updateLight('studioB',false);}
 		if (data['remote'] == '1') {updateLight('remote',true);} else {updateLight('remote',false);}
 		networkGreenroomOK = true;
-	})
-	.fail(
-		//networkGreenroomOK = false
-	);
+	}).fail(function() {
+		networkGreenroomOK = false;
+	});
 }	
 
 function updateLight(divid,status) {
