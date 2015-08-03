@@ -85,8 +85,8 @@ function getMicLiveStatus() {
         dataType: "json",
         timeout: 2000
     }).done(function (data) {
-        if (data['micLiveState'] == '1') { updateLight('micLive',true); } else { updateLight('micLive',false); }
 		networkStudioAOK = true;
+        if (data['micLiveState'] == '1') { updateLight('micLive',true); } else { updateLight('micLive',false); }
     }).fail(function() {
 		networkStudioAOK = false;
 	});
@@ -98,10 +98,10 @@ function getStudioStatus() {
         dataType: "json",
         timeout: 2000
     }).done(function (data) {
+		networkGreenroomOK = true;
 		if (data['a'] == '1') {updateLight('studioA',true);} else {updateLight('studioA',false);}
 		if (data['b'] == '1') {updateLight('studioB',true);} else {updateLight('studioB',false);}
 		if (data['remote'] == '1') {updateLight('remote',true);} else {updateLight('remote',false);}
-		networkGreenroomOK = true;
 	}).fail(function() {
 		networkGreenroomOK = false;
 	});
@@ -312,7 +312,8 @@ function refreshClock() {
 function displayNetworkMessage() {
 	if (networkExternalOK == true)
 	{
-		if (networkGreenroomOK == false) {displayMessageText('ERROR: Green Room Pi offline. Studio switching status may be inaccurate.');}
+		if (networkGreenroomOK == false && networkStudioAOK == false) {displayMessageText('ERROR: Green Room and Studio A Pis appear offline. All info may be inaccurate.');}
+		else if (networkGreenroomOK == false) {displayMessageText('ERROR: Green Room Pi offline. Studio switching status may be inaccurate.');}
 		else if (networkStudioAOK == false) {displayMessageText('ERROR: Studio A Pi offline. Mic live status may be inaccurate.');}
 		else { };
 	}
