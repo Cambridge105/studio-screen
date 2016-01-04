@@ -52,7 +52,7 @@ function updateTimer() {
     micLiveStatus = getMicLiveStatus();
 	getStudioStatus();
     checkForScheduledNotices(dateParts);
-	displayNetworkMessage();
+	//displayNetworkMessage();
     // Only load the schedule at xx:00:00, xx:30:00
     if (((dateParts[1] == 0 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule();}
     // Only update the engineering notice at xx:00:15, xx:10:15, xx:20:15 etc.
