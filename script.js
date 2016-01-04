@@ -278,7 +278,7 @@ function checkForNewsNextHour(nextHour,day) {
 	}
 	else if (day != "Saturday" && day != "Sunday")
 	{
-		if ((nextHour>6 && nextHour<9) || (nextHour==13) || (nextHour>15 && nextHour<19)) {return true;}
+		if ((nextHour>6 && nextHour<10) || (nextHour==13) || (nextHour>15 && nextHour<19)) {return true;}
 	}
 	return false;
 }
