@@ -6,8 +6,19 @@
 	{"h":9,"m":19,"msg":"TRAVEL","d":3},
 	{"h":9,"m":29,"msg":"HEADLINES","d":2},
 	{"h":9,"m":39,"msg":"TRAVEL","d":3},
+	{"h":10,"m":2,"msg":"WEATHER","d":1},
 	{"h":10,"m":19,"msg":"TRAVEL","d":3},
 	{"h":10,"m":39,"msg":"TRAVEL","d":3},
+	{"h":11,"m":2,"msg":"WEATHER","d":1},
 	{"h":11,"m":19,"msg":"TRAVEL","d":3},
-	{"h":11,"m":39,"msg":"TRAVEL","d":3}
+	{"h":11,"m":39,"msg":"TRAVEL","d":3},
+	{"h":12,"m":2,"msg":"WEATHER","d":1},
+	{"h":13,"m":2,"msg":"(WEATHER NOT REQUIRED)","d":1,"c":"white"},
+	{"h":14,"m":2,"msg":"(WEATHER NOT REQUIRED)","d":1,"c":"white"},
+	{"h":15,"m":2,"msg":"(WEATHER NOT REQUIRED)","d":1,"c":"white"},
+	{"h":17,"m":2,"msg":"(WEATHER NOT REQUIRED)","d":1,"c":"white"},
+	{"h":18,"m":2,"msg":"(WEATHER NOT REQUIRED)","d":1,"c":"white"},
+	{"h":19,"m":2,"msg":"(WEATHER NOT REQUIRED)","d":1,"c":"white"},
+	{"h":20,"m":2,"msg":"(WEATHER NOT REQUIRED)","d":1,"c":"white"},
+	{"h":22,"m":2,"msg":"(WEATHER NOT REQUIRED)","d":1,"c":"white"}
 ]
