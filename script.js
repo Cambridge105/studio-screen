@@ -11,6 +11,7 @@ var scheduledMessages = [];
 var clock = null;
 var hasIrnNextHour = false;
 var hasNewsNextHour = false;
+var hasWeatherNextHour = false;
 var networkGreenroomOK = true;
 var networkStudioAOK = true;
 var networkExternalOK = true;
@@ -61,8 +62,10 @@ function updateTimer() {
 	if ((dateParts[1] == 51) && (dateParts[2] == 0)) {hasNewsNextHour = checkForNewsNextHour((dateParts[0] + 1), dateParts[3]);}
 	// At xx:52:00 check whether IRN is scheduled
 	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {checkForIrn();}
-	// At xx:49:00 unset the IRN/News check
-	if (dateParts[1] == 49 && dateParts[2] == 0) { hasNewsNextHour=false; hasIrnNextHour = false;}
+	// At xx:53:00 check whether weather is scheduled
+	if ((dateParts[1] == 53) && (dateParts[2] == 0)) {checkForWeather();}
+	// At xx:49:00 unset the IRN/News/weather check
+	if (dateParts[1] == 49 && dateParts[2] == 0) { hasNewsNextHour=false; hasIrnNextHour = false; hasWeatherNextHour = false;}
     // At 03:25:00, reload the whole page so we hopefully drop any DOM objects we've leaked
     if (dateParts[0] == 3 && dateParts[1] == 25 && dateParts[2] == 0) { location.reload(true); }
 
@@ -123,6 +126,8 @@ function checkForScheduledNotices(dateParts) {
     messageSet = false;
     if (dateParts[1] >= 55 && (hasNewsNextHour == true || hasIrnNextHour == true)) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
 	else if (dateParts[1] >= 55 && endOfProgInNext15Mins() == true) { displayProgEndCountdown(); messageSet = true;}
+	else if (dateParts[1] < 2 && hasNewsNextHour == true) {displayNewsStatus(); messageSet = true;}
+    else if (dateParts[1] < 2 && hasIrnNextHour == true) {displayIrnWeatherStatus(); messageSet = true;}
     else if (dateParts[2] == 1) {
         // Update only once a minute so we don't degrade performance
         // NB: This is a bit of a hack but it's done at xx:xx:01 to ensure we reset after schedule loads at xx:00:00 and xx:30:00
@@ -142,12 +147,24 @@ function checkForScheduledNotices(dateParts) {
     }
 }
         
+function displayIrnWeatherStatus() {
+	$('#footer').css('color', 'yellow');
+	if (hasWeatherNextHour == true) {
+		$('#footer').html('SKY NEWS then RECORDED WEATHER');
+	}
+	else {
+		$('#footer').html('SKY NEWS. Recorded weather not set.');
+	}
+}
 
+function displayNewsStatus() {
+	$('#footer').css('color', 'yellow');
+	$('#footer').html('LOCAL NEWS');
+}
 
 function displayTOTHNotice(mins,secs) {
     $('#footer').css('color', 'yellow');
-	console.log("IRN" + hasIrnNextHour + "News" + hasNewsNextHour);
-    secsToTOTH = ((59 - mins) * 60) + (60 - secs);
+	secsToTOTH = ((59 - mins) * 60) + (60 - secs);
     secsToTOTH = secsToTOTH - 12; // News intro
     if (secsToTOTH < 0) {
         $('#footer').html('&quot;This is community radio in your city, Cambridge 105&quot;');
@@ -265,6 +282,22 @@ function checkForIrn() {
         hasIrnNextHour = false;
     });
 }
+
+function checkForWeather() {
+    var req = $.ajax({
+        url: "http://fileserver1/trackdata/weathernext",
+        timeout: 3000
+    });
+
+    req.success(function () {
+        hasWeatherNextHour = true;
+    });
+
+    req.fail(function () {
+        hasWeatherNextHour = false;
+    });
+}
+
 
 function checkForNewsNextHour(nextHour,day) {
 	console.log(nextHour + ":" + day);
