@@ -11,7 +11,8 @@ var scheduledMessages = [];
 var clock = null;
 var hasIrnNextHour = false;
 var hasNewsNextHour = false;
-var hasWeatherNextHour = false;
+var hasRecordedWeatherNextHour = false;
+var hasLocalReadWeatherNextHour = false;
 var networkGreenroomOK = true;
 var networkStudioAOK = true;
 var networkExternalOK = true;
@@ -65,7 +66,7 @@ function updateTimer() {
 	// At xx:53:00 check whether weather is scheduled
 	if ((dateParts[1] == 53) && (dateParts[2] == 0)) {checkForWeather();}
 	// At xx:49:00 unset the IRN/News/weather check
-	if (dateParts[1] == 49 && dateParts[2] == 0) { hasNewsNextHour=false; hasIrnNextHour = false; hasWeatherNextHour = false;}
+	if (dateParts[1] == 49 && dateParts[2] == 0) { hasNewsNextHour=false; hasIrnNextHour = false; hasRecordedWeatherNextHour = false; hasLocalReadWeatherNextHour = false;}
     // At 03:25:00, reload the whole page so we hopefully drop any DOM objects we've leaked
     if (dateParts[0] == 3 && dateParts[1] == 25 && dateParts[2] == 0) { location.reload(true); }
 
@@ -149,11 +150,16 @@ function checkForScheduledNotices(dateParts) {
         
 function displayIrnWeatherStatus() {
 	$('#footer').css('color', 'yellow');
-	if (hasWeatherNextHour == true) {
+	if (hasRecordedWeatherNextHour == true) {
 		$('#footer').html('SKY NEWS then RECORDED WEATHER');
 	}
 	else {
-		$('#footer').html('SKY NEWS. Recorded weather not set.');
+		if (hasLocalReadWeatherNextHour == true) {
+			$('#footer').html('SKY NEWS then READ WEATHER');
+		}
+		else {
+			$('#footer').html('SKY NEWS. No weather follows.');
+		}
 	}
 }
 
@@ -290,14 +296,22 @@ function checkForWeather() {
     });
 
     req.success(function () {
-        hasWeatherNextHour = true;
+        hasRecordedWeatherNextHour = true;
     });
 
     req.fail(function () {
-        hasWeatherNextHour = false;
+        hasRecordedWeatherNextHour = false;
+		checkForLocalReadWeather();
     });
 }
 
+function checkForLocalReadWeather() {
+	hasLocalReadWeatherNextHour = false;
+	 $.each(scheduledMessages, function (key, schedMsg) {
+                    if ((dateParts[0]+1) == schedMsg["h"] && schedMsg["m"]==2 && schedMsg["msg"]=="WEATHER")
+                        {hasLocalReadWeatherNextHour = true;}
+                });
+}
 
 function checkForNewsNextHour(nextHour,day) {
 	console.log(nextHour + ":" + day);
