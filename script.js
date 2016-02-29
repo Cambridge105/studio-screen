@@ -154,12 +154,7 @@ function displayIrnWeatherStatus() {
 		$('#footer').html('SKY NEWS then RECORDED WEATHER');
 	}
 	else {
-		if (hasLocalReadWeatherNextHour == true) {
-			$('#footer').html('SKY NEWS then READ WEATHER');
-		}
-		else {
-			$('#footer').html('SKY NEWS. No weather follows.');
-		}
+		$('#footer').html('SKY NEWS. No weather follows.');
 	}
 }
 
@@ -301,10 +296,10 @@ function checkForWeather() {
 
     req.fail(function () {
         hasRecordedWeatherNextHour = false;
-		checkForLocalReadWeather();
     });
 }
 
+// This function is no longer called. Left in case we need it in the future.
 function checkForLocalReadWeather() {
 	hasLocalReadWeatherNextHour = false;
 	 $.each(scheduledMessages, function (key, schedMsg) {
