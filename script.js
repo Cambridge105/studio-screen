@@ -256,7 +256,7 @@ function getEngineeringMessage() {
     var req = $.ajax({
         url: "http://cambridge105.github.io/studio-screen/studioMessage.js",
         dataType: "jsonp",
-        timeout: 10000,
+        timeout: 5000,
         jsonpCallback: "displayMessage"
     });
 
