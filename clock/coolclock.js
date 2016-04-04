@@ -316,7 +316,11 @@ CoolClock.prototype = {
 	// Main tick handler. Refresh the clock then setup the next tick
 	tick: function() {
 		if (this.stillHere() && this.active) {
-			this.refreshDisplay()
+			try {
+				this.refreshDisplay()
+			} catch(e) {
+				// catch any errors here so the clock will keep on ticking
+			}
 			this.nextTick();
 		}
 	},
