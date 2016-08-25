@@ -168,7 +168,7 @@ function displayTOTHNotice(mins,secs) {
 	secsToTOTH = ((59 - mins) * 60) + (60 - secs);
     secsToTOTH = secsToTOTH - 12; // News intro
     if (secsToTOTH < 0) {
-        $('#footer').html('&quot;This is community radio in your city, Cambridge 105&quot;');
+        $('#footer').html('&quot;On FM, Online and DAB Digital Radio, this is Cambridge 105&quot;');
     }
     else {
         minsToTOTH = Math.floor(secsToTOTH / 60);
