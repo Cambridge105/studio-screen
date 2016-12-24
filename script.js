@@ -316,11 +316,12 @@ function checkForNewsNextHour(nextHour,day) {
 	}
 	else if (day == "Saturday")
 	{
-		if (nextHour>7 && nextHour<10) {return true;}
+		//if (nextHour>7 && nextHour<10) {return true;}
+		return false;
 	}
-	else if (day != "Saturday" && day != "Sunday")
+	else if (day != "Saturday" && day != "Sunday" && day != "Monday")
 	{
-		if ((nextHour>6 && nextHour<10) || (nextHour==13) || (nextHour>15 && nextHour<19)) {return true;}
+		if (nextHour==13) {return true;}
 	}
 	return false;
 }
