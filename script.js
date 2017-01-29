@@ -167,8 +167,11 @@ function displayTOTHNotice(mins,secs) {
     $('#footer').css('color', 'yellow');
 	secsToTOTH = ((59 - mins) * 60) + (60 - secs);
     secsToTOTH = secsToTOTH - 12; // News intro
-    if (secsToTOTH < 0) {
-        $('#footer').html('&quot;On FM, Online and DAB Digital Radio, this is Cambridge 105&quot;');
+    if (secsToTOTH < -5) {
+        $('#footer').html('...this is Cambridge 105 Radio&quot;');
+    }
+    else if (secsToTOTH < 0) {
+        $('#footer').html('&quot;Online, on Digital and on FM...');
     }
     else {
         minsToTOTH = Math.floor(secsToTOTH / 60);
