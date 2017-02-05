@@ -103,22 +103,33 @@ function getStudioStatus() {
         timeout: 2000
     }).done(function (data) {
 		networkGreenroomOK = true;
-		if (data['a'] == '1') {updateLight('studioA',true);} else {updateLight('studioA',false);}
-		if (data['b'] == '1') {updateLight('studioB',true);} else {updateLight('studioB',false);}
-		if (data['remote'] == '1') {updateLight('remote',true);} else {updateLight('remote',false);}
+        var newStudio;
+		if (data['a'] == '1') {updateLight('studioA',true); newStudio = 'Studio A'; } else {updateLight('studioA',false);}
+		if (data['b'] == '1') {updateLight('studioB',true); newStudio = 'Studio B'; } else {updateLight('studioB',false);}
+		if (data['remote'] == '1') {updateLight('remote',true); newStudio = 'Remote'; } else {updateLight('remote',false);}
+
+        if (newStudio !== currentStudio) {
+            $('#flash-container').css('display', 'block');
+            $('#flash-message').html('Station output changed to ' + newStudio);
+            currentStudio = newStudio;
+            setTimeout(function() { 
+                $('#flash-container').css('display', 'none');
+            }, 5000);
+        }
 	}).fail(function() {
 		networkGreenroomOK = false;
 	});
 }	
 
 function updateLight(divid,status) {
-    if (status == true) {
-        $('#'+divid).css("color","black");
-        $('#'+divid).css("background-color","red");
+    var div = $('#' + divid);
+    if (status) {
+        div.css("color","black");
+        div.css("background-color","red");
     }
     else {
-        $('#'+divid).css("color", "#808080");
-        $('#'+divid).css("background-color", "black");
+        div.css("color", "#808080");
+        div.css("background-color", "black");
     }
 }
 
