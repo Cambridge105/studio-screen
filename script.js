@@ -16,6 +16,7 @@ var hasLocalReadWeatherNextHour = false;
 var networkGreenroomOK = true;
 var networkStudioAOK = true;
 var networkExternalOK = true;
+var currentStudio = "";
 loadScheduledMessages();
 loadSchedule();
 
