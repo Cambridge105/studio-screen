@@ -16,6 +16,7 @@ var hasLocalReadWeatherNextHour = false;
 var networkGreenroomOK = true;
 var networkStudioAOK = true;
 var networkExternalOK = true;
+var hasTOTHAdSequence = false;
 var currentStudio = "";
 loadScheduledMessages();
 loadSchedule();
@@ -63,7 +64,7 @@ function updateTimer() {
 	// At xx:51:00 check whether the next hour has news
 	if ((dateParts[1] == 51) && (dateParts[2] == 0)) {hasNewsNextHour = checkForNewsNextHour((dateParts[0] + 1), dateParts[3]);}
 	// At xx:52:00 check whether IRN is scheduled
-	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {checkForIrn();}
+	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {checkForIrn(); checkForAds(dateParts);}
 	// At xx:53:00 check whether weather is scheduled
 	if ((dateParts[1] == 53) && (dateParts[2] == 0)) {checkForWeather();}
 	// At xx:49:00 unset the IRN/News/weather check
@@ -137,9 +138,10 @@ function updateLight(divid,status) {
 
 function checkForScheduledNotices(dateParts) {
     messageSet = false;
-    if (dateParts[1] >= 55 && (hasNewsNextHour == true || hasIrnNextHour == true)) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
-	else if (dateParts[1] >= 55 && endOfProgInNext15Mins() == true) { displayProgEndCountdown(); messageSet = true;}
-	else if (dateParts[1] < 2 && hasNewsNextHour == true) {displayNewsStatus(); messageSet = true;}
+    if (dateParts[1] >= 55 && hasTOTHAdSequence == true) {displayTOTHAds(dateParts[1], dateParts[2]); messageSet = true;}
+    else if (dateParts[1] >= 55 && (hasNewsNextHour == true || hasIrnNextHour == true)) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
+    else if (dateParts[1] >= 55 && endOfProgInNext15Mins() == true) { displayProgEndCountdown(); messageSet = true;}
+    else if (dateParts[1] < 2 && hasNewsNextHour == true) {displayNewsStatus(); messageSet = true;}
     else if (dateParts[1] < 2 && hasIrnNextHour == true) {displayIrnWeatherStatus(); messageSet = true;}
     else if (dateParts[2] == 1) {
         // Update only once a minute so we don't degrade performance
@@ -191,6 +193,21 @@ function displayTOTHNotice(mins,secs) {
         countToNews = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
 		if (hasNewsNextHour == true) {newsType = "LOCAL";} else {newsType="SKY";}
         $('#footer').html(newsType + ' NEWS INTRO in: <span class="countdown">' + countToNews + '</span>');
+    }
+}
+
+function displayTOTHAds(mins,secs) {
+    $('#footer').css('color', 'yellow');
+    secsToTOTH = ((59 - mins) * 60) + (60 - secs);
+    secsToTOTH = secsToTOTH - 60; // Ads start at exactly xx:59:00
+    if (secsToTOTH < 0) {
+        $('#footer').html('Adverts');
+    }
+    else {
+        minsToTOTH = Math.floor(secsToTOTH / 60);
+        secsToTOTH = secsToTOTH - (minsToTOTH * 60);
+        countToAds = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
+	$('#footer').html('ADVERTS start in: <span class="countdown">' + countToAds + '</span>');
     }
 }
 
@@ -312,6 +329,15 @@ function checkForWeather() {
     req.fail(function () {
         hasRecordedWeatherNextHour = false;
     });
+}
+
+function checkForAds(dateParts) {
+	// For now Ads are hardcoded for 20:59 on Monday and 20:59 & 22:59 on Tuesday 
+	hasAds = false;
+	if (dateParts[3] == "Monday" && dateParts[0] == 20) {hasAds = true;}
+	else if (dateParts[3] == "Tuesday" && dateParts[0] == 20) {hasAds = true;}
+	else if (dateParts[3] == "Tuesday" && dateParts[0] == 22) {hasAds = true;}
+	hasTOTHAdSequence = hasAds;
 }
 
 // This function is no longer called. Left in case we need it in the future.
