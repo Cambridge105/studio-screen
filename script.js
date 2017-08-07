@@ -64,7 +64,7 @@ function updateTimer() {
 	// At xx:51:00 check whether the next hour has news
 	if ((dateParts[1] == 51) && (dateParts[2] == 0)) {hasNewsNextHour = checkForNewsNextHour((dateParts[0] + 1), dateParts[3]);}
 	// At xx:52:00 check whether IRN is scheduled
-	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {checkForIrn(); checkForAds(dateParts);}
+	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {checkForIrn(); checkForAds();}
 	// At xx:53:00 check whether weather is scheduled
 	if ((dateParts[1] == 53) && (dateParts[2] == 0)) {checkForWeather();}
 	// At xx:49:00 unset the IRN/News/weather check
@@ -331,7 +331,7 @@ function checkForWeather() {
     });
 }
 
-function checkForAds(dateParts) {
+function checkForAds() {
 	var req = $.ajax({
         url: "http://fileserver1/trackdata/tothbreak",
         timeout: 3000
