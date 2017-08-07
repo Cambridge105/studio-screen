@@ -332,12 +332,18 @@ function checkForWeather() {
 }
 
 function checkForAds(dateParts) {
-	// For now Ads are hardcoded for 20:59 on Monday and 20:59 & 22:59 on Tuesday 
-	hasAds = false;
-	if (dateParts[3] == "Monday" && dateParts[0] == 20) {hasAds = true;}
-	else if (dateParts[3] == "Tuesday" && dateParts[0] == 20) {hasAds = true;}
-	else if (dateParts[3] == "Tuesday" && dateParts[0] == 22) {hasAds = true;}
-	hasTOTHAdSequence = hasAds;
+	var req = $.ajax({
+        url: "http://fileserver1/trackdata/tothbreak",
+        timeout: 3000
+    });
+
+    req.success(function () {
+        hasTOTHAdSequence = true;
+    });
+
+    req.fail(function () {
+        hasTOTHAdSequence = false;
+    });
 }
 
 // This function is no longer called. Left in case we need it in the future.
