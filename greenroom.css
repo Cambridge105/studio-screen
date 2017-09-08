@@ -42,7 +42,7 @@ div#clockGroup {
 	font-size:22pt;;
 }
 div#onNowBar {
-	min-height:70px; 
+	min-height:820px;
 	background-color:#fff; 
 	border-bottom:1px solid #8ebb38; 
 	border-top:3px solid #8ebb38;  
@@ -50,56 +50,58 @@ div#onNowBar {
 	padding:0; 
 	text-align:left; 
 	padding-left:180px;
-	font-size:36pt;
+	font-size:42pt;
 }
 div#onNextBar {
-	min-height:70px; 
-	max-height:70px; 
+	min-height:100px; 
+	max-height:100px; 
 	background-color:#fff; 
 	border-bottom:3px solid #8ebb38; 
 	margin:0; 
 	padding:0;
 	text-align:left; 
-	padding-left:180px;
-	font-size:36pt;
+	padding-left:180px;	
+        font-size:42pt;
 }
 div#contact {
-	min-height:56px; 
+	min-height:90px; 
 	background-color:#fff; 
 	margin:0; 
 	padding:0; 
+        padding-top:10px;
 	color:#8ebb38; 
 	text-align:center;
+        font-size:36pt;
 }
 div#nowLabel {
 	position:absolute; 
 	top:730px; 
 	left:9px; 
 	min-width:150px; 
-	height:70px; 
+	height:82px; 
 	background-color:#8ebb38; 
 	color:#fff; 
 	text-align:center; 
 	z-index:3; 
 	margin:0; 
 	padding:0; 
-	padding-top:10px;
+	padding-top:20px;
 	clip-path: polygon(0 0, 97% 0%, 90% 100%, 0% 100%); 
 	border-bottom:1px solid #fff;
 }
 div#nextLabel {
 	position:absolute; 
-	top:796px; 
+	top:835px; 
 	left:9px; 
-	min-width:137px; 
-	height:68px; 
+	min-width:150px; 
+	height:79px; 
 	background-color:#8ebb38; 
 	color:#fff; 
 	text-align:center; 
 	z-index:3; 
 	margin:0; 
 	padding:0; 
-	padding-top:12px;
+	padding-top:22px;
 	clip-path: polygon(0 0, 100% 0%, 92% 100%, 0% 100%);
 }
 div#angledFade {
@@ -107,7 +109,7 @@ div#angledFade {
 	top:729px; 
 	left:9px; 
 	min-width:170px; 
-	height:145px; 
+	height:204px; 
 	background-color:rgba(142,187,56,0.7); 
 	z-index:1; 
 	margin:0; 
@@ -116,7 +118,7 @@ div#angledFade {
 }
 div#specialNotice {
 	position:absolute; 
-	top:8px; 
+	top:7px; 
 	left:587px; 
 	min-width:700px; 
 	max-width:702px; 
