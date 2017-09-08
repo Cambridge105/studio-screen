@@ -16,6 +16,8 @@ var hasLocalReadWeatherNextHour = false;
 var networkGreenroomOK = true;
 var networkStudioAOK = true;
 var networkExternalOK = true;
+var hasTOTHAdSequence = false;
+var currentStudio = "";
 var loadedFromGreenroom = false;
 var allowGreenroomSlideAnimation = true;
 loadScheduledMessages();
@@ -66,7 +68,7 @@ function updateTimer() {
 	// At xx:51:00 check whether the next hour has news
 	if ((dateParts[1] == 51) && (dateParts[2] == 0)) {hasNewsNextHour = checkForNewsNextHour((dateParts[0] + 1), dateParts[3]);}
 	// At xx:52:00 check whether IRN is scheduled
-	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {checkForIrn();}
+	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {checkForIrn(); checkForAds();}
 	// At xx:53:00 check whether weather is scheduled
 	if ((dateParts[1] == 53) && (dateParts[2] == 0)) {checkForWeather();}
 	// At xx:49:00 unset the IRN/News/weather check
@@ -107,31 +109,43 @@ function getStudioStatus() {
         timeout: 2000
     }).done(function (data) {
 		networkGreenroomOK = true;
-		if (data['a'] == '1') {updateLight('studioA',true);} else {updateLight('studioA',false);}
-		if (data['b'] == '1') {updateLight('studioB',true);} else {updateLight('studioB',false);}
-		if (data['remote'] == '1') {updateLight('remote',true);} else {updateLight('remote',false);}
+		var newStudio;
+		if (data['a'] == '1') {updateLight('studioA',true); newStudio = 'Studio A'; } else {updateLight('studioA',false);}
+		if (data['b'] == '1') {updateLight('studioB',true); newStudio = 'Studio B'; } else {updateLight('studioB',false);}
+		if (data['remote'] == '1') {updateLight('remote',true); newStudio = 'Remote'; } else {updateLight('remote',false);}
+
+        if (newStudio !== currentStudio) {
+            $('#flash-container').css('display', 'block');
+            $('#flash-message').html('Station output changed to ' + newStudio);
+            currentStudio = newStudio;
+            setTimeout(function() { 
+                $('#flash-container').css('display', 'none');
+            }, 5000);
+        }
 	}).fail(function() {
 		networkGreenroomOK = false;
 	});
 }	
 
 function updateLight(divid,status) {
-    if (status == true) {
-        $('#'+divid).css("color","black");
-        $('#'+divid).css("background-color","red");
+	var div = $('#' + divid);
+    if (status) {
+        div.css("color","black");
+        div.css("background-color","red");
     }
     else {
-        $('#'+divid).css("color", "#808080");
-        $('#'+divid).css("background-color", "black");
+        div.css("color", "#808080");
+        div.css("background-color", "black");
     }
 }
 
 
 function checkForScheduledNotices(dateParts) {
     messageSet = false;
-	if (dateParts[1] >= 55 && (hasNewsNextHour == true || hasIrnNextHour == true)) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
-	else if (dateParts[1] >= 55 && endOfProgInNext15Mins() == true) { displayProgEndCountdown(); messageSet = true;}
-	else if (dateParts[1] < 2 && hasNewsNextHour == true) {displayNewsStatus(); messageSet = true;}
+																				if (dateParts[1] >= 55 && hasTOTHAdSequence == true) {displayTOTHAds(dateParts[1], dateParts[2]); messageSet = true;}
+    else if (dateParts[1] >= 55 && (hasNewsNextHour == true || hasIrnNextHour == true)) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
+    else if (dateParts[1] >= 55 && endOfProgInNext15Mins() == true) { displayProgEndCountdown(); messageSet = true;}
+    else if (dateParts[1] < 2 && hasNewsNextHour == true) {displayNewsStatus(); messageSet = true;}
     else if (dateParts[1] < 2 && hasIrnNextHour == true) {displayIrnWeatherStatus(); messageSet = true;}
     else if (dateParts[2] == 1) {
         // Update only once a minute so we don't degrade performance
@@ -153,8 +167,8 @@ function checkForScheduledNotices(dateParts) {
 			}
 			else
 			{
-				if (dateParts[1] >= 45 && endOfProgInNext15Mins()) { displayNextProgramme(); }
-				else { displayProgrammeName(); }
+                if (dateParts[1] >= 45 && endOfProgInNext15Mins()) { displayNextProgramme(); }
+                else { displayProgrammeName(); }
 			}
         }
     }
@@ -163,9 +177,9 @@ function checkForScheduledNotices(dateParts) {
 function displayIrnWeatherStatus() {
 	if (!loadedFromGreenroom)
 	{
-		$('#footer').css('color', 'yellow');
-		if (hasRecordedWeatherNextHour == true) {
-			$('#footer').html('SKY NEWS then RECORDED WEATHER');
+        $('#footer').css('color', 'yellow');
+        if (hasRecordedWeatherNextHour == true) {
+            $('#footer').html('SKY NEWS then RECORDED WEATHER');
 		}
 		else {
 			$('#footer').html('SKY NEWS. No weather follows.');
@@ -180,8 +194,8 @@ function displayIrnWeatherStatus() {
 function displayNewsStatus() {
 	if (!loadedFromGreenroom)
 	{
-		$('#footer').css('color', 'yellow');
-		$('#footer').html('LOCAL NEWS');
+        $('#footer').css('color', 'yellow');
+        $('#footer').html('LOCAL NEWS');
 	}
 	else {
 		displayGreenroomNews('Cambridge newsdesk');
@@ -203,7 +217,7 @@ function displayGreenroomNews(type) {
 function displayTOTHNotice(mins,secs) {
     if (!loadedFromGreenroom) 
 	{
-		$('#footer').css('color', 'yellow'); 
+        $('#footer').css('color', 'yellow'); 
 		divToFill = "footer";
 	}
 	else 
@@ -236,34 +250,49 @@ function displayTOTHNotice(mins,secs) {
 }
 
 
+function displayTOTHAds(mins,secs) {
+    $('#footer').css('color', 'yellow');
+    secsToTOTH = ((59 - mins) * 60) + (60 - secs);
+    secsToTOTH = secsToTOTH - 60; // Ads start at exactly xx:59:00
+    if (secsToTOTH < 0) {
+        $('#footer').html('Adverts');
+    }
+    else {
+        minsToTOTH = Math.floor(secsToTOTH / 60);
+        secsToTOTH = secsToTOTH - (minsToTOTH * 60);
+        countToAds = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
+	$('#footer').html('ADVERTS start in: <span class="countdown">' + countToAds + '</span>');
+    }
+}
+
 function displayProgEndCountdown() {
 	if (!loadedFromGreenroom)
     {
-		$('#footer').css('color', 'yellow');
-		d = new Date;
-		secsToEnd = Math.floor((thisProgEnds - d.getTime())/1000);
-		minsToEnd = Math.floor(secsToEnd / 60);
-		secsToEnd = secsToEnd - (minsToEnd * 60);
-		countToEnd = padZeros(minsToEnd) + ":" + padZeros(secsToEnd);
-		$('#footer').html('Programme ends in: <span class="countdown">' + countToEnd + '</span>');
+        $('#footer').css('color', 'yellow');
+        d = new Date;
+        secsToEnd = Math.floor((thisProgEnds - d.getTime())/1000);
+        minsToEnd = Math.floor(secsToEnd / 60);
+        secsToEnd = secsToEnd - (minsToEnd * 60);
+        countToEnd = padZeros(minsToEnd) + ":" + padZeros(secsToEnd);
+        $('#footer').html('Programme ends in: <span class="countdown">' + countToEnd + '</span>');
 	}
 }
 
 function displayNotice(message,color) {
     if (!loadedFromGreenroom)
 	{
-		if (color === undefined || color.length<1) {color = "yellow";}
-		$('#footer').css('color', color);
-		$('#footer').html(message);
+        if (color === undefined || color.length<1) {color = "yellow";}
+        $('#footer').css('color', color);
+        $('#footer').html(message);
 	}
 }
 
 function displayNextProgramme() {
 	if (!loadedFromGreenroom)
 	{
-		$('#footer').css('color', 'white');
-		$('#footer').html('<strong>NEXT:</strong> ' + nextProg + " (" + nextProgType + ")");
-		if (nextProg.length < 1) { $('#footer').html('<strong>NEXT:</strong> Failed to load schedule'); }
+        $('#footer').css('color', 'white');
+        $('#footer').html('<strong>NEXT:</strong> ' + nextProg + " (" + nextProgType + ")");
+        if (nextProg.length < 1) { $('#footer').html('<strong>NEXT:</strong> Failed to load schedule'); }
 	}
 	// Don't need to display next in Greenroom as this is done by displayProgrammeName()
 }
@@ -277,9 +306,9 @@ function displayProgrammeName() {
 	}
 	else 
 	{
-		$('#footer').css('color', 'white');
-		$('#footer').html(thisProg);
-		if (thisProg.length < 1) { $('#footer').html("Failed to load schedule"); }
+        $('#footer').css('color', 'white');
+        $('#footer').html(thisProg);
+        if (thisProg.length < 1) { $('#footer').html("Failed to load schedule"); }
 	}
 }
 
@@ -373,6 +402,20 @@ function checkForWeather() {
     });
 }
 
+function checkForAds() {
+	var req = $.ajax({
+        url: "http://fileserver1/trackdata/tothbreak",
+        timeout: 3000
+    });
+
+    req.success(function () {
+        hasTOTHAdSequence = true;
+    });
+
+    req.fail(function () {
+        hasTOTHAdSequence = false;
+    });
+}
 // This function is no longer called. Left in case we need it in the future.
 function checkForLocalReadWeather() {
 	hasLocalReadWeatherNextHour = false;
@@ -408,8 +451,8 @@ function displayMessage(response) {
 function displayMessageText(message) {
 	if (!loadedFromGreenroom)
 	{
-		$('#message').html(message);
-		if (message.length < 1) { $('#message').hide(); } else { $('#message').show(); }
+        $('#message').html(message);
+        if (message.length < 1) { $('#message').hide(); } else { $('#message').show(); }
 	}
 }
 
