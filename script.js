@@ -109,7 +109,7 @@ function getStudioStatus() {
         timeout: 2000
     }).done(function (data) {
 		networkGreenroomOK = true;
-		var newStudio;
+        var newStudio;
 		if (data['a'] == '1') {updateLight('studioA',true); newStudio = 'Studio A'; } else {updateLight('studioA',false);}
 		if (data['b'] == '1') {updateLight('studioB',true); newStudio = 'Studio B'; } else {updateLight('studioB',false);}
 		if (data['remote'] == '1') {updateLight('remote',true); newStudio = 'Remote'; } else {updateLight('remote',false);}
@@ -128,7 +128,7 @@ function getStudioStatus() {
 }	
 
 function updateLight(divid,status) {
-	var div = $('#' + divid);
+    var div = $('#' + divid);
     if (status) {
         div.css("color","black");
         div.css("background-color","red");
@@ -142,7 +142,7 @@ function updateLight(divid,status) {
 
 function checkForScheduledNotices(dateParts) {
     messageSet = false;
-																				if (dateParts[1] >= 55 && hasTOTHAdSequence == true) {displayTOTHAds(dateParts[1], dateParts[2]); messageSet = true;}
+    if (dateParts[1] >= 55 && hasTOTHAdSequence == true) {displayTOTHAds(dateParts[1], dateParts[2]); messageSet = true;}
     else if (dateParts[1] >= 55 && (hasNewsNextHour == true || hasIrnNextHour == true)) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
     else if (dateParts[1] >= 55 && endOfProgInNext15Mins() == true) { displayProgEndCountdown(); messageSet = true;}
     else if (dateParts[1] < 2 && hasNewsNextHour == true) {displayNewsStatus(); messageSet = true;}
@@ -246,6 +246,21 @@ function displayTOTHNotice(mins,secs) {
         countToNews = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
 		if (hasNewsNextHour == true) {newsType = "LOCAL";} else {newsType="SKY";}
         $('#' + divToFill).html(newsType + ' NEWS INTRO in: <span class="countdown">' + countToNews + '</span>');
+    }
+}
+
+function displayTOTHAds(mins,secs) {
+    $('#footer').css('color', 'yellow');
+    secsToTOTH = ((59 - mins) * 60) + (60 - secs);
+    secsToTOTH = secsToTOTH - 60; // Ads start at exactly xx:59:00
+    if (secsToTOTH < 0) {
+        $('#footer').html('Adverts');
+    }
+    else {
+        minsToTOTH = Math.floor(secsToTOTH / 60);
+        secsToTOTH = secsToTOTH - (minsToTOTH * 60);
+        countToAds = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
+	$('#footer').html('ADVERTS start in: <span class="countdown">' + countToAds + '</span>');
     }
 }
 
@@ -416,6 +431,7 @@ function checkForAds() {
         hasTOTHAdSequence = false;
     });
 }
+
 // This function is no longer called. Left in case we need it in the future.
 function checkForLocalReadWeather() {
 	hasLocalReadWeatherNextHour = false;

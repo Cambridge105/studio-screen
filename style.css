@@ -58,6 +58,28 @@ div#contact {
     font-size: 30pt;
     color: #8ebb38;
 }
+div#flash-container {
+    display: none;
+    position:absolute;
+    left:0;
+    top:0;
+    height:100%;
+    width: 100%;
+    background-color: red;
+    color: white;
+        animation-name: example;
+    animation-duration: 4s;
+    
+}
+div#flash-message {
+    display: inline-block;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    font-size: 10em;
+    transform: translateY(-50%);
+    text-decoration: blink;
+}
 div.light {
     border: solid 5px #808080;
     color: #808080;
@@ -85,4 +107,15 @@ span.contactInfo {
     color: lime;
     font-weight:bold;
     margin:0 20px;
+}
+
+@keyframes pulsing-light-background {
+    from { background-color: red;}
+    to {background-color: black;}
+}
+.pulse {
+    animation-name: pulsing-light-background;
+    animation-duration: 1s;
+    animation-iterations: 5;
+    animation-direction; reverse;
 }
