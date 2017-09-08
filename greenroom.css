@@ -174,3 +174,14 @@ div.small-light {
     font-size:14pt;
 	display:inline;
 }
+
+@keyframes pulsing-light-background {
+    from { background-color: red;}
+    to {background-color: black;}
+}
+.pulse {
+    animation-name: pulsing-light-background;
+    animation-duration: 1s;
+    animation-iterations: 5;
+    animation-direction; reverse;
+}
