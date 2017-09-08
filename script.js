@@ -16,8 +16,12 @@ var hasLocalReadWeatherNextHour = false;
 var networkGreenroomOK = true;
 var networkStudioAOK = true;
 var networkExternalOK = true;
+var loadedFromGreenroom = false;
+var allowGreenroomSlideAnimation = true;
 loadScheduledMessages();
 loadSchedule();
+
+if (window.location.href.indexOf("greenroom") > -1) {loadedFromGreenroom = true;}
 
 $(function() {
     createClock();
@@ -125,7 +129,7 @@ function updateLight(divid,status) {
 
 function checkForScheduledNotices(dateParts) {
     messageSet = false;
-    if (dateParts[1] >= 55 && (hasNewsNextHour == true || hasIrnNextHour == true)) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
+	if (dateParts[1] >= 55 && (hasNewsNextHour == true || hasIrnNextHour == true)) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
 	else if (dateParts[1] >= 55 && endOfProgInNext15Mins() == true) { displayProgEndCountdown(); messageSet = true;}
 	else if (dateParts[1] < 2 && hasNewsNextHour == true) {displayNewsStatus(); messageSet = true;}
     else if (dateParts[1] < 2 && hasIrnNextHour == true) {displayIrnWeatherStatus(); messageSet = true;}
@@ -142,74 +146,141 @@ function checkForScheduledNotices(dateParts) {
                 });
         if (messageSet == false)
         {
-            if (dateParts[1] >= 45 && endOfProgInNext15Mins()) { displayNextProgramme(); }
-            else { displayProgrammeName(); }
+			allowGreenroomSlideAnimation = true;
+			if (loadedFromGreenroom)
+			{
+				displayProgrammeName();
+			}
+			else
+			{
+				if (dateParts[1] >= 45 && endOfProgInNext15Mins()) { displayNextProgramme(); }
+				else { displayProgrammeName(); }
+			}
         }
     }
 }
         
 function displayIrnWeatherStatus() {
-	$('#footer').css('color', 'yellow');
-	if (hasRecordedWeatherNextHour == true) {
-		$('#footer').html('SKY NEWS then RECORDED WEATHER');
+	if (!loadedFromGreenroom)
+	{
+		$('#footer').css('color', 'yellow');
+		if (hasRecordedWeatherNextHour == true) {
+			$('#footer').html('SKY NEWS then RECORDED WEATHER');
+		}
+		else {
+			$('#footer').html('SKY NEWS. No weather follows.');
+		}
 	}
 	else {
-		$('#footer').html('SKY NEWS. No weather follows.');
+		displayGreenroomNews('Sky News Centre')
 	}
+	
 }
 
 function displayNewsStatus() {
-	$('#footer').css('color', 'yellow');
-	$('#footer').html('LOCAL NEWS');
+	if (!loadedFromGreenroom)
+	{
+		$('#footer').css('color', 'yellow');
+		$('#footer').html('LOCAL NEWS');
+	}
+	else {
+		displayGreenroomNews('Cambridge newsdesk');
+	}
+}
+
+function displayGreenroomNews(type) {
+	if ($('#slideshow').html().indexOf('news.jpg') < 1)
+	{
+		dateParts = getDateParts();
+		$('#slideshow').html('<img src="slides/news.jpg" height="720px" width="1280px">');
+		newsintro = "&quot;From the " + type + " at " + dateParts[0] + "...&quot;";
+		$('#specialNoticeContent').html(newsintro);
+		$('#specialNotice').css("visibility","visible");
+		allowGreenroomSlideAnimation = false;
+	}
 }
 
 function displayTOTHNotice(mins,secs) {
-    $('#footer').css('color', 'yellow');
+    if (!loadedFromGreenroom) 
+	{
+		$('#footer').css('color', 'yellow'); 
+		divToFill = "footer";
+	}
+	else 
+	{
+		divToFill = "onNextBar";
+	}
 	secsToTOTH = ((59 - mins) * 60) + (60 - secs);
     secsToTOTH = secsToTOTH - 12; // News intro
-    if (secsToTOTH < -5) {
-        $('#footer').html('...this is Cambridge 105 Radio&quot;');
+    if (secsToTOTH < -5) 
+	{
+        $('#' + divToFill).html('...this is Cambridge 105 Radio&quot;');
     }
-    else if (secsToTOTH < 0) {
-        $('#footer').html('&quot;Online, on Digital and on FM...');
+    else if (secsToTOTH < 0) 
+	{
+        $('#' + divToFill).html('&quot;Online, on Digital and on FM...');
+		if ($('#slideshow').html().indexOf('toth.jpg') < 1)
+		{
+			$('#slideshow').html('<img src="slides/toth.jpg" height="720px" width="1280px">');
+			allowGreenroomSlideAnimation = false;
+		}
     }
-    else {
+    else 
+	{
         minsToTOTH = Math.floor(secsToTOTH / 60);
         secsToTOTH = secsToTOTH - (minsToTOTH * 60);
         countToNews = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
 		if (hasNewsNextHour == true) {newsType = "LOCAL";} else {newsType="SKY";}
-        $('#footer').html(newsType + ' NEWS INTRO in: <span class="countdown">' + countToNews + '</span>');
+        $('#' + divToFill).html(newsType + ' NEWS INTRO in: <span class="countdown">' + countToNews + '</span>');
     }
 }
 
 
 function displayProgEndCountdown() {
-    $('#footer').css('color', 'yellow');
-	d = new Date;
-    secsToEnd = Math.floor((thisProgEnds - d.getTime())/1000);
-	minsToEnd = Math.floor(secsToEnd / 60);
-    secsToEnd = secsToEnd - (minsToEnd * 60);
-    countToEnd = padZeros(minsToEnd) + ":" + padZeros(secsToEnd);
-	$('#footer').html('Programme ends in: <span class="countdown">' + countToEnd + '</span>');
-
+	if (!loadedFromGreenroom)
+    {
+		$('#footer').css('color', 'yellow');
+		d = new Date;
+		secsToEnd = Math.floor((thisProgEnds - d.getTime())/1000);
+		minsToEnd = Math.floor(secsToEnd / 60);
+		secsToEnd = secsToEnd - (minsToEnd * 60);
+		countToEnd = padZeros(minsToEnd) + ":" + padZeros(secsToEnd);
+		$('#footer').html('Programme ends in: <span class="countdown">' + countToEnd + '</span>');
+	}
 }
 
 function displayNotice(message,color) {
-    if (color === undefined || color.length<1) {color = "yellow";}
-    $('#footer').css('color', color);
-    $('#footer').html(message);
+    if (!loadedFromGreenroom)
+	{
+		if (color === undefined || color.length<1) {color = "yellow";}
+		$('#footer').css('color', color);
+		$('#footer').html(message);
+	}
 }
 
 function displayNextProgramme() {
-    $('#footer').css('color', 'white');
-    $('#footer').html('<strong>NEXT:</strong> ' + nextProg + " (" + nextProgType + ")");
-    if (nextProg.length < 1) { $('#footer').html('<strong>NEXT:</strong> Failed to load schedule'); }
+	if (!loadedFromGreenroom)
+	{
+		$('#footer').css('color', 'white');
+		$('#footer').html('<strong>NEXT:</strong> ' + nextProg + " (" + nextProgType + ")");
+		if (nextProg.length < 1) { $('#footer').html('<strong>NEXT:</strong> Failed to load schedule'); }
+	}
+	// Don't need to display next in Greenroom as this is done by displayProgrammeName()
 }
 
 function displayProgrammeName() {
-    $('#footer').css('color', 'white');
-    $('#footer').html(thisProg);
-    if (thisProg.length < 1) { $('#footer').html("Failed to load schedule"); }
+	if (loadedFromGreenroom == true)
+	{
+		$('#onNowBar').html(thisProg);
+		$('#onNextBar').html(nextProg);
+		if (thisProg.length < 1) { $('#onNowBar').html("Failed to load schedule"); $('#onNextBar').html("-"); }
+	}
+	else 
+	{
+		$('#footer').css('color', 'white');
+		$('#footer').html(thisProg);
+		if (thisProg.length < 1) { $('#footer').html("Failed to load schedule"); }
+	}
 }
 
 function loadSchedule() {
@@ -232,7 +303,6 @@ function loadSchedule() {
                     console.log("Current programme " + thisProg);
                     if (progInfo['type'] == "LIVE") { thisProgIsLive = true; } else { thisProgIsLive = false; }
                     thisProgEnds = progInfo['end'] * 1000;
-                    displayProgrammeName();
                 }
                 else if ((progInfo['start'] * 1000) == thisProgEnds) {
                     nextProg = progInfo['title'];
@@ -240,6 +310,7 @@ function loadSchedule() {
                 }
             //});
         });
+		displayProgrammeName();
     });
 }
 
@@ -335,15 +406,19 @@ function displayMessage(response) {
 }
 
 function displayMessageText(message) {
-	$('#message').html(message);
-    if (message.length < 1) { $('#message').hide(); } else { $('#message').show(); }
+	if (!loadedFromGreenroom)
+	{
+		$('#message').html(message);
+		if (message.length < 1) { $('#message').hide(); } else { $('#message').show(); }
+	}
 }
 
 function createClock() {
+	if (loadedFromGreenroom) {radius = 160;} else {radius = 200;}
     clock = new CoolClock({
         canvasId:       'clockid',
         skinId:         'chunkySwissOnBlack',
-        displayRadius:  200
+        displayRadius:  radius
     });
     clock.stop(); // stop the internal timer so we can refresh manually
 }

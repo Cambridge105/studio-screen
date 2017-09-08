@@ -1,0 +1,176 @@
+@font-face {
+    font-family: 'tex_gyre_adventorregular';
+    src: url('texgyreadventor-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+body {
+	font-family:tex_gyre_adventorregular; 
+	font-size:22pt;
+	background-color:#000;
+}
+div#slideshow {
+	min-height:720px; 
+	max-height:720px; 
+	min-width:1280px; 
+	max-width:1280px; 
+	background-color:#aaa; 
+	padding:0; 
+	margin:0; 
+	float:left; 
+	border-bottom:3px solid #8ebb38; 
+}
+div#righthandBar {
+	min-height:710px; 
+	max-height:710px; 
+	min-width:370px; 
+	background-color:#000; 
+	padding-top:10px; 
+	margin:0; 
+	text-align:center; 
+	color:#fff; 
+	float:right; 
+	font-size:14pt;
+	border-bottom:3px solid #8ebb38; 
+}
+div#buttonsGroup {
+	margin-top:30px; 
+	margin-bottom:240px;
+}
+div#clockGroup {
+	margin:20 auto; 
+	font-size:22pt;;
+}
+div#onNowBar {
+	min-height:70px; 
+	background-color:#fff; 
+	border-bottom:1px solid #8ebb38; 
+	border-top:3px solid #8ebb38;  
+	margin:0; 
+	padding:0; 
+	text-align:left; 
+	padding-left:180px;
+	font-size:36pt;
+}
+div#onNextBar {
+	min-height:70px; 
+	max-height:70px; 
+	background-color:#fff; 
+	border-bottom:3px solid #8ebb38; 
+	margin:0; 
+	padding:0;
+	text-align:left; 
+	padding-left:180px;
+	font-size:36pt;
+}
+div#contact {
+	min-height:56px; 
+	background-color:#fff; 
+	margin:0; 
+	padding:0; 
+	color:#8ebb38; 
+	text-align:center;
+}
+div#nowLabel {
+	position:absolute; 
+	top:730px; 
+	left:9px; 
+	min-width:150px; 
+	height:70px; 
+	background-color:#8ebb38; 
+	color:#fff; 
+	text-align:center; 
+	z-index:3; 
+	margin:0; 
+	padding:0; 
+	padding-top:10px;
+	clip-path: polygon(0 0, 97% 0%, 90% 100%, 0% 100%); 
+	border-bottom:1px solid #fff;
+}
+div#nextLabel {
+	position:absolute; 
+	top:796px; 
+	left:9px; 
+	min-width:137px; 
+	height:68px; 
+	background-color:#8ebb38; 
+	color:#fff; 
+	text-align:center; 
+	z-index:3; 
+	margin:0; 
+	padding:0; 
+	padding-top:12px;
+	clip-path: polygon(0 0, 100% 0%, 92% 100%, 0% 100%);
+}
+div#angledFade {
+	position:absolute; 
+	top:729px; 
+	left:9px; 
+	min-width:170px; 
+	height:145px; 
+	background-color:rgba(142,187,56,0.7); 
+	z-index:1; 
+	margin:0; 
+	padding:0;  
+	clip-path: polygon(0 0, 100% 0%, 88% 100%, 0% 100%);
+}
+div#specialNotice {
+	position:absolute; 
+	top:8px; 
+	left:587px; 
+	min-width:700px; 
+	max-width:702px; 
+	height:674px; 
+	background-color:rgba(142,187,56,0.7); 
+	z-index:1; 
+	margin:0; 
+	padding:0;  
+	padding-top:50px;
+	clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%); 
+	visibility: hidden;
+	font-size:40pt;
+}
+div#specialNoticeContent {
+	margin-left:160px; 
+	margin-top:30px; 
+	z-index:3; 
+	color:#fff
+}
+div#clock {
+    margin: 0;
+    padding: 0;
+    text-align:center;
+}
+canvas#clockid {
+	max-width:160px;
+	max-height:160px;
+	margin:0;
+	padding:0;
+}
+div#clockText {
+    font-size: 36pt;
+    text-align: center;
+    margin-bottom:5px;
+	width:362px;
+	
+}
+span#date {
+    visibility:hidden;
+}
+div.light {
+    border: solid 2px #808080;
+    color: #808080;
+    padding:3px;
+    margin:5px 26px;
+    text-align:center;
+    font-size:14pt;
+}
+div.small-light {
+    border: solid 2px #808080;
+	color: #808080;
+    padding:6px;
+	margin:20px 6px;
+    text-align:center;
+    font-size:14pt;
+	display:inline;
+}

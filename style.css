@@ -1,6 +1,13 @@
-﻿body {
+﻿@font-face {
+    font-family: 'tex_gyre_adventorregular';
+    src: url('texgyreadventor-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+body {
     background-color: black;
-    font: normal 16px arial, sans-serif;
+    font-family: tex_gyre_adventorregular, arial, sans-serif;
+	font-size: 14pt;
     color:white;
 }
 div#columnLeft {
@@ -49,7 +56,7 @@ div#contact {
     margin-top:55px;
     text-align: center;
     font-size: 30pt;
-    color: mediumseagreen;
+    color: #8ebb38;
 }
 div.light {
     border: solid 5px #808080;
