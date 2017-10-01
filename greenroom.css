@@ -176,7 +176,38 @@ div.small-light {
     font-size:14pt;
 	display:inline;
 }
-
+div.slideimg {
+	visibility:hidden;
+	height:720px;
+	width:1280px;
+	padding:0;
+	margin:0;
+	position:absolute;
+	left:10px;
+	top:10px;
+}
+div#flash-container {
+    display: none;
+    position:absolute;
+    left:0;
+    top:0;
+    height:100%;
+    width: 100%;
+    background-color: red;
+    color: white;
+    animation-name: example;
+    animation-duration: 4s;
+    z-index:10;
+}
+div#flash-message {
+    display: inline-block;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    font-size: 140pt;
+    transform: translateY(-50%);
+    text-decoration: blink;
+}
 @keyframes pulsing-light-background {
     from { background-color: red;}
     to {background-color: black;}

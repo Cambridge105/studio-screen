@@ -20,14 +20,47 @@ var hasTOTHAdSequence = false;
 var currentStudio = "";
 var loadedFromGreenroom = false;
 var allowGreenroomSlideAnimation = true;
+var maxSlideshowImgs = 0;
+var lastSlideshowImg = -1;
+var secondsSinceSlideChange = 12;
 loadScheduledMessages();
 loadSchedule();
 
 if (window.location.href.indexOf("greenroom") > -1) {loadedFromGreenroom = true;}
 
+
 $(function() {
     createClock();
+	loadSlides();
 });
+
+function loadSlides() {
+	if (loadedFromGreenroom)
+	{
+		slideTxt = "<div id='img0' class='slideimg'><img src='slides/welcome.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img1' class='slideimg'><img src='slides/how-to-listen.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img2' class='slideimg'><img src='slides/coffee-morning.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img3' class='slideimg'><img src='slides/home-of-music.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img4' class='slideimg'><img src='slides/mill-road.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img5' class='slideimg'><img src='slides/south-cambs.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img6' class='slideimg'><img src='slides/guests.jpg' height='720px' width='1280px'></div>";
+		maxSlideshowImgs=6;
+		$('#slideshow').html(slideTxt);
+	}
+}
+
+function rotateSlideshow() {
+	$('#img' + lastSlideshowImg).css("visibility","hidden");
+	if (lastSlideshowImg == maxSlideshowImgs) {lastSlideshowImg = -1;}
+	lastSlideshowImg = lastSlideshowImg + 1;
+	$('#img' + lastSlideshowImg).css("visibility","visible");
+}
+
+function checkForSlideRotate() {
+	if (secondsSinceSlideChange == 12) {rotateSlideshow(); secondsSinceSlideChange = 0;}
+	secondsSinceSlideChange = secondsSinceSlideChange + 1;
+}
+
 
 function loadScheduledMessages() {
     d = new Date();
@@ -60,6 +93,8 @@ function updateTimer() {
     micLiveStatus = getMicLiveStatus();
 	getStudioStatus();
     checkForScheduledNotices(dateParts);
+	if (loadedFromGreenroom && dateParts[1] == 2 && dateParts[2] == 0) {allowGreenroomSlideAnimation = true; loadSlides();} // Slides need reloading as the news graphic replaces the div
+	if (loadedFromGreenroom) {checkForSlideRotate();}
 	//displayNetworkMessage();
     // Only load the schedule at xx:00:00, xx:30:00
     if (((dateParts[1] == 0 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule();}
@@ -115,7 +150,7 @@ function getStudioStatus() {
 		if (data['remote'] == '1') {updateLight('remote',true); newStudio = 'Remote'; } else {updateLight('remote',false);}
 
         if (newStudio !== currentStudio) {
-            $('#flash-container').css('display', 'block');
+			$('#flash-container').css('display', 'block');
             $('#flash-message').html('Station output changed to ' + newStudio);
             currentStudio = newStudio;
             setTimeout(function() { 
@@ -207,6 +242,8 @@ function displayGreenroomNews(type) {
 	{
 		dateParts = getDateParts();
 		$('#slideshow').html('<img src="slides/news.jpg" height="720px" width="1280px">');
+		hours12 = dateParts[0];
+		if (hours12 > 12) {hours12 = hours12 - 12;} // 12-hour clock
 		newsintro = "&quot;From the " + type + " at " + dateParts[0] + "...&quot;";
 		$('#specialNoticeContent').html(newsintro);
 		$('#specialNotice').css("visibility","visible");
