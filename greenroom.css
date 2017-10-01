@@ -86,7 +86,6 @@ div#nowLabel {
 	margin:0; 
 	padding:0; 
 	padding-top:20px;
-	clip-path: polygon(0 0, 97% 0%, 90% 100%, 0% 100%); 
 	border-bottom:1px solid #fff;
 }
 div#nextLabel {
@@ -102,20 +101,9 @@ div#nextLabel {
 	margin:0; 
 	padding:0; 
 	padding-top:22px;
-	clip-path: polygon(0 0, 100% 0%, 92% 100%, 0% 100%);
 }
-div#angledFade {
-	position:absolute; 
-	top:729px; 
-	left:9px; 
-	min-width:170px; 
-	height:204px; 
-	background-color:rgba(142,187,56,0.7); 
-	z-index:1; 
-	margin:0; 
-	padding:0;  
-	clip-path: polygon(0 0, 100% 0%, 88% 100%, 0% 100%);
-}
+
+
 div#specialNotice {
 	position:absolute; 
 	top:7px; 

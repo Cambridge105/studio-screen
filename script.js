@@ -93,7 +93,7 @@ function updateTimer() {
     micLiveStatus = getMicLiveStatus();
 	getStudioStatus();
     checkForScheduledNotices(dateParts);
-	if (loadedFromGreenroom && dateParts[1] == 2 && dateParts[2] == 0) {allowGreenroomSlideAnimation = true; loadSlides();} // Slides need reloading as the news graphic replaces the div
+	if (loadedFromGreenroom && dateParts[1] == 2 && dateParts[2] == 0) {allowGreenroomSlideAnimation = true; loadSlides(); $('#specialNotice').css("visibility","hidden");} // Slides need reloading as the news graphic replaces the div
 	if (loadedFromGreenroom) {checkForSlideRotate();}
 	//displayNetworkMessage();
     // Only load the schedule at xx:00:00, xx:30:00
@@ -244,7 +244,7 @@ function displayGreenroomNews(type) {
 		$('#slideshow').html('<img src="slides/news.jpg" height="720px" width="1280px">');
 		hours12 = dateParts[0];
 		if (hours12 > 12) {hours12 = hours12 - 12;} // 12-hour clock
-		newsintro = "&quot;From the " + type + " at " + dateParts[0] + "...&quot;";
+		newsintro = "&quot;From the " + type + " at " + hours12 + "...&quot;";
 		$('#specialNoticeContent').html(newsintro);
 		$('#specialNotice').css("visibility","visible");
 		allowGreenroomSlideAnimation = false;
