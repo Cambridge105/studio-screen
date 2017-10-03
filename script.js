@@ -260,6 +260,7 @@ function displayTOTHNotice(mins,secs) {
 	else 
 	{
 		divToFill = "onNextBar";
+		$('#nextLabel').html("-");
 	}
 	secsToTOTH = ((59 - mins) * 60) + (60 - secs);
     secsToTOTH = secsToTOTH - 12; // News intro
@@ -287,35 +288,30 @@ function displayTOTHNotice(mins,secs) {
 }
 
 function displayTOTHAds(mins,secs) {
-    $('#footer').css('color', 'yellow');
+    if (!loadedFromGreenroom) 
+	{
+        $('#footer').css('color', 'yellow'); 
+		divToFill = "footer";
+	}
+	else 
+	{
+		divToFill = "onNextBar";
+		$('#nextLabel').html("-");
+	}
+	$('#'+divToFill).css('color', 'yellow');
     secsToTOTH = ((59 - mins) * 60) + (60 - secs);
     secsToTOTH = secsToTOTH - 60; // Ads start at exactly xx:59:00
     if (secsToTOTH < 0) {
-        $('#footer').html('Adverts');
+        $('#'+divToFill).html('Adverts');
     }
     else {
         minsToTOTH = Math.floor(secsToTOTH / 60);
         secsToTOTH = secsToTOTH - (minsToTOTH * 60);
         countToAds = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
-	$('#footer').html('ADVERTS start in: <span class="countdown">' + countToAds + '</span>');
+	$('#'+divToFill).html('ADVERTS start in: <span class="countdown">' + countToAds + '</span>');
     }
 }
 
-
-function displayTOTHAds(mins,secs) {
-    $('#footer').css('color', 'yellow');
-    secsToTOTH = ((59 - mins) * 60) + (60 - secs);
-    secsToTOTH = secsToTOTH - 60; // Ads start at exactly xx:59:00
-    if (secsToTOTH < 0) {
-        $('#footer').html('Adverts');
-    }
-    else {
-        minsToTOTH = Math.floor(secsToTOTH / 60);
-        secsToTOTH = secsToTOTH - (minsToTOTH * 60);
-        countToAds = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
-	$('#footer').html('ADVERTS start in: <span class="countdown">' + countToAds + '</span>');
-    }
-}
 
 function displayProgEndCountdown() {
 	if (!loadedFromGreenroom)
@@ -354,6 +350,11 @@ function displayProgrammeName() {
 	{
 		$('#onNowBar').html(thisProg);
 		$('#onNextBar').html(nextProg);
+		var nextProgHumanDate = new Date(thisProgEnds);
+		var nextProgHumanHours = nextProgHumanDate.getHours();
+		if (nextProgHumanHours > 12) {nextProgHumanHours = nextProgHumanHours-12; nextProgHumanHours = nextProgHumanHours + "pm:";}
+		  else {nextProgHumanHours = nextProgHumanHours + "am:";}
+		$('#nextLabel').html(nextProgHumanHours);
 		if (thisProg.length < 1) { $('#onNowBar').html("Failed to load schedule"); $('#onNextBar').html("-"); }
 	}
 	else 

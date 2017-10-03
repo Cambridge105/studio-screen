@@ -87,6 +87,7 @@ div#nowLabel {
 	padding:0; 
 	padding-top:20px;
 	border-bottom:1px solid #fff;
+	font-size:30pt;
 }
 div#nextLabel {
 	position:absolute; 
@@ -100,7 +101,8 @@ div#nextLabel {
 	z-index:3; 
 	margin:0; 
 	padding:0; 
-	padding-top:22px;
+	padding-top:18px;
+	font-size:30pt;
 }
 
 
