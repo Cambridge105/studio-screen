@@ -67,7 +67,7 @@ div#flash-container {
     width: 100%;
     background-color: red;
     color: white;
-        animation-name: example;
+    animation-name: example;
     animation-duration: 4s;
     
 }
@@ -104,9 +104,17 @@ span.countdown {
     font-weight:bold;
 }
 span.contactInfo {
-    color: lime;
+    color: #8ebb38;
     font-weight:bold;
     margin:0 20px;
+}
+div#stationlogo {
+	position:absolute;
+	top:5px;
+	left:5px;
+	z-index:2;
+	width:200px;
+	height:83px;
 }
 
 @keyframes pulsing-light-background {

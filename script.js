@@ -35,16 +35,18 @@ $(function() {
 });
 
 function loadSlides() {
+	// Note: tempslides is loaded from http://fileserver1/scratch/GREENROOM%20SCREEN/dirlist.php by the calling page
 	if (loadedFromGreenroom)
 	{
 		slideTxt = "<div id='img0' class='slideimg'><img src='slides/welcome.jpg' height='720px' width='1280px'></div>";
 		slideTxt += "<div id='img1' class='slideimg'><img src='slides/how-to-listen.jpg' height='720px' width='1280px'></div>";
-		slideTxt += "<div id='img2' class='slideimg'><img src='slides/coffee-morning.jpg' height='720px' width='1280px'></div>";
-		slideTxt += "<div id='img3' class='slideimg'><img src='slides/home-of-music.jpg' height='720px' width='1280px'></div>";
-		slideTxt += "<div id='img4' class='slideimg'><img src='slides/mill-road.jpg' height='720px' width='1280px'></div>";
-		slideTxt += "<div id='img5' class='slideimg'><img src='slides/south-cambs.jpg' height='720px' width='1280px'></div>";
-		slideTxt += "<div id='img6' class='slideimg'><img src='slides/guests.jpg' height='720px' width='1280px'></div>";
-		maxSlideshowImgs=6;
+		slideTxt += "<div id='img2' class='slideimg'><img src='slides/home-of-music.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img3' class='slideimg'><img src='slides/south-cambs.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img4' class='slideimg'><img src='slides/guests.jpg' height='720px' width='1280px'></div>";
+		for (i = 0; i < tempslides.length; i++) {
+			slideTxt += "<div id='img" + (i+5) + "' class='slideimg'><img src='http://fileserver1/scratch/GREENROOM%20SCREEN/" + tempslides[i] + "' height='720px' width='1280px'></div>";
+		}
+		maxSlideshowImgs=tempslides.length + 4;
 		$('#slideshow').html(slideTxt);
 	}
 }
@@ -93,7 +95,13 @@ function updateTimer() {
     micLiveStatus = getMicLiveStatus();
 	getStudioStatus();
     checkForScheduledNotices(dateParts);
-	if (loadedFromGreenroom && dateParts[1] == 2 && dateParts[2] == 0) {allowGreenroomSlideAnimation = true; loadSlides(); $('#specialNotice').css("visibility","hidden");} // Slides need reloading as the news graphic replaces the div
+	if (loadedFromGreenroom && dateParts[1] == 2 && dateParts[2] == 0) 
+	{
+		// Reset the slides animation at xx:02:00
+		allowGreenroomSlideAnimation = true; 
+		$('#slideshowOverlay').css("display", "none");
+		$('#specialNotice').css("visibility","hidden");
+	} 
 	if (loadedFromGreenroom) {checkForSlideRotate();}
 	//displayNetworkMessage();
     // Only load the schedule at xx:00:00, xx:30:00
@@ -241,7 +249,8 @@ function displayGreenroomNews(type) {
 	if ($('#slideshow').html().indexOf('news.jpg') < 1)
 	{
 		dateParts = getDateParts();
-		$('#slideshow').html('<img src="slides/news.jpg" height="720px" width="1280px">');
+		$('#slideshowOverlay').html('<img src="slides/news.jpg" height="720px" width="1280px">');
+		$('#slideshowOverlay').css("display", "block");
 		hours12 = dateParts[0];
 		if (hours12 > 12) {hours12 = hours12 - 12;} // 12-hour clock
 		newsintro = "&quot;From the " + type + " at " + hours12 + "...&quot;";
@@ -271,9 +280,10 @@ function displayTOTHNotice(mins,secs) {
     else if (secsToTOTH < 0) 
 	{
         $('#' + divToFill).html('&quot;Online, on Digital and on FM...');
-		if ($('#slideshow').html().indexOf('toth.jpg') < 1)
+		if ($('#slideshowOverlay').html().indexOf('toth.jpg') < 1)
 		{
-			$('#slideshow').html('<img src="slides/toth.jpg" height="720px" width="1280px">');
+			$('#slideshowOverlay').html('<img src="slides/toth.jpg" height="720px" width="1280px">');
+			$('#slideshowOverlay').css("display", "block");
 			allowGreenroomSlideAnimation = false;
 		}
     }
@@ -350,11 +360,9 @@ function displayProgrammeName() {
 	{
 		$('#onNowBar').html(thisProg);
 		$('#onNextBar').html(nextProg);
-		var nextProgHumanDate = new Date(thisProgEnds);
-		var nextProgHumanHours = nextProgHumanDate.getHours();
-		if (nextProgHumanHours > 12) {nextProgHumanHours = nextProgHumanHours-12; nextProgHumanHours = nextProgHumanHours + "pm:";}
-		  else {nextProgHumanHours = nextProgHumanHours + "am:";}
-		$('#nextLabel').html(nextProgHumanHours);
+		var nextProgTime = new Date(thisProgEnds);
+		var nextProgTime = setLeadingZeros(nextProgTime.getHours()) + ":" + setLeadingZeros(nextProgTime.getMinutes());
+		$('#nextLabel').html(nextProgTime);
 		if (thisProg.length < 1) { $('#onNowBar').html("Failed to load schedule"); $('#onNextBar').html("-"); }
 	}
 	else 
@@ -363,6 +371,12 @@ function displayProgrammeName() {
         $('#footer').html(thisProg);
         if (thisProg.length < 1) { $('#footer').html("Failed to load schedule"); }
 	}
+}
+
+function setLeadingZeros(myInt) {
+	myInt = myInt + ""; // Force cast to string
+	if (myInt.length > 1) {return myInt;}
+	else {return "0" + myInt;}
 }
 
 function loadSchedule() {

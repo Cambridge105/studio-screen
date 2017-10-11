@@ -20,6 +20,21 @@ div#slideshow {
 	float:left; 
 	border-bottom:3px solid #8ebb38; 
 }
+div#slideshowOverlay {
+	min-height:720px; 
+	max-height:720px; 
+	min-width:1280px; 
+	max-width:1280px; 
+	background-color:#aaa; 
+	padding:0; 
+	margin:0; 
+	float:left; 
+	z-index:10;
+	position:absolute;
+	top:10px;
+	left:10px;
+	display:none;
+}
 div#righthandBar {
 	min-height:710px; 
 	max-height:710px; 
@@ -34,8 +49,8 @@ div#righthandBar {
 	border-bottom:3px solid #8ebb38; 
 }
 div#buttonsGroup {
-	margin-top:30px; 
-	margin-bottom:240px;
+	margin-top:20px; 
+	margin-bottom:30px;
 }
 div#clockGroup {
 	margin:20 auto; 
@@ -94,7 +109,7 @@ div#nextLabel {
 	top:835px; 
 	left:9px; 
 	min-width:150px; 
-	height:79px; 
+	height:80px; 
 	background-color:#8ebb38; 
 	color:#fff; 
 	text-align:center; 
@@ -109,16 +124,14 @@ div#nextLabel {
 div#specialNotice {
 	position:absolute; 
 	top:7px; 
-	left:587px; 
+	left:615px; 
 	min-width:700px; 
 	max-width:702px; 
 	height:674px; 
-	background-color:rgba(142,187,56,0.7); 
-	z-index:1; 
+	z-index:15; 
 	margin:0; 
 	padding:0;  
 	padding-top:50px;
-	clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%); 
 	visibility: hidden;
 	font-size:40pt;
 }
@@ -142,12 +155,12 @@ canvas#clockid {
 div#clockText {
     font-size: 36pt;
     text-align: center;
-    margin-bottom:5px;
+    margin-bottom:0px;
 	width:362px;
 	
 }
 span#date {
-    visibility:hidden;
+    display:none;
 }
 div.light {
     border: solid 2px #808080;

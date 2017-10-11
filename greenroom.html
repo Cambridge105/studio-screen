@@ -7,6 +7,7 @@
     <!--[if IE]><script type="text/javascript" src="clock/excanvas.js"></script><![endif]-->
 <script type="text/javascript" src="clock/coolclock.js"></script>
 <script type="text/javascript" src="clock/moreskins.js"></script>
+    <script type="text/javascript" src="http://fileserver1/scratch/GREENROOM%20SCREEN/dirlist.php"></script>
     <script type="text/javascript" src="script.js"></script>
 </head>
 <body onunload="unloadTimeout()">
@@ -15,8 +16,15 @@
 <div style="min-height:928px; max-height:928px; min-width:1650px; max-width:1650px; border: 1px solid black; padding:0; margin:0;">
   <div id="slideshow">
   </div>
+  <div id="slideshowOverlay">OVerlay
+  </div>
   <div id="righthandBar">
-  
+  <div id="clockGroup">
+	<div id="clock">
+            <canvas id="clockid"></canvas>
+        </div>
+        <div id="clockText"><span id="time">00:00:00</span><br /><span id="date">Monday, 1st January 1970</span></div>
+	</div>
    <div id="buttonsGroup">
     <div id="studioA" class="small-light">Studio A</div>
 	<div id="studioB" class="small-light">Studio B</div>
@@ -24,12 +32,7 @@
 	<br /><br />
     <div id="micLive" class="light">MIC LIVE - A</div>
    </div>
-   <div id="clockGroup">
-	<div id="clock">
-            <canvas id="clockid"></canvas>
-        </div>
-        <div id="clockText"><span id="time">00:00:00</span><br /><span id="date">Monday, 1st January 1970</span></div>
-	</div>
+   
   </div>
   <div id="onNowBar">
   Waiting to load schedule...
@@ -42,8 +45,8 @@
   </div>
 </div>
 
-<div id="nowLabel">NOW:</div>
-<div id="nextLabel">NEXT:</div>
+<div id="nowLabel">NOW</div>
+<div id="nextLabel">NEXT</div>
 
 <div id="specialNotice">
   <div id="specialNoticeContent">&quot;From the Cambridge newsdesk at ...&quot;</div>
