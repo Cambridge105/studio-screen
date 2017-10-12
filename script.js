@@ -41,12 +41,14 @@ function loadSlides() {
 		slideTxt = "<div id='img0' class='slideimg'><img src='slides/welcome.jpg' height='720px' width='1280px'></div>";
 		slideTxt += "<div id='img1' class='slideimg'><img src='slides/how-to-listen.jpg' height='720px' width='1280px'></div>";
 		slideTxt += "<div id='img2' class='slideimg'><img src='slides/home-of-music.jpg' height='720px' width='1280px'></div>";
-		slideTxt += "<div id='img3' class='slideimg'><img src='slides/south-cambs.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img3' class='slideimg'><img src='slides/news-promo.jpg' height='720px' width='1280px'></div>";
 		slideTxt += "<div id='img4' class='slideimg'><img src='slides/guests.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img5' class='slideimg'><img src='slides/travel.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img6' class='slideimg'><img src='slides/south-cambs.jpg' height='720px' width='1280px'></div>";
 		for (i = 0; i < tempslides.length; i++) {
-			slideTxt += "<div id='img" + (i+5) + "' class='slideimg'><img src='http://fileserver1/scratch/GREENROOM%20SCREEN/" + tempslides[i] + "' height='720px' width='1280px'></div>";
+			slideTxt += "<div id='img" + (i+7) + "' class='slideimg'><img src='http://fileserver1/scratch/GREENROOM%20SCREEN/" + tempslides[i] + "' height='720px' width='1280px'></div>";
 		}
-		maxSlideshowImgs=tempslides.length + 4;
+		maxSlideshowImgs=tempslides.length + 6;
 		$('#slideshow').html(slideTxt);
 	}
 }
@@ -253,6 +255,7 @@ function displayGreenroomNews(type) {
 		$('#slideshowOverlay').css("display", "block");
 		hours12 = dateParts[0];
 		if (hours12 > 12) {hours12 = hours12 - 12;} // 12-hour clock
+		if (hours12 < 1) {hours12 = 12;}
 		newsintro = "&quot;From the " + type + " at " + hours12 + "...&quot;";
 		$('#specialNoticeContent').html(newsintro);
 		$('#specialNotice').css("visibility","visible");
@@ -423,20 +426,23 @@ function padZeros(num) {
 }
 
 function getEngineeringMessage() {
-    var req = $.ajax({
-        url: "http://cambridge105.github.io/studio-screen/studioMessage.js",
-        dataType: "jsonp",
-        timeout: 5000,
-        jsonpCallback: "displayMessage"
-    });
+    if (!loadedFromGreenroom)
+	{
+		 var req = $.ajax({
+			url: "http://cambridge105.github.io/studio-screen/studioMessage.js",
+			dataType: "jsonp",
+			timeout: 5000,
+			jsonpCallback: "displayMessage"
+		});
 
-    req.success(function () {
-		// Nothing
-    });
+		req.success(function () {
+			// Nothing
+		});
 
-    req.fail(function () {
-		networkExternalOK = false; 
-    });
+		req.fail(function () {
+			networkExternalOK = false; 
+		});
+	}
 }
 
 function checkForIrn() {

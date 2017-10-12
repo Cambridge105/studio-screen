@@ -69,7 +69,7 @@ div#flash-container {
     color: white;
     animation-name: example;
     animation-duration: 4s;
-    
+    z-index:5;
 }
 div#flash-message {
     display: inline-block;

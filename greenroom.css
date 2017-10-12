@@ -29,7 +29,7 @@ div#slideshowOverlay {
 	padding:0; 
 	margin:0; 
 	float:left; 
-	z-index:10;
+	z-index:9;
 	position:absolute;
 	top:10px;
 	left:10px;
@@ -54,7 +54,7 @@ div#buttonsGroup {
 }
 div#clockGroup {
 	margin:20 auto; 
-	font-size:22pt;;
+	font-size:22pt;
 }
 div#onNowBar {
 	min-height:820px;
@@ -76,7 +76,7 @@ div#onNextBar {
 	padding:0;
 	text-align:left; 
 	padding-left:180px;	
-        font-size:42pt;
+    font-size:42pt;
 }
 div#contact {
 	min-height:90px; 
@@ -186,8 +186,8 @@ div.slideimg {
 	padding:0;
 	margin:0;
 	position:absolute;
-	left:10px;
-	top:10px;
+	left:9px;
+	top:9px;
 }
 div#flash-container {
     display: none;
