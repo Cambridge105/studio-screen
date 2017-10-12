@@ -45,10 +45,14 @@ function loadSlides() {
 		slideTxt += "<div id='img4' class='slideimg'><img src='slides/guests.jpg' height='720px' width='1280px'></div>";
 		slideTxt += "<div id='img5' class='slideimg'><img src='slides/travel.jpg' height='720px' width='1280px'></div>";
 		slideTxt += "<div id='img6' class='slideimg'><img src='slides/south-cambs.jpg' height='720px' width='1280px'></div>";
-		for (i = 0; i < tempslides.length; i++) {
-			slideTxt += "<div id='img" + (i+7) + "' class='slideimg'><img src='http://fileserver1/scratch/GREENROOM%20SCREEN/" + tempslides[i] + "' height='720px' width='1280px'></div>";
+		maxSlideshowImgs = 6;
+		if (typeof tempslides != 'undefined' && tempslides instanceof Array)
+		{
+			for (i = 0; i < tempslides.length; i++) {
+				slideTxt += "<div id='img" + (i+7) + "' class='slideimg'><img src='http://fileserver1/scratch/GREENROOM%20SCREEN/" + tempslides[i] + "' height='720px' width='1280px'></div>";
+			}
+			maxSlideshowImgs=tempslides.length + 6;
 		}
-		maxSlideshowImgs=tempslides.length + 6;
 		$('#slideshow').html(slideTxt);
 	}
 }
