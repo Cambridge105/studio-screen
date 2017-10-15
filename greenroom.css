@@ -1,0 +1,223 @@
+@font-face {
+    font-family: 'tex_gyre_adventorregular';
+    src: url('texgyreadventor-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+body {
+	font-family:tex_gyre_adventorregular; 
+	font-size:22pt;
+	background-color:#000;
+}
+div#slideshow {
+	min-height:720px; 
+	max-height:720px; 
+	min-width:1280px; 
+	max-width:1280px; 
+	background-color:#aaa; 
+	padding:0; 
+	margin:0; 
+	float:left; 
+	border-bottom:3px solid #8ebb38; 
+}
+div#slideshowOverlay {
+	min-height:720px; 
+	max-height:720px; 
+	min-width:1280px; 
+	max-width:1280px; 
+	background-color:#aaa; 
+	padding:0; 
+	margin:0; 
+	float:left; 
+	z-index:9;
+	position:absolute;
+	top:10px;
+	left:10px;
+	display:none;
+}
+div#righthandBar {
+	min-height:710px; 
+	max-height:710px; 
+	min-width:370px; 
+	background-color:#000; 
+	padding-top:10px; 
+	margin:0; 
+	text-align:center; 
+	color:#fff; 
+	float:right; 
+	font-size:14pt;
+	border-bottom:3px solid #8ebb38; 
+}
+div#buttonsGroup {
+	margin-top:20px; 
+	margin-bottom:30px;
+}
+div#clockGroup {
+	margin:20 auto; 
+	font-size:22pt;
+}
+div#onNowBar {
+	min-height:820px;
+	background-color:#fff; 
+	border-bottom:1px solid #8ebb38; 
+	border-top:3px solid #8ebb38;  
+	margin:0; 
+	padding:0; 
+	text-align:left; 
+	padding-left:180px;
+	font-size:42pt;
+}
+div#onNextBar {
+	min-height:100px; 
+	max-height:100px; 
+	background-color:#fff; 
+	border-bottom:3px solid #8ebb38; 
+	margin:0; 
+	padding:0;
+	text-align:left; 
+	padding-left:180px;	
+    font-size:42pt;
+}
+div#contact {
+	min-height:90px; 
+	background-color:#fff; 
+	margin:0; 
+	padding:0; 
+        padding-top:10px;
+	color:#8ebb38; 
+	text-align:center;
+        font-size:36pt;
+}
+div#nowLabel {
+	position:absolute; 
+	top:730px; 
+	left:9px; 
+	min-width:150px; 
+	height:82px; 
+	background-color:#8ebb38; 
+	color:#fff; 
+	text-align:center; 
+	z-index:3; 
+	margin:0; 
+	padding:0; 
+	padding-top:20px;
+	border-bottom:1px solid #fff;
+	font-size:30pt;
+}
+div#nextLabel {
+	position:absolute; 
+	top:835px; 
+	left:9px; 
+	min-width:150px; 
+	height:80px; 
+	background-color:#8ebb38; 
+	color:#fff; 
+	text-align:center; 
+	z-index:3; 
+	margin:0; 
+	padding:0; 
+	padding-top:18px;
+	font-size:30pt;
+}
+
+
+div#specialNotice {
+	position:absolute; 
+	top:7px; 
+	left:615px; 
+	min-width:700px; 
+	max-width:702px; 
+	height:674px; 
+	z-index:15; 
+	margin:0; 
+	padding:0;  
+	padding-top:50px;
+	visibility: hidden;
+	font-size:40pt;
+}
+div#specialNoticeContent {
+	margin-left:160px; 
+	margin-top:30px; 
+	z-index:3; 
+	color:#fff
+}
+div#clock {
+    margin: 0;
+    padding: 0;
+    text-align:center;
+}
+canvas#clockid {
+	max-width:160px;
+	max-height:160px;
+	margin:0;
+	padding:0;
+}
+div#clockText {
+    font-size: 36pt;
+    text-align: center;
+    margin-bottom:0px;
+	width:362px;
+	
+}
+span#date {
+    display:none;
+}
+div.light {
+    border: solid 2px #808080;
+    color: #808080;
+    padding:3px;
+    margin:5px 26px;
+    text-align:center;
+    font-size:14pt;
+}
+div.small-light {
+    border: solid 2px #808080;
+	color: #808080;
+    padding:6px;
+	margin:20px 6px;
+    text-align:center;
+    font-size:14pt;
+	display:inline;
+}
+div.slideimg {
+	visibility:hidden;
+	height:720px;
+	width:1280px;
+	padding:0;
+	margin:0;
+	position:absolute;
+	left:9px;
+	top:9px;
+}
+div#flash-container {
+    display: none;
+    position:absolute;
+    left:0;
+    top:0;
+    height:100%;
+    width: 100%;
+    background-color: red;
+    color: white;
+    animation-name: example;
+    animation-duration: 4s;
+    z-index:10;
+}
+div#flash-message {
+    display: inline-block;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    font-size: 140pt;
+    transform: translateY(-50%);
+    text-decoration: blink;
+}
+@keyframes pulsing-light-background {
+    from { background-color: red;}
+    to {background-color: black;}
+}
+.pulse {
+    animation-name: pulsing-light-background;
+    animation-duration: 1s;
+    animation-iterations: 5;
+    animation-direction; reverse;
+}

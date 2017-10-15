@@ -18,12 +18,57 @@ var networkStudioAOK = true;
 var networkExternalOK = true;
 var hasTOTHAdSequence = false;
 var currentStudio = "";
+var loadedFromGreenroom = false;
+var allowGreenroomSlideAnimation = true;
+var maxSlideshowImgs = 0;
+var lastSlideshowImg = -1;
+var secondsSinceSlideChange = 12;
 loadScheduledMessages();
 loadSchedule();
 
+if (window.location.href.indexOf("greenroom") > -1) {loadedFromGreenroom = true;}
+
+
 $(function() {
     createClock();
+	loadSlides();
 });
+
+function loadSlides() {
+	// Note: tempslides is loaded from http://fileserver1/scratch/GREENROOM%20SCREEN/dirlist.php by the calling page
+	if (loadedFromGreenroom)
+	{
+		slideTxt = "<div id='img0' class='slideimg'><img src='slides/welcome.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img1' class='slideimg'><img src='slides/how-to-listen.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img2' class='slideimg'><img src='slides/home-of-music.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img3' class='slideimg'><img src='slides/news-promo.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img4' class='slideimg'><img src='slides/guests.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img5' class='slideimg'><img src='slides/travel.jpg' height='720px' width='1280px'></div>";
+		slideTxt += "<div id='img6' class='slideimg'><img src='slides/south-cambs.jpg' height='720px' width='1280px'></div>";
+		maxSlideshowImgs = 6;
+		if (typeof tempslides != 'undefined' && tempslides instanceof Array)
+		{
+			for (i = 0; i < tempslides.length; i++) {
+				slideTxt += "<div id='img" + (i+7) + "' class='slideimg'><img src='http://fileserver1/scratch/GREENROOM%20SCREEN/" + tempslides[i] + "' height='720px' width='1280px'></div>";
+			}
+			maxSlideshowImgs=tempslides.length + 6;
+		}
+		$('#slideshow').html(slideTxt);
+	}
+}
+
+function rotateSlideshow() {
+	$('#img' + lastSlideshowImg).css("visibility","hidden");
+	if (lastSlideshowImg == maxSlideshowImgs) {lastSlideshowImg = -1;}
+	lastSlideshowImg = lastSlideshowImg + 1;
+	$('#img' + lastSlideshowImg).css("visibility","visible");
+}
+
+function checkForSlideRotate() {
+	if (secondsSinceSlideChange == 12) {rotateSlideshow(); secondsSinceSlideChange = 0;}
+	secondsSinceSlideChange = secondsSinceSlideChange + 1;
+}
+
 
 function loadScheduledMessages() {
     d = new Date();
@@ -56,6 +101,14 @@ function updateTimer() {
     micLiveStatus = getMicLiveStatus();
 	getStudioStatus();
     checkForScheduledNotices(dateParts);
+	if (loadedFromGreenroom && dateParts[1] == 2 && dateParts[2] == 0) 
+	{
+		// Reset the slides animation at xx:02:00
+		allowGreenroomSlideAnimation = true; 
+		$('#slideshowOverlay').css("display", "none");
+		$('#specialNotice').css("visibility","hidden");
+	} 
+	if (loadedFromGreenroom) {checkForSlideRotate();}
 	//displayNetworkMessage();
     // Only load the schedule at xx:00:00, xx:30:00
     if (((dateParts[1] == 0 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule();}
@@ -111,7 +164,7 @@ function getStudioStatus() {
 		if (data['remote'] == '1') {updateLight('remote',true); newStudio = 'Remote'; } else {updateLight('remote',false);}
 
         if (newStudio !== currentStudio) {
-            $('#flash-container').css('display', 'block');
+			$('#flash-container').css('display', 'block');
             $('#flash-message').html('Station output changed to ' + newStudio);
             currentStudio = newStudio;
             setTimeout(function() { 
@@ -156,89 +209,181 @@ function checkForScheduledNotices(dateParts) {
                 });
         if (messageSet == false)
         {
-            if (dateParts[1] >= 45 && endOfProgInNext15Mins()) { displayNextProgramme(); }
-            else { displayProgrammeName(); }
+			allowGreenroomSlideAnimation = true;
+			if (loadedFromGreenroom)
+			{
+				displayProgrammeName();
+			}
+			else
+			{
+                if (dateParts[1] >= 45 && endOfProgInNext15Mins()) { displayNextProgramme(); }
+                else { displayProgrammeName(); }
+			}
         }
     }
 }
         
 function displayIrnWeatherStatus() {
-	$('#footer').css('color', 'yellow');
-	if (hasRecordedWeatherNextHour == true) {
-		$('#footer').html('SKY NEWS then RECORDED WEATHER');
+	if (!loadedFromGreenroom)
+	{
+        $('#footer').css('color', 'yellow');
+        if (hasRecordedWeatherNextHour == true) {
+            $('#footer').html('SKY NEWS then RECORDED WEATHER');
+		}
+		else {
+			$('#footer').html('SKY NEWS. No weather follows.');
+		}
 	}
 	else {
-		$('#footer').html('SKY NEWS. No weather follows.');
+		displayGreenroomNews('Sky News Centre')
 	}
+	
 }
 
 function displayNewsStatus() {
-	$('#footer').css('color', 'yellow');
-	$('#footer').html('LOCAL NEWS');
+	if (!loadedFromGreenroom)
+	{
+        $('#footer').css('color', 'yellow');
+        $('#footer').html('LOCAL NEWS');
+	}
+	else {
+		displayGreenroomNews('Cambridge newsdesk');
+	}
+}
+
+function displayGreenroomNews(type) {
+	if ($('#slideshow').html().indexOf('news.jpg') < 1)
+	{
+		dateParts = getDateParts();
+		$('#slideshowOverlay').html('<img src="slides/news.jpg" height="720px" width="1280px">');
+		$('#slideshowOverlay').css("display", "block");
+		hours12 = dateParts[0];
+		if (hours12 > 12) {hours12 = hours12 - 12;} // 12-hour clock
+		if (hours12 < 1) {hours12 = 12;}
+		newsintro = "&quot;From the " + type + " at " + hours12 + "...&quot;";
+		$('#specialNoticeContent').html(newsintro);
+		$('#specialNotice').css("visibility","visible");
+		allowGreenroomSlideAnimation = false;
+	}
 }
 
 function displayTOTHNotice(mins,secs) {
-    $('#footer').css('color', 'yellow');
+    if (!loadedFromGreenroom) 
+	{
+        $('#footer').css('color', 'yellow'); 
+		divToFill = "footer";
+	}
+	else 
+	{
+		divToFill = "onNextBar";
+		$('#nextLabel').html("-");
+	}
 	secsToTOTH = ((59 - mins) * 60) + (60 - secs);
     secsToTOTH = secsToTOTH - 12; // News intro
-    if (secsToTOTH < -5) {
-        $('#footer').html('...this is Cambridge 105 Radio&quot;');
+    if (secsToTOTH < -5) 
+	{
+        $('#' + divToFill).html('...this is Cambridge 105 Radio&quot;');
     }
-    else if (secsToTOTH < 0) {
-        $('#footer').html('&quot;Online, on Digital and on FM...');
+    else if (secsToTOTH < 0) 
+	{
+        $('#' + divToFill).html('&quot;Online, on Digital and on FM...');
+		if ($('#slideshowOverlay').html().indexOf('toth.jpg') < 1)
+		{
+			$('#slideshowOverlay').html('<img src="slides/toth.jpg" height="720px" width="1280px">');
+			$('#slideshowOverlay').css("display", "block");
+			allowGreenroomSlideAnimation = false;
+		}
     }
-    else {
+    else 
+	{
         minsToTOTH = Math.floor(secsToTOTH / 60);
         secsToTOTH = secsToTOTH - (minsToTOTH * 60);
         countToNews = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
 		if (hasNewsNextHour == true) {newsType = "LOCAL";} else {newsType="SKY";}
-        $('#footer').html(newsType + ' NEWS INTRO in: <span class="countdown">' + countToNews + '</span>');
+        $('#' + divToFill).html(newsType + ' NEWS INTRO in: <span class="countdown">' + countToNews + '</span>');
     }
 }
 
 function displayTOTHAds(mins,secs) {
-    $('#footer').css('color', 'yellow');
+    if (!loadedFromGreenroom) 
+	{
+        $('#footer').css('color', 'yellow'); 
+		divToFill = "footer";
+	}
+	else 
+	{
+		divToFill = "onNextBar";
+		$('#nextLabel').html("-");
+	}
+	$('#'+divToFill).css('color', 'yellow');
     secsToTOTH = ((59 - mins) * 60) + (60 - secs);
     secsToTOTH = secsToTOTH - 60; // Ads start at exactly xx:59:00
     if (secsToTOTH < 0) {
-        $('#footer').html('Adverts');
+        $('#'+divToFill).html('Adverts');
     }
     else {
         minsToTOTH = Math.floor(secsToTOTH / 60);
         secsToTOTH = secsToTOTH - (minsToTOTH * 60);
         countToAds = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
-	$('#footer').html('ADVERTS start in: <span class="countdown">' + countToAds + '</span>');
+	$('#'+divToFill).html('ADVERTS start in: <span class="countdown">' + countToAds + '</span>');
     }
 }
 
 
 function displayProgEndCountdown() {
-    $('#footer').css('color', 'yellow');
-	d = new Date;
-    secsToEnd = Math.floor((thisProgEnds - d.getTime())/1000);
-	minsToEnd = Math.floor(secsToEnd / 60);
-    secsToEnd = secsToEnd - (minsToEnd * 60);
-    countToEnd = padZeros(minsToEnd) + ":" + padZeros(secsToEnd);
-	$('#footer').html('Programme ends in: <span class="countdown">' + countToEnd + '</span>');
-
+	if (!loadedFromGreenroom)
+    {
+        $('#footer').css('color', 'yellow');
+        d = new Date;
+        secsToEnd = Math.floor((thisProgEnds - d.getTime())/1000);
+        minsToEnd = Math.floor(secsToEnd / 60);
+        secsToEnd = secsToEnd - (minsToEnd * 60);
+        countToEnd = padZeros(minsToEnd) + ":" + padZeros(secsToEnd);
+        $('#footer').html('Programme ends in: <span class="countdown">' + countToEnd + '</span>');
+	}
 }
 
 function displayNotice(message,color) {
-    if (color === undefined || color.length<1) {color = "yellow";}
-    $('#footer').css('color', color);
-    $('#footer').html(message);
+    if (!loadedFromGreenroom)
+	{
+        if (color === undefined || color.length<1) {color = "yellow";}
+        $('#footer').css('color', color);
+        $('#footer').html(message);
+	}
 }
 
 function displayNextProgramme() {
-    $('#footer').css('color', 'white');
-    $('#footer').html('<strong>NEXT:</strong> ' + nextProg + " (" + nextProgType + ")");
-    if (nextProg.length < 1) { $('#footer').html('<strong>NEXT:</strong> Failed to load schedule'); }
+	if (!loadedFromGreenroom)
+	{
+        $('#footer').css('color', 'white');
+        $('#footer').html('<strong>NEXT:</strong> ' + nextProg + " (" + nextProgType + ")");
+        if (nextProg.length < 1) { $('#footer').html('<strong>NEXT:</strong> Failed to load schedule'); }
+	}
+	// Don't need to display next in Greenroom as this is done by displayProgrammeName()
 }
 
 function displayProgrammeName() {
-    $('#footer').css('color', 'white');
-    $('#footer').html(thisProg);
-    if (thisProg.length < 1) { $('#footer').html("Failed to load schedule"); }
+	if (loadedFromGreenroom == true)
+	{
+		$('#onNowBar').html(thisProg);
+		$('#onNextBar').html(nextProg);
+		var nextProgTime = new Date(thisProgEnds);
+		var nextProgTime = setLeadingZeros(nextProgTime.getHours()) + ":" + setLeadingZeros(nextProgTime.getMinutes());
+		$('#nextLabel').html(nextProgTime);
+		if (thisProg.length < 1) { $('#onNowBar').html("Failed to load schedule"); $('#onNextBar').html("-"); }
+	}
+	else 
+	{
+        $('#footer').css('color', 'white');
+        $('#footer').html(thisProg);
+        if (thisProg.length < 1) { $('#footer').html("Failed to load schedule"); }
+	}
+}
+
+function setLeadingZeros(myInt) {
+	myInt = myInt + ""; // Force cast to string
+	if (myInt.length > 1) {return myInt;}
+	else {return "0" + myInt;}
 }
 
 function loadSchedule() {
@@ -261,7 +406,6 @@ function loadSchedule() {
                     console.log("Current programme " + thisProg);
                     if (progInfo['type'] == "LIVE") { thisProgIsLive = true; } else { thisProgIsLive = false; }
                     thisProgEnds = progInfo['end'] * 1000;
-                    displayProgrammeName();
                 }
                 else if ((progInfo['start'] * 1000) == thisProgEnds) {
                     nextProg = progInfo['title'];
@@ -269,6 +413,7 @@ function loadSchedule() {
                 }
             //});
         });
+		displayProgrammeName();
     });
 }
 
@@ -285,20 +430,23 @@ function padZeros(num) {
 }
 
 function getEngineeringMessage() {
-    var req = $.ajax({
-        url: "http://cambridge105.github.io/studio-screen/studioMessage.js",
-        dataType: "jsonp",
-        timeout: 5000,
-        jsonpCallback: "displayMessage"
-    });
+    if (!loadedFromGreenroom)
+	{
+		 var req = $.ajax({
+			url: "http://cambridge105.github.io/studio-screen/studioMessage.js",
+			dataType: "jsonp",
+			timeout: 5000,
+			jsonpCallback: "displayMessage"
+		});
 
-    req.success(function () {
-		// Nothing
-    });
+		req.success(function () {
+			// Nothing
+		});
 
-    req.fail(function () {
-		networkExternalOK = false; 
-    });
+		req.fail(function () {
+			networkExternalOK = false; 
+		});
+	}
 }
 
 function checkForIrn() {
@@ -379,15 +527,19 @@ function displayMessage(response) {
 }
 
 function displayMessageText(message) {
-	$('#message').html(message);
-    if (message.length < 1) { $('#message').hide(); } else { $('#message').show(); }
+	if (!loadedFromGreenroom)
+	{
+        $('#message').html(message);
+        if (message.length < 1) { $('#message').hide(); } else { $('#message').show(); }
+	}
 }
 
 function createClock() {
+	if (loadedFromGreenroom) {radius = 160;} else {radius = 200;}
     clock = new CoolClock({
         canvasId:       'clockid',
         skinId:         'chunkySwissOnBlack',
-        displayRadius:  200
+        displayRadius:  radius
     });
     clock.stop(); // stop the internal timer so we can refresh manually
 }
