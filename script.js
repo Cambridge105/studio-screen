@@ -315,8 +315,7 @@ function displayTOTHAds(mins,secs) {
 		divToFill = "onNextBar";
 		$('#nextLabel').html("-");
 	}
-	$('#'+divToFill).css('color', 'yellow');
-    secsToTOTH = ((59 - mins) * 60) + (60 - secs);
+	secsToTOTH = ((59 - mins) * 60) + (60 - secs);
     secsToTOTH = secsToTOTH - 60; // Ads start at exactly xx:59:00
     if (secsToTOTH < 0) {
         $('#'+divToFill).html('Adverts');
