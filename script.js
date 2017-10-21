@@ -23,16 +23,19 @@ var allowGreenroomSlideAnimation = true;
 var maxSlideshowImgs = 0;
 var lastSlideshowImg = -1;
 var secondsSinceSlideChange = 12;
+var runningInStudio = "";
 loadScheduledMessages();
 loadSchedule();
+checkRunningStudio();
 
 if (window.location.href.indexOf("greenroom") > -1) {loadedFromGreenroom = true;}
-
 
 $(function() {
     createClock();
 	loadSlides();
 });
+
+
 
 function loadSlides() {
 	// Note: tempslides is loaded from http://fileserver1/scratch/GREENROOM%20SCREEN/dirlist.php by the calling page
@@ -139,6 +142,7 @@ function updateTextClock(dateParts) {
 }
 
 function getMicLiveStatus() {
+	if (runningInStudio == "b") {$('#micLive').css("visibility","hidden"); return;}
     $.ajax({
         url: "http://studioa-pi:8081/miclive",
         dataType: "json",
@@ -562,4 +566,25 @@ function displayNetworkMessage() {
 		if (networkStudioAOK == false || networkGreenroomOK == false) {displayMessageText('ERROR: No network connection. All info may be inaccurate.');}
 		else (displayMessageText('ERROR: No WAN connection. Schedule may be inaccurate.'));
 	}
+}
+
+function getParameterByName(name, url) {
+	//From: https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function checkRunningStudio() {
+	studio = getParameterByName("studio");
+	if (!studio) {
+		// Studio not set, so assume 'A' which is default anyway
+		runningInStudio = "a";
+		return;
+	}
+	runningInStudio = studio.toLowerCase();
 }
