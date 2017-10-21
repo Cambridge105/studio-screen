@@ -24,9 +24,11 @@ var maxSlideshowImgs = 0;
 var lastSlideshowImg = -1;
 var secondsSinceSlideChange = 12;
 var runningInStudio = "";
+var studioDelay = 0;
 loadScheduledMessages();
 loadSchedule();
 checkRunningStudio();
+checkForOBDelay();
 
 if (window.location.href.indexOf("greenroom") > -1) {loadedFromGreenroom = true;}
 
@@ -132,12 +134,19 @@ function updateTimer() {
 }
 
 function getDateParts() {
-    d = new Date();
-    return [d.getHours(), d.getMinutes(), d.getSeconds(), days[d.getDay()], d.getDate(), months[d.getMonth()], d.getFullYear()];
+	d = new Date();
+	if (studioDelay > 0) {
+		d = new Date(d.getTime() + (studioDelay * 1000));
+	}
+	return [d.getHours(), d.getMinutes(), d.getSeconds(), days[d.getDay()], d.getDate(), months[d.getMonth()], d.getFullYear()];
 }
 
 function updateTextClock(dateParts) {
     $('#time').html(padZeros(dateParts[0]) + ":" + padZeros(dateParts[1]) + ":" + padZeros(dateParts[2]));
+	if (studioDelay > 0)
+	{
+		$('#time').html(padZeros(dateParts[0]) + ":" + padZeros(dateParts[1]) + ":" + padZeros(dateParts[2]) + " (+" + studioDelay + "s)");
+	}
     $('#date').html(dateParts[3] + ", " + dateParts[4] + " " + dateParts[5] + " " + dateParts[6]);
 }
 
@@ -587,4 +596,11 @@ function checkRunningStudio() {
 		return;
 	}
 	runningInStudio = studio.toLowerCase();
+}
+
+function checkForOBDelay() {
+	delay = getParameterByName("delay");
+	if (delay) {
+		studioDelay = delay;
+	}
 }
