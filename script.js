@@ -17,6 +17,7 @@ var networkGreenroomOK = true;
 var networkStudioAOK = true;
 var networkExternalOK = true;
 var hasTOTHAdSequence = false;
+var hasManualTOTHAds = false;
 var currentStudio = "";
 var loadedFromGreenroom = false;
 var allowGreenroomSlideAnimation = true;
@@ -122,11 +123,11 @@ function updateTimer() {
 	// At xx:51:00 check whether the next hour has news
 	if ((dateParts[1] == 51) && (dateParts[2] == 0)) {hasNewsNextHour = checkForNewsNextHour((dateParts[0] + 1), dateParts[3]);}
 	// At xx:52:00 check whether IRN is scheduled
-	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {checkForIrn(); checkForAds();}
+	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {checkForIrn(); checkForAds(); checkForManualTOTHAd();}
 	// At xx:53:00 check whether weather is scheduled
 	if ((dateParts[1] == 53) && (dateParts[2] == 0)) {checkForWeather();}
 	// At xx:49:00 unset the IRN/News/weather check
-	if (dateParts[1] == 49 && dateParts[2] == 0) { hasNewsNextHour=false; hasIrnNextHour = false; hasRecordedWeatherNextHour = false; hasLocalReadWeatherNextHour = false;}
+	if (dateParts[1] == 49 && dateParts[2] == 0) { hasNewsNextHour=false; hasIrnNextHour = false; hasRecordedWeatherNextHour = false; hasLocalReadWeatherNextHour = false; hasManualTOTHAds = false;}
     // At 03:25:00, reload the whole page so we hopefully drop any DOM objects we've leaked
     if (dateParts[0] == 3 && dateParts[1] == 25 && dateParts[2] == 0) { location.reload(true); }
 
@@ -309,11 +310,20 @@ function displayTOTHNotice(mins,secs) {
     }
     else 
 	{
-        minsToTOTH = Math.floor(secsToTOTH / 60);
-        secsToTOTH = secsToTOTH - (minsToTOTH * 60);
-        countToNews = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
-		if (hasNewsNextHour == true) {newsType = "LOCAL";} else {newsType="SKY";}
-        $('#' + divToFill).html(newsType + ' NEWS INTRO in: <span class="countdown">' + countToNews + '</span>');
+		if (hasManualTOTHAds == true && secsToTOTH < 60)
+		{
+			$('#' + divToFill).html('ADVERT');
+		}
+		else 
+		{
+			if (hasManualTOTHAds == true) {secsToTOTH = secsToTOTH - 60;}
+			minsToTOTH = Math.floor(secsToTOTH / 60);
+			secsToTOTH = secsToTOTH - (minsToTOTH * 60);
+			countToNews = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
+			if (hasNewsNextHour == true) {newsType = "LOCAL NEWS INTRO";} else {newsType="SKY NEWS INTRO";}
+			if (hasManualTOTHAds == true) {newsType = "WOODFINES AD";}
+			$('#' + divToFill).html(newsType + ' in: <span class="countdown">' + countToNews + '</span>');
+		}
     }
 }
 
@@ -602,5 +612,18 @@ function checkForOBDelay() {
 	delay = getParameterByName("delay");
 	if (delay) {
 		studioDelay = delay;
+	}
+}
+
+function checkForManualTOTHAd() {
+	var dateParts = [0, 0, 0, 'Monday', 1, 'January', 1970];
+    dateParts = getDateParts();
+    if ((dateParts[3] != "Saturday") && (dateParts[3] != "Sunday") && (($dateParts[0] == 6 || $dateParts[0] == 7 || $dateParts[0] == 8 || $dateParts[0] == 12 || $dateParts[0] == 15 || $dateParts[0] == 16 || $dateParts[0] == 17 )))
+	{
+		hasManualTOTHAds = true;
+	}
+	else 
+	{
+		hasManualTOTHAds = false;
 	}
 }
