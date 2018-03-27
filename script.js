@@ -618,7 +618,7 @@ function checkForOBDelay() {
 function checkForManualTOTHAd() {
 	var dateParts = [0, 0, 0, 'Monday', 1, 'January', 1970];
     dateParts = getDateParts();
-    if ((dateParts[3] != "Saturday") && (dateParts[3] != "Sunday") && (($dateParts[0] == 6 || $dateParts[0] == 7 || $dateParts[0] == 8 || $dateParts[0] == 12 || $dateParts[0] == 15 || $dateParts[0] == 16 || $dateParts[0] == 17 )))
+    if ((dateParts[3] != "Saturday") && (dateParts[3] != "Sunday") && ((dateParts[0] == 6 || dateParts[0] == 7 || dateParts[0] == 8 || dateParts[0] == 12 || dateParts[0] == 15 || dateParts[0] == 16 || dateParts[0] == 17 )))
 	{
 		hasManualTOTHAds = true;
 	}
