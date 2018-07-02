@@ -310,13 +310,13 @@ function displayTOTHNotice(mins,secs) {
     }
     else 
 	{
-		if (hasManualTOTHAds == true && secsToTOTH < 47)
+		if (hasManualTOTHAds == true && secsToTOTH < 58)
 		{
 			$('#' + divToFill).html('ADVERT');
 		}
 		else 
 		{
-			if (hasManualTOTHAds == true) {secsToTOTH = secsToTOTH - 47;}
+			if (hasManualTOTHAds == true) {secsToTOTH = secsToTOTH - 58;}
 			minsToTOTH = Math.floor(secsToTOTH / 60);
 			secsToTOTH = secsToTOTH - (minsToTOTH * 60);
 			countToNews = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
