@@ -205,8 +205,8 @@ function updateLight(divid,status) {
 
 function checkForScheduledNotices(dateParts) {
     messageSet = false;
-    if (dateParts[1] >= 55 && hasTOTHAdSequence == true) {displayTOTHAds(dateParts[1], dateParts[2]); messageSet = true;}
-    else if (dateParts[1] >= 55 && (hasNewsNextHour == true || hasIrnNextHour == true)) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
+    if (dateParts[1] >= 55 && (hasNewsNextHour == true || hasIrnNextHour == true)) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
+    else if (dateParts[1] >= 55 && hasTOTHAdSequence == true) {displayTOTHAds(dateParts[1], dateParts[2]); messageSet = true;}
     else if (dateParts[1] >= 55 && endOfProgInNext15Mins() == true) { displayProgEndCountdown(); messageSet = true;}
     else if (dateParts[1] < 2 && hasNewsNextHour == true) {displayNewsStatus(); messageSet = true;}
     else if (dateParts[1] < 2 && hasIrnNextHour == true) {displayIrnWeatherStatus(); messageSet = true;}
@@ -308,20 +308,25 @@ function displayTOTHNotice(mins,secs) {
 			allowGreenroomSlideAnimation = false;
 		}
     }
+	else if (secsToTOTH < 11)
+	{
+		$('#' + divToFill).html('SPONSORED TIMECHECK');
+	}
     else 
 	{
-		if (hasManualTOTHAds == true && secsToTOTH < 58)
+		if ((hasManualTOTHAds == true || hasTOTHAdSequence == true) && secsToTOTH < 70)
 		{
 			$('#' + divToFill).html('ADVERT');
 		}
 		else 
 		{
-			if (hasManualTOTHAds == true) {secsToTOTH = secsToTOTH - 58;}
+			if (hasManualTOTHAds == true || hasTOTHAdSequence == true) {secsToTOTH = secsToTOTH - 59;}
+			secsToTOTH = secsToTOTH - 11; // Sponsored timecheck
 			minsToTOTH = Math.floor(secsToTOTH / 60);
 			secsToTOTH = secsToTOTH - (minsToTOTH * 60);
 			countToNews = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
 			if (hasNewsNextHour == true) {newsType = "LOCAL NEWS INTRO";} else {newsType="SKY NEWS INTRO";}
-			if (hasManualTOTHAds == true) {newsType = "WOODFINES AD";}
+			if (hasManualTOTHAds == true || hasTOTHAdSequence == true) {newsType = "WOODFINES AD";} else {newsType="SPONSORED TIMECHECK";}
 			$('#' + divToFill).html(newsType + ' in: <span class="countdown">' + countToNews + '</span>');
 		}
     }
