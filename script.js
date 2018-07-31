@@ -8,6 +8,7 @@ var thisProgIsLive = false;
 var thisProgEnds = 0;
 var nextProgType = "";
 var scheduledMessages = [];
+var tothRules = [];
 var clock = null;
 var hasIrnNextHour = false;
 var hasNewsNextHour = false;
@@ -17,7 +18,6 @@ var networkGreenroomOK = true;
 var networkStudioAOK = true;
 var networkExternalOK = true;
 var hasTOTHAdSequence = false;
-var hasManualTOTHAds = false;
 var currentStudio = "";
 var loadedFromGreenroom = false;
 var allowGreenroomSlideAnimation = true;
@@ -26,9 +26,12 @@ var lastSlideshowImg = -1;
 var secondsSinceSlideChange = 12;
 var runningInStudio = "";
 var studioDelay = 0;
+var nextTOTHRuleName = "";
+var nextTOTHRuleTime = 0;
 loadScheduledMessages();
 loadSchedule();
 checkRunningStudio();
+loadTOTHRules();
 checkForOBDelay();
 
 if (window.location.href.indexOf("greenroom") > -1) {loadedFromGreenroom = true;}
@@ -89,6 +92,21 @@ function loadScheduledMessages() {
     });
 }
 
+function loadTOTHRules() {
+    d = new Date();
+    tothRules = [];
+    messageFile = "tothrules.json?nocache=" + d.getTime();
+    $.ajax({
+        url: messageFile, 
+        dataType: 'json',
+        timeout: 5000
+    }).success(function (rulesjson) {
+        tothRules = rulesjson;
+		parseTothRules();
+    });
+}
+
+
 function unloadTimeout() {
     clearInterval(mainTimer);
     clearInterval(clockTimer);
@@ -99,6 +117,49 @@ function updateClock() {
     dateParts = getDateParts();
     updateTextClock(dateParts);
     refreshClock();
+}
+
+function parseTothRules() {
+	// Note this won't work at midnight at present
+	d = new Date();
+	thisDay = d.getDay() - 1;
+	if (thisDay == -1) {thisDay = 6;} // Because the JSON file starts on Monday but JS doesn't
+	nextHour = d.getHours() + 1;
+	if (nextHour > 23) {nextHour = 0;}
+	todaysRules = tothRules["toths"][thisDay]["hours"];
+	for (var i = 0; i < todaysRules.length; i++) {
+		console.log("Checking " + todaysRules[i]["hour"]);
+		if (todaysRules[i]["hour"] == nextHour)
+		{
+			applyTOTHRule(todaysRules[i]["items"]);
+		}	
+	}
+}
+
+function applyTOTHRule(ruleString) {
+	console.log("Applying rule " + ruleString);
+	if (ruleString.includes("LOCALNEWS")) {hasNewsNextHour = true;}
+	ruleAr = ruleString.split(",");
+	var tmpDateNow = new Date();
+	for (var i=0; i<ruleAr.length; i++) {
+		var tmpRuleName = ruleAr[i];
+		var tmpRuleDate = new Date();
+		for (var j=0; j<tothRules["timings"].length; j++) {
+			if (tothRules["timings"][j]["name"] == tmpRuleName)
+			{
+				tmpRuleDate.setMinutes(tothRules["timings"][i]["startat"]["minutes"]);
+				tmpRuleDate.setSeconds(tothRules["timings"][i]["startat"]["seconds"]);
+				if (tmpDateNow < tmpRuleDate)
+				{
+					nextTOTHRuleName = tmpRuleName;
+					nextTOTHRuleTime = tmpRuleDate;
+					console.log ("Set rule " + nextTOTHRuleName + " at " + nextTOTHRuleTime);
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 function updateTimer() {
@@ -120,14 +181,14 @@ function updateTimer() {
     if (((dateParts[1] == 0 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule();}
     // Only update the engineering notice at xx:00:15, xx:10:15, xx:20:15 etc.
     if ((dateParts[1] == 0 || dateParts[1] == 10 || dateParts[1] == 20 || dateParts[1] == 30 || dateParts[1] == 40 || dateParts[1] == 50) && dateParts[2] == 15) { getEngineeringMessage(); }
-	// At xx:51:00 check whether the next hour has news
-	if ((dateParts[1] == 51) && (dateParts[2] == 0)) {hasNewsNextHour = checkForNewsNextHour((dateParts[0] + 1), dateParts[3]);}
 	// At xx:52:00 check whether IRN is scheduled
-	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {checkForIrn(); checkForAds(); checkForManualTOTHAd();}
+	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {checkForIrn(); checkForAds(); }
 	// At xx:53:00 check whether weather is scheduled
 	if ((dateParts[1] == 53) && (dateParts[2] == 0)) {checkForWeather();}
-	// At xx:49:00 unset the IRN/News/weather check
-	if (dateParts[1] == 49 && dateParts[2] == 0) { hasNewsNextHour=false; hasIrnNextHour = false; hasRecordedWeatherNextHour = false; hasLocalReadWeatherNextHour = false; hasManualTOTHAds = false;}
+	// At xx:31:00 reload the TOTH rules
+	if (dateParts[1] == 31 && dateParts[2] == 0) {nextTOTHRuleName=""; nextTOTHRuleTime=0; parseTothRules();}
+    // At xx:49:00 unset the IRN/News/weather check
+	if (dateParts[1] == 49 && dateParts[2] == 0) {hasIrnNextHour = false; hasRecordedWeatherNextHour = false; hasLocalReadWeatherNextHour = false; hasTOTHAdSequence = false; hasNewsNextHour = false;}
     // At 03:25:00, reload the whole page so we hopefully drop any DOM objects we've leaked
     if (dateParts[0] == 3 && dateParts[1] == 25 && dateParts[2] == 0) { location.reload(true); }
 
@@ -205,9 +266,7 @@ function updateLight(divid,status) {
 
 function checkForScheduledNotices(dateParts) {
     messageSet = false;
-    if (dateParts[1] >= 55 && (hasNewsNextHour == true || hasIrnNextHour == true)) { displayTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
-    else if (dateParts[1] >= 55 && hasTOTHAdSequence == true) {displayTOTHAds(dateParts[1], dateParts[2]); messageSet = true;}
-    else if (dateParts[1] >= 55 && endOfProgInNext15Mins() == true) { displayProgEndCountdown(); messageSet = true;}
+    if (dateParts[1] >= 55) { calculateTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
     else if (dateParts[1] < 2 && hasNewsNextHour == true) {displayNewsStatus(); messageSet = true;}
     else if (dateParts[1] < 2 && hasIrnNextHour == true) {displayIrnWeatherStatus(); messageSet = true;}
     else if (dateParts[2] == 1) {
@@ -281,7 +340,24 @@ function displayGreenroomNews(type) {
 	}
 }
 
-function displayTOTHNotice(mins,secs) {
+function calculateTOTHNotice(mins,secs) {
+	//Logic
+	var d = new Date();
+	// 0.  If there's a rule set in the past, reload the rules
+	if (nextTOTHRuleTime <= d && nextTOTHRuleTime != 0) {nextTOTHRuleTime  = 0; parseTothRules(); calculateTOTHNotice(mins,secs);}
+	//  1. If there's a rule set in the future, countdown to the next rule 
+	else if (nextTOTHRuleTime >= d) {displayTOTHNotice(nextTOTHRuleName + " in ", mins, secs);}
+	// 2.  If there's IRN next, countdown to IRN, starting at xx:58:51
+	else if (hasIrnNextHour == true) {displayTOTHNotice("SKY NEWS in ", mins, secs);}
+	// 3. If the end of programme is next, count to end of prog
+	else if (endOfProgInNext15Mins() == true) {displayProgEndCountdown();}
+	// 5. Do nothing (programme continues)
+	return false;
+}
+
+
+
+function displayTOTHNotice(noticeText, mins,secs) {
     if (!loadedFromGreenroom) 
 	{
         $('#footer').css('color', 'yellow'); 
@@ -292,70 +368,42 @@ function displayTOTHNotice(mins,secs) {
 		divToFill = "onNextBar";
 		$('#nextLabel').html("-");
 	}
-	secsToTOTH = ((59 - mins) * 60) + (60 - secs);
-    secsToTOTH = secsToTOTH - 12; // News intro
-    if (secsToTOTH < -5) 
+	
+	if (mins == 59 && secs > 47)
 	{
-        $('#' + divToFill).html('...this is Cambridge 105 Radio&quot;');
-    }
-    else if (secsToTOTH < 0) 
-	{
-        $('#' + divToFill).html('&quot;Online, on Digital and on FM...');
-		if ($('#slideshowOverlay').html().indexOf('toth.jpg') < 1)
-		{
-			$('#slideshowOverlay').html('<img src="slides/toth.jpg" height="720px" width="1280px">');
-			$('#slideshowOverlay').css("display", "block");
-			allowGreenroomSlideAnimation = false;
-		}
-    }
-	else if (secsToTOTH < 11)
-	{
-		$('#' + divToFill).html('SPONSORED TIMECHECK');
+		    if (secs > 52) 
+			{
+				$('#' + divToFill).html('...this is Cambridge 105 Radio&quot;');
+			}
+			else if (secs > 47) 
+			{
+				$('#' + divToFill).html('&quot;Online, on Digital and on FM...');
+				if ($('#slideshowOverlay').html().indexOf('toth.jpg') < 1)
+				{
+					$('#slideshowOverlay').html('<img src="slides/toth.jpg" height="720px" width="1280px">');
+					$('#slideshowOverlay').css("display", "block");
+					allowGreenroomSlideAnimation = false;
+				}
+			}
 	}
-    else 
+	else if (nextTOTHRuleTime == 0 && hasIrnNextHour == true)
 	{
-		if ((hasManualTOTHAds == true || hasTOTHAdSequence == true) && secsToTOTH < 70)
-		{
-			$('#' + divToFill).html('ADVERT');
-		}
-		else 
-		{
-			if (hasManualTOTHAds == true || hasTOTHAdSequence == true) {secsToTOTH = secsToTOTH - 59;}
-			secsToTOTH = secsToTOTH - 11; // Sponsored timecheck
-			minsToTOTH = Math.floor(secsToTOTH / 60);
-			secsToTOTH = secsToTOTH - (minsToTOTH * 60);
-			countToNews = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
-			if (hasNewsNextHour == true) {newsType = "LOCAL NEWS INTRO";} else {newsType="SKY NEWS INTRO";}
-			if (hasManualTOTHAds == true || hasTOTHAdSequence == true) {newsType = "WOODFINES AD";} else {newsType="SPONSORED TIMECHECK";}
-			$('#' + divToFill).html(newsType + ' in: <span class="countdown">' + countToNews + '</span>');
-		}
-    }
-}
-
-function displayTOTHAds(mins,secs) {
-    if (!loadedFromGreenroom) 
-	{
-        $('#footer').css('color', 'yellow'); 
-		divToFill = "footer";
+		secsToGo = ((59 - mins) * 60) + (60 - secs);
+		secsToGo = secsToGo - 12; // News intro
 	}
 	else 
 	{
-		divToFill = "onNextBar";
-		$('#nextLabel').html("-");
+		var tmpTimeNow = new Date();
+		var tmpTimeDiff = nextTOTHRuleTime.getTime() - tmpTimeNow.getTime(); 
+		secsToGo = tmpTimeDiff / 1000;
 	}
-	secsToTOTH = ((59 - mins) * 60) + (60 - secs);
-    secsToTOTH = secsToTOTH - 60; // Ads start at exactly xx:59:00
-    if (secsToTOTH < 0) {
-        $('#'+divToFill).html('Adverts');
-    }
-    else {
-        minsToTOTH = Math.floor(secsToTOTH / 60);
-        secsToTOTH = secsToTOTH - (minsToTOTH * 60);
-        countToAds = padZeros(minsToTOTH) + ":" + padZeros(secsToTOTH);
-	$('#'+divToFill).html('ADVERTS start in: <span class="countdown">' + countToAds + '</span>');
-    }
+	minsToGo = Math.floor(secsToGo / 60);
+	secsToGo = Math.floor(secsToGo - (minsToGo * 60));
+	countToRule = padZeros(minsToGo) + ":" + padZeros(secsToGo);
+	$('#' + divToFill).html(noticeText + ' <span class="countdown">' + countToRule + '</span>');
 }
-
+	
+	
 
 function displayProgEndCountdown() {
 	if (!loadedFromGreenroom)
@@ -530,22 +578,7 @@ function checkForLocalReadWeather() {
                 });
 }
 
-function checkForNewsNextHour(nextHour,day) {
-	console.log(nextHour + ":" + day);
-	if (day == "Sunday") 
-	{
-		if (nextHour>7 && nextHour<11) {return true;}
-	}
-	else if (day == "Saturday")
-	{
-		if (nextHour>7 && nextHour<10) {return true;}
-	}
-	else if (day != "Saturday" && day != "Sunday")
-	{
-		if ((nextHour>6 && nextHour<10) || (nextHour==13) || (nextHour>15 && nextHour<19)) {return true;}
-	}
-	return false;
-}
+
 
 function displayMessage(response) {
 	networkExternalOK = true;
@@ -617,18 +650,5 @@ function checkForOBDelay() {
 	delay = getParameterByName("delay");
 	if (delay) {
 		studioDelay = delay;
-	}
-}
-
-function checkForManualTOTHAd() {
-	var dateParts = [0, 0, 0, 'Monday', 1, 'January', 1970];
-    dateParts = getDateParts();
-    if ((dateParts[3] != "Saturday") && (dateParts[3] != "Sunday") && ((dateParts[0] == 6 || dateParts[0] == 7 || dateParts[0] == 8 || dateParts[0] == 12 || dateParts[0] == 15 || dateParts[0] == 16 || dateParts[0] == 17 )))
-	{
-		hasManualTOTHAds = true;
-	}
-	else 
-	{
-		hasManualTOTHAds = false;
 	}
 }

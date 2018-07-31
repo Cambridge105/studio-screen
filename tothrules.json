@@ -1,0 +1,231 @@
+{
+	"toths": [
+		{
+			"day": "Monday",
+			"hours": [
+				{
+					"hour": 7,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 8,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 9,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 13,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 16,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 17,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 18,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				}
+			]
+		},
+		{
+			"day": "Tuesday",
+			"hours": [
+				{
+					"hour": 7,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 8,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 9,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 13,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 16,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 17,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 18,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 23,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				}
+			]
+		},
+		{
+			"day": "Wednesday",
+			"hours": [
+				{
+					"hour": 7,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 8,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 9,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 13,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 16,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 17,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 18,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				}
+			]
+		},
+		{
+			"day": "Thursday",
+			"hours": [
+				{
+					"hour": 7,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 8,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 9,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 13,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 16,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 17,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 18,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				}
+			]
+		},
+		{
+			"day": "Friday",
+			"hours": [
+				{
+					"hour": 7,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 8,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 9,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 13,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 16,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 17,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 18,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				}
+			]
+		},
+		{
+			"day": "Saturday",
+			"hours": [
+				{
+					"hour": 8,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 9,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				}
+			]
+		},
+		{
+			"day": "Sunday",
+			"hours": [
+				{
+					"hour": 8,
+					"items": "LOCALNEWS"
+				},
+				{
+					"hour": 9,
+					"items": "LOCALNEWS"
+				},
+				{
+					"hour": 10,
+					"items": "LOCALNEWS"
+				}
+			]
+		}
+	],
+	
+	
+	"timings": [
+		{
+			"name": "WOODFINES",
+			"startat": 
+			{
+				"minutes": 58,
+				"seconds": 51
+			}
+		},
+		{
+			"name": "TIMECHECK",
+			"startat": 
+			{
+				"minutes": 59,
+				"seconds": 37
+			}
+		},
+		{
+			"name": "LOCALNEWS",
+			"startat": 
+			{
+				"minutes": 59,
+				"seconds": 48
+			}
+		}
+	]
+}
