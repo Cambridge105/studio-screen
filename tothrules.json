@@ -183,15 +183,15 @@
 			"hours": [
 				{
 					"hour": 8,
-					"items": "LOCALNEWS"
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
 				},
 				{
 					"hour": 9,
-					"items": "LOCALNEWS"
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
 				},
 				{
 					"hour": 10,
-					"items": "LOCALNEWS"
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
 				}
 			]
 		}
