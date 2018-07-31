@@ -63,10 +63,6 @@
 				{
 					"hour": 18,
 					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
-				},
-				{
-					"hour": 23,
-					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
 				}
 			]
 		},
