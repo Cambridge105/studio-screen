@@ -138,7 +138,7 @@ function parseTothRules() {
 
 function applyTOTHRule(ruleString) {
 	console.log("Applying rule " + ruleString);
-	if (ruleString.includes("LOCALNEWS")) {hasNewsNextHour = true;}
+	if (ruleString.indexOf("LOCALNEWS") > -1) {hasNewsNextHour = true;}
 	ruleAr = ruleString.split(",");
 	var tmpDateNow = new Date();
 	for (var i=0; i<ruleAr.length; i++) {
