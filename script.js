@@ -371,19 +371,22 @@ function displayTOTHNotice(noticeText, mins,secs) {
 	
 	if (mins == 59 && secs > 47)
 	{
-		    if (secs > 52) 
-			{
-				$('#' + divToFill).html('...this is Cambridge 105 Radio&quot;');
-			}
-			else if (secs > 47) 
+		    if (secs < 53) 
 			{
 				$('#' + divToFill).html('&quot;Online, on Digital and on FM...');
-				if ($('#slideshowOverlay').html().indexOf('toth.jpg') < 1)
+				if (loadedFromGreenroom == true)
 				{
-					$('#slideshowOverlay').html('<img src="slides/toth.jpg" height="720px" width="1280px">');
-					$('#slideshowOverlay').css("display", "block");
-					allowGreenroomSlideAnimation = false;
+					if ($('#slideshowOverlay').html().indexOf('toth.jpg') < 1)
+					{
+						$('#slideshowOverlay').html('<img src="slides/toth.jpg" height="720px" width="1280px">');
+						$('#slideshowOverlay').css("display", "block");
+						allowGreenroomSlideAnimation = false;
+					}
 				}
+			}
+			else
+			{
+				$('#' + divToFill).html('...this is Cambridge 105 Radio&quot;');
 			}
 	}
 	else if (nextTOTHRuleTime == 0 && hasIrnNextHour == true)
