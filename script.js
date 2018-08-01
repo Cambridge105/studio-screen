@@ -177,8 +177,8 @@ function updateTimer() {
 	} 
 	if (loadedFromGreenroom) {checkForSlideRotate();}
 	//displayNetworkMessage();
-    // Only load the schedule at xx:00:00, xx:30:00
-    if (((dateParts[1] == 0 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule();}
+    // Only load the schedule at xx:03:00, xx:30:00
+    if (((dateParts[1] == 3 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule();}
     // Only update the engineering notice at xx:00:15, xx:10:15, xx:20:15 etc.
     if ((dateParts[1] == 0 || dateParts[1] == 10 || dateParts[1] == 20 || dateParts[1] == 30 || dateParts[1] == 40 || dateParts[1] == 50) && dateParts[2] == 15) { getEngineeringMessage(); }
 	// At xx:52:00 check whether IRN is scheduled
@@ -266,7 +266,7 @@ function updateLight(divid,status) {
 
 function checkForScheduledNotices(dateParts) {
     messageSet = false;
-    if (dateParts[1] >= 55) { calculateTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;}
+    if (dateParts[1] >= 55) { calculateTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;} //TODO: Don't actually want to set messageSet here because if the programme continues into the next hour, we shouldn't pause greenroom animations
     else if (dateParts[1] < 2 && hasNewsNextHour == true) {displayNewsStatus(); messageSet = true;}
     else if (dateParts[1] < 2 && hasIrnNextHour == true) {displayIrnWeatherStatus(); messageSet = true;}
     else if (dateParts[2] == 1) {
@@ -348,7 +348,7 @@ function calculateTOTHNotice(mins,secs) {
 	//  1. If there's a rule set in the future, countdown to the next rule 
 	else if (nextTOTHRuleTime >= d) {displayTOTHNotice(nextTOTHRuleName + " in ", mins, secs);}
 	// 2.  If there's IRN next, countdown to IRN, starting at xx:58:51
-	else if (hasIrnNextHour == true) {displayTOTHNotice("SKY NEWS in ", mins, secs);}
+	else if (hasIrnNextHour == true) {displayTOTHNotice("TIMECHECK in ", mins, secs);}
 	// 3. If the end of programme is next, count to end of prog
 	else if (endOfProgInNext15Mins() == true) {displayProgEndCountdown();}
 	// 5. Do nothing (programme continues)
@@ -358,7 +358,9 @@ function calculateTOTHNotice(mins,secs) {
 
 
 function displayTOTHNotice(noticeText, mins,secs) {
-    if (!loadedFromGreenroom) 
+    var showCountdown = true;
+	
+	if (!loadedFromGreenroom) 
 	{
         $('#footer').css('color', 'yellow'); 
 		divToFill = "footer";
@@ -369,8 +371,9 @@ function displayTOTHNotice(noticeText, mins,secs) {
 		$('#nextLabel').html("-");
 	}
 	
-	if (mins == 59 && secs > 47)
+	if (mins > 58 && secs > 47)
 	{
+			showCountdown = false;
 		    if (secs < 53) 
 			{
 				$('#' + divToFill).html('&quot;Online, on Digital and on FM...');
@@ -392,7 +395,8 @@ function displayTOTHNotice(noticeText, mins,secs) {
 	else if (nextTOTHRuleTime == 0 && hasIrnNextHour == true)
 	{
 		secsToGo = ((59 - mins) * 60) + (60 - secs);
-		secsToGo = secsToGo - 12; // News intro
+		secsToGo = secsToGo - 23; // Timecheck
+		if (secsToGo < 0) {noticeText = "SKY NEWS in"; secsToGo=secsToGo+11;} // True during timecheck, count to news jingle
 	}
 	else 
 	{
@@ -400,10 +404,13 @@ function displayTOTHNotice(noticeText, mins,secs) {
 		var tmpTimeDiff = nextTOTHRuleTime.getTime() - tmpTimeNow.getTime(); 
 		secsToGo = tmpTimeDiff / 1000;
 	}
-	minsToGo = Math.floor(secsToGo / 60);
-	secsToGo = Math.floor(secsToGo - (minsToGo * 60));
-	countToRule = padZeros(minsToGo) + ":" + padZeros(secsToGo);
-	$('#' + divToFill).html(noticeText + ' <span class="countdown">' + countToRule + '</span>');
+	if (showCountdown == true)
+	{
+		minsToGo = Math.floor(secsToGo / 60);
+		secsToGo = Math.floor(secsToGo - (minsToGo * 60));
+		countToRule = padZeros(minsToGo) + ":" + padZeros(secsToGo);
+		$('#' + divToFill).html(noticeText + ' <span class="countdown">' + countToRule + '</span>');
+	}
 }
 	
 	
