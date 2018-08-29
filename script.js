@@ -181,10 +181,8 @@ function updateTimer() {
     if (((dateParts[1] == 3 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule();}
     // Only update the engineering notice at xx:00:15, xx:10:15, xx:20:15 etc.
     if ((dateParts[1] == 0 || dateParts[1] == 10 || dateParts[1] == 20 || dateParts[1] == 30 || dateParts[1] == 40 || dateParts[1] == 50) && dateParts[2] == 15) { getEngineeringMessage(); }
-	// At xx:52:00 check whether IRN is scheduled
-	if ((dateParts[1] == 52) && (dateParts[2] == 0)) {checkForIrn(); checkForAds(); }
-	// At xx:53:00 check whether weather is scheduled
-	if ((dateParts[1] == 53) && (dateParts[2] == 0)) {checkForWeather();}
+	// At xx:51:45 check whether IRN is scheduled
+	if ((dateParts[1] == 51) && (dateParts[2] == 45)) {checkForIrn(); checkForAds(); checkForWeather();}
 	// At xx:31:00 reload the TOTH rules
 	if (dateParts[1] == 31 && dateParts[2] == 0) {nextTOTHRuleName=""; nextTOTHRuleTime=0; parseTothRules();}
     // At xx:49:00 unset the IRN/News/weather check
@@ -266,7 +264,7 @@ function updateLight(divid,status) {
 
 function checkForScheduledNotices(dateParts) {
     messageSet = false;
-    if (dateParts[1] >= 55) { calculateTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;} //TODO: Don't actually want to set messageSet here because if the programme continues into the next hour, we shouldn't pause greenroom animations
+    if (dateParts[1] >= 52) { calculateTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;} //TODO: Don't actually want to set messageSet here because if the programme continues into the next hour, we shouldn't pause greenroom animations
     else if (dateParts[1] < 2 && hasNewsNextHour == true) {displayNewsStatus(); messageSet = true;}
     else if (dateParts[1] < 2 && hasIrnNextHour == true) {displayIrnWeatherStatus(); messageSet = true;}
     else if (dateParts[2] == 1) {
