@@ -345,11 +345,11 @@ function calculateTOTHNotice(mins,secs) {
 	if (nextTOTHRuleTime <= d && nextTOTHRuleTime != 0) {nextTOTHRuleTime  = 0; parseTothRules(); calculateTOTHNotice(mins,secs);}
 	//  1. If there's a rule set in the future, countdown to the next rule 
 	else if (nextTOTHRuleTime >= d) {displayTOTHNotice(nextTOTHRuleName + " in ", mins, secs);}
-	// 1.5.  If there's a TOTH Break next, countdown to the break, starting at xx:59:00
+	// 2.  If there's an advert (auto played) next, countdown to the advert, starting at xx:59:00
 	else if (hasTOTHAdSequence == true) {displayTOTHNotice("ADVERT in ", mins, secs);}
-	// 2.  If there's IRN next, countdown to IRN, starting at xx:58:51
+	// 3.  If there's IRN next, countdown to IRN, starting at xx:58:51
 	else if (hasIrnNextHour == true) {displayTOTHNotice("TIMECHECK in ", mins, secs);}
-	// 3. If the end of programme is next, count to end of prog
+	// 4. If the end of programme is next, count to end of prog
 	else if (endOfProgInNext15Mins() == true) {displayProgEndCountdown();}
 	// 5. Do nothing (programme continues)
 	return false;
@@ -395,8 +395,8 @@ function displayTOTHNotice(noticeText, mins,secs) {
 	else if (nextTOTHRuleTime == 0 && hasTOTHAdSequence == true)
 	{
 		secsToGo = ((59 - mins) * 60) + (60 - secs);
-		secsToGo = secsToGo - 60; // Timecheck
-		if (secsToGo < 0) {hasTOTHAdSequence = false;} // Forces fall through to the hasIrnNextHour block when Ad sequence starts
+		secsToGo = secsToGo - 60; // Advert
+		if (secsToGo < 0) {hasTOTHAdSequence = false;} // Should force fallthrough to hasIrnNextHour
 	}
 	else if (nextTOTHRuleTime == 0 && hasIrnNextHour == true)
 	{

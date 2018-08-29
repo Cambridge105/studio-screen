@@ -158,24 +158,12 @@
 				{
 					"hour": 17,
 					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
-				},
-				{
-					"hour": 18,
-					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
 				}
 			]
 		},
 		{
 			"day": "Saturday",
 			"hours": [
-				{
-					"hour": 8,
-					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
-				},
-				{
-					"hour": 9,
-					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
-				}
 			]
 		},
 		{

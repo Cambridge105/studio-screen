@@ -10,7 +10,6 @@
 	{"h":9,"m":39,"msg":"TRAVEL","d":3},
 	{"h":10,"m":2,"msg":"WEATHER","d":1},
 	{"h":10,"m":19,"msg":"TRAVEL","d":3},
-	{"h":10,"m":22,"msg":"FIRE ALARM TEST DUE SOON","d":8,"c":"coral"},
 	{"h":10,"m":39,"msg":"TRAVEL","d":3},
 	{"h":11,"m":2,"msg":"WEATHER","d":1},
 	{"h":11,"m":19,"msg":"TRAVEL","d":3},
