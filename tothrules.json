@@ -26,10 +26,6 @@
 				{
 					"hour": 17,
 					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
-				},
-				{
-					"hour": 18,
-					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
 				}
 			]
 		},
@@ -58,10 +54,6 @@
 				},
 				{
 					"hour": 17,
-					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
-				},
-				{
-					"hour": 18,
 					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
 				}
 			]
@@ -92,10 +84,6 @@
 				{
 					"hour": 17,
 					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
-				},
-				{
-					"hour": 18,
-					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
 				}
 			]
 		},
@@ -124,10 +112,6 @@
 				},
 				{
 					"hour": 17,
-					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
-				},
-				{
-					"hour": 18,
 					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
 				}
 			]
@@ -164,11 +148,6 @@
 		{
 			"day": "Saturday",
 			"hours": [
-			]
-		},
-		{
-			"day": "Sunday",
-			"hours": [
 				{
 					"hour": 8,
 					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
@@ -179,6 +158,23 @@
 				},
 				{
 					"hour": 10,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				}
+			]
+		},
+		{
+			"day": "Sunday",
+			"hours": [
+				{
+					"hour": 10,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 11,
+					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
+				},
+				{
+					"hour": 12,
 					"items": "WOODFINES,TIMECHECK,LOCALNEWS"
 				}
 			]
