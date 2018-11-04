@@ -5,27 +5,27 @@
 			"hours": [
 				{
 					"hour": 7,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 8,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 9,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 13,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 16,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 17,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				}
 			]
 		},
@@ -34,27 +34,27 @@
 			"hours": [
 				{
 					"hour": 7,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 8,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 9,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 13,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 16,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 17,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				}
 			]
 		},
@@ -63,27 +63,27 @@
 			"hours": [
 				{
 					"hour": 7,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 8,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 9,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 13,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 16,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 17,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				}
 			]
 		},
@@ -92,27 +92,27 @@
 			"hours": [
 				{
 					"hour": 7,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 8,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 9,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 13,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 16,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 17,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				}
 			]
 		},
@@ -121,27 +121,27 @@
 			"hours": [
 				{
 					"hour": 7,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 8,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 9,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 13,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 16,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 17,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				}
 			]
 		},
@@ -150,15 +150,15 @@
 			"hours": [
 				{
 					"hour": 8,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 9,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 10,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				}
 			]
 		},
@@ -167,15 +167,15 @@
 			"hours": [
 				{
 					"hour": 10,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 11,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				},
 				{
 					"hour": 12,
-					"items": "AD-SEQUENCE,LOCALNEWS"
+					"items": "AD-SEQUENCE,LOCAL-NEWS"
 				}
 			]
 		}
@@ -192,7 +192,7 @@
 			}
 		},
 		{
-			"name": "LOCALNEWS",
+			"name": "LOCAL-NEWS",
 			"startat": 
 			{
 				"minutes": 59,

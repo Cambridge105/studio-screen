@@ -184,18 +184,18 @@ function updateTimer() {
     if (((dateParts[1] == 3 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule();}
     // Only update the engineering notice at xx:00:15, xx:10:15, xx:20:15 etc.
     if ((dateParts[1] == 0 || dateParts[1] == 10 || dateParts[1] == 20 || dateParts[1] == 30 || dateParts[1] == 40 || dateParts[1] == 50) && dateParts[2] == 15) { getEngineeringMessage(); }
-	// At xx:51:45 check whether IRN is scheduled
-	if ((dateParts[1] == 51) && (dateParts[2] == 45)) {checkForIrn();}
-	// At xx:51:47 check whether ads are scheduled
-	if ((dateParts[1] == 51) && (dateParts[2] == 47)) {checkForAds();}
-	// At xx:51:49 check whether weather is scheduled
-	if ((dateParts[1] == 51) && (dateParts[2] == 49)) {checkForWeather();}
-	// At xx:52:15 check whether IRN is scheduled if failed before
-	if ((dateParts[1] == 52) && (dateParts[2] == 15) && checkedForIrn == false) {checkForIrn();}
-	// At xx:52:17 check whether ads are scheduled if failed before
-	if ((dateParts[1] == 52) && (dateParts[2] == 17) && checkedForAds == false) {checkForAds();}
-	// At xx:52:19 check whether weather is scheduled if failed before
-	if ((dateParts[1] == 52) && (dateParts[2] == 19) && checkedForWeather == false) {checkForWeather();}
+	// At xx:51:15 check whether IRN is scheduled
+	if ((dateParts[1] == 51) && (dateParts[2] == 15)) {checkForIrn();}
+	// At xx:51:17 check whether ads are scheduled
+	if ((dateParts[1] == 51) && (dateParts[2] == 17)) {checkForAds();}
+	// At xx:51:19 check whether weather is scheduled
+	if ((dateParts[1] == 51) && (dateParts[2] == 19)) {checkForWeather();}
+	// At xx:51:45 check whether IRN is scheduled if failed before
+	if ((dateParts[1] == 51) && (dateParts[2] == 45) && checkedForIrn == false) {checkForIrn();}
+	// At xx:51:47 check whether ads are scheduled if failed before
+	if ((dateParts[1] == 51) && (dateParts[2] == 47) && checkedForAds == false) {checkForAds();}
+	// At xx:51:49 check whether weather is scheduled if failed before
+	if ((dateParts[1] == 51) && (dateParts[2] == 49) && checkedForWeather == false) {checkForWeather();}
 	// At xx:31:00 reload the TOTH rules
 	if (dateParts[1] == 31 && dateParts[2] == 0) {nextTOTHRuleName=""; nextTOTHRuleTime=0; parseTothRules();}
     // At xx:49:00 unset the IRN/News/weather check
