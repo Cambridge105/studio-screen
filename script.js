@@ -28,6 +28,9 @@ var runningInStudio = "";
 var studioDelay = 0;
 var nextTOTHRuleName = "";
 var nextTOTHRuleTime = 0;
+var checkedForIrn = false;
+var checkedForWeather = false;
+var checkedForAds = false;
 loadScheduledMessages();
 loadSchedule();
 checkRunningStudio();
@@ -182,11 +185,21 @@ function updateTimer() {
     // Only update the engineering notice at xx:00:15, xx:10:15, xx:20:15 etc.
     if ((dateParts[1] == 0 || dateParts[1] == 10 || dateParts[1] == 20 || dateParts[1] == 30 || dateParts[1] == 40 || dateParts[1] == 50) && dateParts[2] == 15) { getEngineeringMessage(); }
 	// At xx:51:45 check whether IRN is scheduled
-	if ((dateParts[1] == 51) && (dateParts[2] == 45)) {checkForIrn(); checkForAds(); checkForWeather();}
+	if ((dateParts[1] == 51) && (dateParts[2] == 45)) {checkForIrn();}
+	// At xx:51:47 check whether ads are scheduled
+	if ((dateParts[1] == 51) && (dateParts[2] == 47)) {checkForAds();}
+	// At xx:51:49 check whether weather is scheduled
+	if ((dateParts[1] == 51) && (dateParts[2] == 49)) {checkForWeather();}
+	// At xx:52:15 check whether IRN is scheduled if failed before
+	if ((dateParts[1] == 52) && (dateParts[2] == 15) && checkedForIrn == false) {checkForIrn();}
+	// At xx:52:17 check whether ads are scheduled if failed before
+	if ((dateParts[1] == 52) && (dateParts[2] == 17) && checkedForAds == false) {checkForAds();}
+	// At xx:52:19 check whether weather is scheduled if failed before
+	if ((dateParts[1] == 52) && (dateParts[2] == 19) && checkedForWeather == false) {checkForWeather();}
 	// At xx:31:00 reload the TOTH rules
 	if (dateParts[1] == 31 && dateParts[2] == 0) {nextTOTHRuleName=""; nextTOTHRuleTime=0; parseTothRules();}
     // At xx:49:00 unset the IRN/News/weather check
-	if (dateParts[1] == 49 && dateParts[2] == 0) {hasIrnNextHour = false; hasRecordedWeatherNextHour = false; hasLocalReadWeatherNextHour = false; hasTOTHAdSequence = false; hasNewsNextHour = false;}
+	if (dateParts[1] == 49 && dateParts[2] == 0) {hasIrnNextHour = false; hasRecordedWeatherNextHour = false; hasLocalReadWeatherNextHour = false; hasTOTHAdSequence = false; hasNewsNextHour = false; checkedForAds = false; checkedForIrn = false; checkedForWeather = false;}
     // At 03:25:00, reload the whole page so we hopefully drop any DOM objects we've leaked
     if (dateParts[0] == 3 && dateParts[1] == 25 && dateParts[2] == 0) { location.reload(true); }
 
@@ -547,6 +560,7 @@ function checkForIrn() {
 
     req.success(function () {
         hasIrnNextHour = true;
+		checkedForIrn = true;
     });
 
     req.fail(function () {
@@ -562,11 +576,13 @@ function checkForWeather() {
 
     req.success(function () {
         hasRecordedWeatherNextHour = true;
+		checkedForWeather = true;
     });
 
     req.fail(function () {
         hasRecordedWeatherNextHour = false;
     });
+	
 }
 
 function checkForAds() {
@@ -577,6 +593,7 @@ function checkForAds() {
 
     req.success(function () {
         hasTOTHAdSequence = true;
+		checkedForAds = true;
     });
 
     req.fail(function () {
