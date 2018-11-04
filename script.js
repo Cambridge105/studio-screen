@@ -180,8 +180,8 @@ function updateTimer() {
 	} 
 	if (loadedFromGreenroom) {checkForSlideRotate();}
 	//displayNetworkMessage();
-    // Only load the schedule at xx:03:00, xx:30:00
-    if (((dateParts[1] == 3 || dateParts[1] == 30) && dateParts[2] == 0)) { loadSchedule();}
+    // Only load the schedule at xx:02:01, xx:30:01
+    if (((dateParts[1] == 2 || dateParts[1] == 30) && dateParts[2] == 1)) { loadSchedule();}
     // Only update the engineering notice at xx:00:15, xx:10:15, xx:20:15 etc.
     if ((dateParts[1] == 0 || dateParts[1] == 10 || dateParts[1] == 20 || dateParts[1] == 30 || dateParts[1] == 40 || dateParts[1] == 50) && dateParts[2] == 15) { getEngineeringMessage(); }
 	// At xx:51:15 check whether IRN is scheduled
