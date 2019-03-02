@@ -182,8 +182,8 @@ function updateTimer() {
 	//displayNetworkMessage();
     // Only load the schedule at xx:02:01, xx:30:01
     if (((dateParts[1] == 2 || dateParts[1] == 30) && dateParts[2] == 1)) { loadSchedule();}
-    // Only update the engineering notice at xx:00:15, xx:10:15, xx:20:15 etc.
-    if ((dateParts[1] == 0 || dateParts[1] == 10 || dateParts[1] == 20 || dateParts[1] == 30 || dateParts[1] == 40 || dateParts[1] == 50) && dateParts[2] == 15) { getEngineeringMessage(); }
+    // Update the engineering notice (repurposed for news) at xx:xx:15
+    if (dateParts[2] == 15 && loadedFromGreenroom==false) { getEngineeringMessage(); }
 	// At xx:51:15 check whether IRN is scheduled
 	if ((dateParts[1] == 51) && (dateParts[2] == 15)) {checkForIrn();}
 	// At xx:51:17 check whether ads are scheduled
@@ -536,7 +536,7 @@ function getEngineeringMessage() {
     if (!loadedFromGreenroom)
 	{
 		 var req = $.ajax({
-			url: "http://cambridge105.github.io/studio-screen/studioMessage.js",
+			url: "http://www.domsmith.co.uk/c105/screennotice/studioMessage.js",
 			dataType: "jsonp",
 			timeout: 5000,
 			jsonpCallback: "displayMessage"
