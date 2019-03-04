@@ -614,8 +614,10 @@ function checkForLocalReadWeather() {
 
 function displayMessage(response) {
 	networkExternalOK = true;
-	if (response.message.length > 1)
+	if (response.message.length > 3)
 		{displayMessageText('<span class=\"engNotice\">Important notice:</span><br />' + response.message);}
+	else 
+	{displayMessageText('');}
 }
 
 function displayMessageText(message) {
