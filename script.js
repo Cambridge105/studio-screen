@@ -536,7 +536,7 @@ function getEngineeringMessage() {
     if (!loadedFromGreenroom)
 	{
 		 var req = $.ajax({
-			url: "http://www.domsmith.co.uk/c105/screennotice/studioMessage.js",
+			url: "http://www.domsmith.co.uk/c105/screennotice/studioMessage.js?nocache=" + (new Date()).getTime(),
 			dataType: "jsonp",
 			timeout: 5000,
 			jsonpCallback: "displayMessage"
@@ -615,7 +615,7 @@ function checkForLocalReadWeather() {
 function displayMessage(response) {
 	networkExternalOK = true;
 	if (response.message.length > 1)
-		{displayMessageText('<span class=\"engNotice\">Engineering notice:</span><br />' + response.message);}
+		{displayMessageText('<span class=\"engNotice\">Important notice:</span><br />' + response.message);}
 }
 
 function displayMessageText(message) {
