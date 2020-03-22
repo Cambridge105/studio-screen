@@ -312,7 +312,7 @@ function displayIrnWeatherStatus() {
 	{
         $('#footer').css('color', 'yellow');
         if (hasRecordedWeatherNextHour == true) {
-            $('#footer').html('SKY NEWS then RECORDED WEATHER');
+            $('#footer').html('SKY NEWS + LOCAL NEWS');
 		}
 		else {
 			$('#footer').html('SKY NEWS. No weather follows.');
