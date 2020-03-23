@@ -32,7 +32,6 @@ var checkedForIrn = false;
 var checkedForWeather = false;
 var checkedForAds = false;
 var runningRemote = false;
-var accessKey = "";
 loadScheduledMessages();
 loadSchedule();
 checkRunningStudio();
@@ -784,7 +783,6 @@ function checkRunningStudio() {
 	runningInStudio = studio.toLowerCase();
 	if (runningInStudio == "remote") {
 		runningRemote = true;
-		getAccessKey();
 	}
 }
 
@@ -792,12 +790,5 @@ function checkForOBDelay() {
 	delay = getParameterByName("delay");
 	if (delay) {
 		studioDelay = delay;
-	}
-}
-
-function getAccessKey() {
-	key = getParameterByName("key");
-	if (key) {
-		accessKey = atob(key + "==");
 	}
 }
