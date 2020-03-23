@@ -226,6 +226,7 @@ function updateTextClock(dateParts) {
 }
 
 function getMicLiveStatus() {
+	if (runningRemote == true) { return; }
 	if (runningInStudio == "b") {$('#micLive').css("visibility","hidden"); return;}
     $.ajax({
         url: "http://studioa-pi:8081/miclive",
@@ -240,6 +241,7 @@ function getMicLiveStatus() {
 }
 
 function getStudioStatus() {
+	if (runningRemote == true) { return;}
 	$.ajax({
         url: "http://greenroom-pi:8081/studios", 
         dataType: "json",
