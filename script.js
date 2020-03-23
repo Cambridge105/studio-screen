@@ -641,7 +641,8 @@ function checkForIrnExternal() {
 		dataType: 'jsonp',
 		url: "https://admin.cambridge105.fm/trackdata/irnnext?nocache=" + (new Date()).getTime(),
 		headers: {
-			"Access-Control-Request-Method: Get\r\nAccess-Control-Request-Headers: Content-Type"
+			"Access-Control-Request-Method": "Get",
+			"Access-Control-Request-Headers": "Content-Type"
 		},
 		timeout: 3000
 	});
@@ -663,7 +664,8 @@ function checkForWeatherExternal() {
 		dataType: 'jsonp',
 		url: "https://admin.cambridge105.fm/trackdata/weathernext?nocache=" + (new Date()).getTime(),
 		headers: {
-			"Access-Control-Request-Method: Get\r\nAccess-Control-Request-Headers: Content-Type"
+			"Access-Control-Request-Method": "Get",
+			"Access-Control-Request-Headers": "Content-Type"
 		},
 		timeout: 3000
 	});
@@ -686,7 +688,8 @@ function checkForAdsExternal() {
 		dataType: 'jsonp',
 		url: "https://admin.cambridge105.fm/trackdata/tothbreak?nocache=" + (new Date()).getTime(),
 		headers: {
-			"Access-Control-Request-Method: Get\r\nAccess-Control-Request-Headers: Content-Type"
+			"Access-Control-Request-Method": "Get",
+			"Access-Control-Request-Headers": "Content-Type"
 		},
 		timeout: 3000
 	});
