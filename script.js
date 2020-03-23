@@ -782,7 +782,7 @@ function checkForOBDelay() {
 }
 
 function getAccessKey() {
-	accessKey = getParameterByName("key");
+	key = getParameterByName("key");
 	if (key) {
 		accessKey = atob(key + "==");
 	}
