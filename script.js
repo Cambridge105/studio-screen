@@ -31,6 +31,8 @@ var nextTOTHRuleTime = 0;
 var checkedForIrn = false;
 var checkedForWeather = false;
 var checkedForAds = false;
+var runningRemote = false;
+var accessKey = "";
 loadScheduledMessages();
 loadSchedule();
 checkRunningStudio();
@@ -553,6 +555,34 @@ function getEngineeringMessage() {
 }
 
 function checkForIrn() {
+	if (runningRemote == false) {
+		checkForIrnInternal();
+	}
+	else {
+		checkForIrnExternal();
+	}
+}
+
+function checkForWeather() {
+	if (runningRemote == false) {
+		checkForWeatherInternal();
+	}
+	else {
+		checkForWeatherExternal();
+	}
+}
+
+function checkForAds() {
+	if (runningRemote == false) {
+		checkForAdsInternal();
+	}
+	else {
+		checkForAdsExternal();
+	}
+}
+
+
+function checkForIrnInternal() {
     var req = $.ajax({
         url: "http://fileserver1/trackdata/irnnext",
         timeout: 3000
@@ -568,7 +598,7 @@ function checkForIrn() {
     });
 }
 
-function checkForWeather() {
+function checkForWeatherInternal() {
     var req = $.ajax({
         url: "http://fileserver1/trackdata/weathernext",
         timeout: 3000
@@ -585,7 +615,7 @@ function checkForWeather() {
 	
 }
 
-function checkForAds() {
+function checkForAdsInternal() {
 	var req = $.ajax({
         url: "http://fileserver1/trackdata/tothbreak",
         timeout: 3000
@@ -600,6 +630,66 @@ function checkForAds() {
         hasTOTHAdSequence = false;
     });
 }
+
+
+function checkForIrnExternal() {
+	var req = $.ajax({
+		url: "https://admin.cambridge105.fm/trackdata/irnnext",
+		headers: {
+			"Authorization": "Basic " + btoa("dom:" + accessKey)
+		},
+		timeout: 3000
+	});
+
+	req.success(function () {
+		hasIrnNextHour = true;
+		checkedForIrn = true;
+	});
+
+	req.fail(function () {
+		hasIrnNextHour = false;
+	});
+}
+
+function checkForWeatherExternal() {
+	var req = $.ajax({
+		url: "https://admin.cambridge105.fm/trackdata/weathernext",
+		headers: {
+			"Authorization": "Basic " + btoa("dom:" + accessKey)
+		},
+		timeout: 3000
+	});
+
+	req.success(function () {
+		hasRecordedWeatherNextHour = true;
+		checkedForWeather = true;
+	});
+
+	req.fail(function () {
+		hasRecordedWeatherNextHour = false;
+	});
+
+}
+
+function checkForAdsExternal() {
+	var req = $.ajax({
+		url: "https://admin.cambridge105.fm/trackdata/tothbreak",
+		headers: {
+			"Authorization": "Basic " + btoa("dom:" + accessKey)
+		},
+		timeout: 3000
+	});
+
+	req.success(function () {
+		hasTOTHAdSequence = true;
+		checkedForAds = true;
+	});
+
+	req.fail(function () {
+		hasTOTHAdSequence = false;
+	});
+}
+
 
 // This function is no longer called. Left in case we need it in the future.
 function checkForLocalReadWeather() {
@@ -678,11 +768,22 @@ function checkRunningStudio() {
 		return;
 	}
 	runningInStudio = studio.toLowerCase();
+	if (runningInStudio == "remote") {
+		runningRemote = true;
+		getAccessKey();
+	}
 }
 
 function checkForOBDelay() {
 	delay = getParameterByName("delay");
 	if (delay) {
 		studioDelay = delay;
+	}
+}
+
+function getAccessKey() {
+	accessKey = getParameterByName("key");
+	if (key) {
+		accessKey = atob(key);
 	}
 }
