@@ -650,11 +650,15 @@ function checkForIrnExternal() {
 	});
 
 	req.success(function () {
+		console.log("IRN true");
+		console.log(req);
 		hasIrnNextHour = true;
 		checkedForIrn = true;
 	});
 
 	req.fail(function () {
+		console.log("IRN False");
+		console.log(req);
 		hasIrnNextHour = false;
 	});
 }
