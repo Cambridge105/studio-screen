@@ -441,7 +441,10 @@ function displayProgEndCountdown() {
     {
         $('#footer').css('color', 'yellow');
         d = new Date;
-        secsToEnd = Math.floor((thisProgEnds - d.getTime())/1000);
+		secsToEnd = Math.floor((thisProgEnds - d.getTime()) / 1000);
+		if (studioDelay > 0) {
+			secsToEnd = secsToEnd - studioDelay;
+		}
         minsToEnd = Math.floor(secsToEnd / 60);
         secsToEnd = secsToEnd - (minsToEnd * 60);
         countToEnd = padZeros(minsToEnd) + ":" + padZeros(secsToEnd);
