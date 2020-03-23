@@ -636,7 +636,7 @@ function checkForAdsInternal() {
 
 function checkForIrnExternal() {
 	var req = $.ajax({
-		url: "https://admin.cambridge105.fm/trackdata/irnnext",
+		url: "https://admin.cambridge105.fm/trackdata/irnnext?nocache=" + (new Date()).getTime(),
 		headers: {
 			"Authorization": "Basic " + btoa("dom:" + accessKey)
 		},
@@ -655,7 +655,7 @@ function checkForIrnExternal() {
 
 function checkForWeatherExternal() {
 	var req = $.ajax({
-		url: "https://admin.cambridge105.fm/trackdata/weathernext",
+		url: "https://admin.cambridge105.fm/trackdata/weathernext?nocache=" + (new Date()).getTime(),
 		headers: {
 			"Authorization": "Basic " + btoa("dom:" + accessKey)
 		},
@@ -675,7 +675,7 @@ function checkForWeatherExternal() {
 
 function checkForAdsExternal() {
 	var req = $.ajax({
-		url: "https://admin.cambridge105.fm/trackdata/tothbreak",
+		url: "https://admin.cambridge105.fm/trackdata/tothbreak?nocache=" + (new Date()).getTime(),
 		headers: {
 			"Authorization": "Basic " + btoa("dom:" + accessKey)
 		},
