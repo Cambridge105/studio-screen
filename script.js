@@ -38,7 +38,8 @@ checkRunningStudio();
 loadTOTHRules();
 checkForOBDelay();
 
-if (window.location.href.indexOf("greenroom") > -1) {loadedFromGreenroom = true;}
+if (window.location.href.indexOf("greenroom") > -1) { loadedFromGreenroom = true; }
+if (runningRemote) { updateLight('remote', true); }
 
 $(function() {
     createClock();
@@ -225,8 +226,7 @@ function updateTextClock(dateParts) {
 }
 
 function getMicLiveStatus() {
-	if (runningRemote == true) { return; }
-	if (runningInStudio == "b") {$('#micLive').css("visibility","hidden"); return;}
+	if (runningInStudio == "b" || runningRemote == true) {$('#micLive').css("visibility","hidden"); return;}
     $.ajax({
         url: "http://studioa-pi:8081/miclive",
         dataType: "json",
@@ -539,7 +539,7 @@ function padZeros(num) {
 }
 
 function getEngineeringMessage() {
-    if (!loadedFromGreenroom)
+    if (!loadedFromGreenroom && !runningRemote)
 	{
 		 var req = $.ajax({
 			url: "http://www.domsmith.co.uk/c105/screennotice/studioMessage.js?nocache=" + (new Date()).getTime(),
@@ -640,7 +640,7 @@ function checkForIrnExternal() {
 	var req = $.ajax({
 		type: 'GET',
 		crossDomain: true,
-		dataType: 'jsonp',
+		dataType: 'text',
 		url: "https://admin.cambridge105.fm/trackdata/irnnext?nocache=" + (new Date()).getTime(),
 		headers: {
 			"Access-Control-Request-Method": "Get",
@@ -667,7 +667,7 @@ function checkForWeatherExternal() {
 	var req = $.ajax({
 		type: 'GET',
 		crossDomain: true,
-		dataType: 'jsonp',
+		dataType: 'text',
 		url: "https://admin.cambridge105.fm/trackdata/weathernext?nocache=" + (new Date()).getTime(),
 		headers: {
 			"Access-Control-Request-Method": "Get",
@@ -691,7 +691,7 @@ function checkForAdsExternal() {
 	var req = $.ajax({
 		type: 'GET',
 		crossDomain: true,
-		dataType: 'jsonp',
+		dataType: 'text',
 		url: "https://admin.cambridge105.fm/trackdata/tothbreak?nocache=" + (new Date()).getTime(),
 		headers: {
 			"Access-Control-Request-Method": "Get",
