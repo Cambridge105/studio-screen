@@ -158,7 +158,7 @@ function applyTOTHRule(ruleString) {
 				{
 					nextTOTHRuleName = tmpRuleName;
 					nextTOTHRuleTime = tmpRuleDate;
-					if (studioDelay > 0) { nextTOTHRuleTime = nextTOTHRuleTime - (studioDelay * 1000);}
+					if (studioDelay > 0) { nextTOTHRuleTime = new Date (nextTOTHRuleTime - (studioDelay * 1000));}
 					console.log ("Set rule " + nextTOTHRuleName + " at " + nextTOTHRuleTime);
 					return true;
 				}
