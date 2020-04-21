@@ -39,7 +39,7 @@ loadTOTHRules();
 checkForOBDelay();
 
 if (window.location.href.indexOf("greenroom") > -1) { loadedFromGreenroom = true; }
-if (windows.location.href.indexOf("s3-website") > -1) { runningRemote = true; studioDelay = 3;}
+if (window.location.href.indexOf("s3-website") > -1) { runningRemote = true; studioDelay = 3;}
 if (runningRemote) { updateLight('remote', true); }
 
 $(function() {
