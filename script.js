@@ -671,7 +671,7 @@ function checkForWeatherExternal() {
 		type: 'GET',
 		crossDomain: true,
 		dataType: 'text',
-		url: "https://admin.cambridge105.fm/trackdata/weathernext?nocache=" + (new Date()).getTime(),
+		url: "https://admin.cambridge105.co.uk/trackdata/weathernext?nocache=" + (new Date()).getTime(),
 		headers: {
 			"Access-Control-Request-Method": "Get",
 			"Access-Control-Request-Headers": "Content-Type"
@@ -695,7 +695,7 @@ function checkForAdsExternal() {
 		type: 'GET',
 		crossDomain: true,
 		dataType: 'text',
-		url: "https://admin.cambridge105.fm/trackdata/tothbreak?nocache=" + (new Date()).getTime(),
+		url: "https://admin.cambridge105.co.uk/trackdata/tothbreak?nocache=" + (new Date()).getTime(),
 		headers: {
 			"Access-Control-Request-Method": "Get",
 			"Access-Control-Request-Headers": "Content-Type"
