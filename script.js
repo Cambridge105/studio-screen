@@ -644,7 +644,7 @@ function checkForIrnExternal() {
 		type: 'GET',
 		crossDomain: true,
 		dataType: 'text',
-		url: "https://admin.cambridge105.fm/trackdata/irnnext?nocache=" + (new Date()).getTime(),
+		url: "https://admin.cambridge105.co.uk/trackdata/irnnext?nocache=" + (new Date()).getTime(),
 		headers: {
 			"Access-Control-Request-Method": "Get",
 			"Access-Control-Request-Headers": "Content-Type"
