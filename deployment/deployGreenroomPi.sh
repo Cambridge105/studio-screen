@@ -42,9 +42,6 @@ git pull
 popd
 chown pi:pi /opt/studio-screen -R
 
-# Disable overscan
-python3 /opt/studio-screen/deployment/set_conf.py /boot/config.txt '' disable_overscan 1
-
 # Check timezones are correct
 echo "Europe/London" > /etc/timezone
 ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime
