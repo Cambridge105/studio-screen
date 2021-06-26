@@ -22,7 +22,7 @@ grep "$NEWHOSTNAME" /etc/hosts || echo "127.0.0.1 $NEWHOSTNAME" >> /etc/hosts
 
 # Update and install any required packages
 apt update
-apt updgrade
+apt upgrade
 apt install chromium vim ntp git python3 python3-pip unclutter nginx
 pip3 install web.py
 
@@ -41,4 +41,8 @@ pushd /opt/info-display/studio-screen
 git pull
 popd
 chown pi:pi /opt/info-display -R
+
+# Check timezones are correct
+echo "Europe/London" > /etc/timezone
+ln -s /usr/share/zoneinfo/Europe/London /etc/localtime
 
