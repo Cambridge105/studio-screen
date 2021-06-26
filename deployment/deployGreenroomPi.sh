@@ -66,6 +66,5 @@ cp /opt/studio-screen/deployment/lxde-autostart /etc/xdg/lxsession/LXDE-pi/autos
 if [ ! -d /home/pi/.config/lxsession/LXDE-pi ]; then
    mkdir -p /home/pi/.config/lxsesion/LXDE-pi
 fi
-cp /opt/studio-screen/deployment/lxde-autostart /home/pi/.config/lxsession
-cp /opt/studio-screen/deployment/lxde-autostart /etc/xdg/lxsession/LXDE-pi/autostart
+KIOSK_URL=http://localhost/greenroom.html KIOSK_SCALE_FACTOR=1 envsubst < /opt/studio-screen/deployment/lxde-autostart > /home/pi/.config/lxsession
 chown pi:pi /home/pi/.config -R
