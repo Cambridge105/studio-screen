@@ -52,8 +52,8 @@ systemctl enable update-schedule.timer
 systemctl start update-schedule.timer
 
 # Create nginx config
-rm /etc/nginx/sites-available/*
-cp /opt/studio-screen/deployment/nginx-studio-screen /etc/nginx/sites-available/studio-screen
+rm /etc/nginx/sites-enabled/*
+cp /opt/studio-screen/deployment/nginx-studio-screen /etc/nginx/sites-enabled/studio-screen
 systemctl enable nginx
 systemctl start nginx
 systemctl reload nginx

@@ -4,5 +4,5 @@ server {
 
 	index index.html index.htm;
 
-	root /opt/info-display/studio-screen;
+	root /opt/studio-screen;
 }
