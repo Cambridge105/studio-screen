@@ -23,7 +23,7 @@ grep "$NEWHOSTNAME" /etc/hosts || echo "127.0.0.1 $NEWHOSTNAME" >> /etc/hosts
 # Update and install any required packages
 apt update
 apt upgrade -y
-apt install chromium vim ntp git python3 python3-pip unclutter nginx wget curl crudini -y
+apt install chromium vim ntp git python3 python3-pip unclutter nginx wget curl -y
 pip3 install web.py
 
 # Enable SSH
@@ -31,7 +31,7 @@ systemctl enable ssh
 systemctl start ssh
 
 # Disable overscan
-crudini --set /boot/config.txt '' disable_overscan 1
+python3 /opt/studio-screen/deployment/set_conf.py /boot/config.txt '' disable_overscan 1
 
 # Make sure we have the latest version of the studio-screen repo checked out
 if [ ! -d /opt/studio-screen ]; then 
