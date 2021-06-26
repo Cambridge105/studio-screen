@@ -22,8 +22,8 @@ grep "$NEWHOSTNAME" /etc/hosts || echo "127.0.0.1 $NEWHOSTNAME" >> /etc/hosts
 
 # Update and install any required packages
 apt update
-apt upgrade
-apt install chromium vim ntp git python3 python3-pip unclutter nginx
+apt upgrade -y
+apt install chromium vim ntp git python3 python3-pip unclutter nginx wget curl -y
 pip3 install web.py
 
 # Enable SSH
@@ -32,17 +32,29 @@ systemctl start ssh
 
 # Make sure we have the latest version of the studio-screen repo checked out
 if [ ! -d /opt/info-display ]; then 
-	mkdir -r /opt/info-display
+	mkdir -p /opt/info-display
 fi
 if [ ! -d /opt/info-display/studio-screen ]; then
-	git clone https://github.com/Cambridge105/studio-screen.git /opt/info-display
+	git clone https://github.com/Cambridge105/studio-screen.git /opt/studio-screen
 fi
-pushd /opt/info-display/studio-screen
+pushd /opt/studio-screen
 git pull
 popd
-chown pi:pi /opt/info-display -R
+chown pi:pi /opt/studio-screen -R
 
 # Check timezones are correct
 echo "Europe/London" > /etc/timezone
 ln -s /usr/share/zoneinfo/Europe/London /etc/localtime
+
+# Create cron jobs
+cp /opt/studio-screen/deployment/*.service /opt/studio-screen/deployment/*.timer /etc/systemd/systemctl
+systemctl enable update-schedule.timer
+systemctl start update-schedule.timer
+
+# Create nginx config
+rm /etc/nginx/sites-available/*
+cp /opt/studio-screen/deployment/nginx-studio-screen /etc/nginx/sites-available/studio-screen
+systemctl enable nginx
+systemctl start nginx
+systemctl reload nginx
 
