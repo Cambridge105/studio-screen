@@ -31,10 +31,10 @@ systemctl enable ssh
 systemctl start ssh
 
 # Make sure we have the latest version of the studio-screen repo checked out
-if [ ! -d /opt/info-display ]; then 
-	mkdir -p /opt/info-display
+if [ ! -d /opt/studio-screen ]; then 
+	mkdir -p /opt/studio-screen
 fi
-if [ ! -d /opt/info-display/studio-screen ]; then
+if [ ! -d /opt/studio-screen/.git ]; then
 	git clone https://github.com/Cambridge105/studio-screen.git /opt/studio-screen
 fi
 pushd /opt/studio-screen
@@ -44,7 +44,7 @@ chown pi:pi /opt/studio-screen -R
 
 # Check timezones are correct
 echo "Europe/London" > /etc/timezone
-ln -s /usr/share/zoneinfo/Europe/London /etc/localtime
+ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime
 
 # Create cron jobs
 cp /opt/studio-screen/deployment/*.service /opt/studio-screen/deployment/*.timer /etc/systemd/systemctl
@@ -58,3 +58,14 @@ systemctl enable nginx
 systemctl start nginx
 systemctl reload nginx
 
+# Create autostart configuration
+if [ ! -d /etc/xdg/lxsession/LXDE-pi ]; then
+   mkdir -p /etc/xdg/lxsession/LXDE-pi
+fi
+cp /opt/studio-screen/deployment/lxde-autostart /etc/xdg/lxsession/LXDE-pi/autostart
+if [ ! -d /home/pi/.config/lxsession/LXDE-pi ]; then
+   mkdir -p /home/pi/.config/lxsesion/LXDE-pi
+fi
+cp /opt/studio-screen/deployment/lxde-autostart /home/pi/.config/lxsession
+cp /opt/studio-screen/deployment/lxde-autostart /etc/xdg/lxsession/LXDE-pi/autostart
+chown pi:pi /home/pi/.config -R
