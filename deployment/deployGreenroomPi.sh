@@ -13,7 +13,7 @@ fi
 
 # Make sure we have a sensible hostname
 if [ -z "$NEWHOSTNAME" ]; then
-    read -p "Enter a hostname for this machine: " NEWHOSTNAME
+    NEWHOSTNAME=greenroom-pi
 fi
 echo "Using new hostname from NEWHOSTNAME: $NEWHOSTNAME"
 hostname $NEWHOSTNAME
