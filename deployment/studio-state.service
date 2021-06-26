@@ -3,7 +3,7 @@ Description=Monitors studio state GPIOs
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python /opt/studio-screen/pollStudioState.py 8081
+ExecStart=/usr/bin/python3 /opt/studio-screen/pollStudioState.py 8081
 User=root
 Group=root
 
