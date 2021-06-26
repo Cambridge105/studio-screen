@@ -47,7 +47,7 @@ echo "Europe/London" > /etc/timezone
 ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime
 
 # Create cron jobs
-cp /opt/studio-screen/deployment/*.service /opt/studio-screen/deployment/*.timer /etc/systemd/systemctl
+cp /opt/studio-screen/deployment/*.service /opt/studio-screen/deployment/*.timer /etc/systemd/system/
 systemctl enable update-schedule.timer
 systemctl start update-schedule.timer
 
