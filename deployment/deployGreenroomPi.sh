@@ -23,12 +23,15 @@ grep "$NEWHOSTNAME" /etc/hosts || echo "127.0.0.1 $NEWHOSTNAME" >> /etc/hosts
 # Update and install any required packages
 apt update
 apt upgrade -y
-apt install chromium vim ntp git python3 python3-pip unclutter nginx wget curl -y
+apt install chromium vim ntp git python3 python3-pip unclutter nginx wget curl crudini -y
 pip3 install web.py
 
 # Enable SSH
 systemctl enable ssh
 systemctl start ssh
+
+# Disable overscan
+crudini --set /boot/config.txt '' disable_overscan 1
 
 # Make sure we have the latest version of the studio-screen repo checked out
 if [ ! -d /opt/studio-screen ]; then 
@@ -46,10 +49,12 @@ chown pi:pi /opt/studio-screen -R
 echo "Europe/London" > /etc/timezone
 ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime
 
-# Create cron jobs
+# Create cron jobs and services
 cp /opt/studio-screen/deployment/*.service /opt/studio-screen/deployment/*.timer /etc/systemd/system/
 systemctl enable update-schedule.timer
 systemctl start update-schedule.timer
+systemctl enable studio-state.service
+systemctl start studio-state.service
 
 # Create nginx config
 rm /etc/nginx/sites-enabled/*
@@ -62,9 +67,9 @@ systemctl reload nginx
 if [ ! -d /etc/xdg/lxsession/LXDE-pi ]; then
    mkdir -p /etc/xdg/lxsession/LXDE-pi
 fi
-cp /opt/studio-screen/deployment/lxde-autostart /etc/xdg/lxsession/LXDE-pi/autostart
+KIOSK_URL=http://localhost/greenroom.html KIOSK_SCALE_FACTOR=1 envsubst < /opt/studio-screen/deployment/lxde-autostart > /etc/xdg/lxsession/LXDE-pi/autostart
 if [ ! -d /home/pi/.config/lxsession/LXDE-pi ]; then
-   mkdir -p /home/pi/.config/lxsesion/LXDE-pi
+   mkdir -p /home/pi/.config/lxsession/LXDE-pi
 fi
-KIOSK_URL=http://localhost/greenroom.html KIOSK_SCALE_FACTOR=1 envsubst < /opt/studio-screen/deployment/lxde-autostart > /home/pi/.config/lxsession
+KIOSK_URL=http://localhost/greenroom.html KIOSK_SCALE_FACTOR=1 envsubst < /opt/studio-screen/deployment/lxde-autostart > /home/pi/.config/lxsession/LXDE-pi/autostart
 chown pi:pi /home/pi/.config -R
