@@ -3,6 +3,6 @@ Description=Update schedule definition
 
 [Service]
 Type=oneshot
-ExecStart=wget -O /opt/studio-screen/schedule.js http://cambridge105.fm/schedule_info/get_schedule_entries_min.php
+ExecStart=wget -O /opt/studio-screen/schedule.js https://cambridge105.co.uk/schedule_info/get_schedule_entries_min.php
 User=pi
 Group=pi
