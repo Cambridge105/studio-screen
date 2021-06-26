@@ -30,9 +30,6 @@ pip3 install web.py
 systemctl enable ssh
 systemctl start ssh
 
-# Disable overscan
-python3 /opt/studio-screen/deployment/set_conf.py /boot/config.txt '' disable_overscan 1
-
 # Make sure we have the latest version of the studio-screen repo checked out
 if [ ! -d /opt/studio-screen ]; then 
 	mkdir -p /opt/studio-screen
@@ -44,6 +41,9 @@ pushd /opt/studio-screen
 git pull
 popd
 chown pi:pi /opt/studio-screen -R
+
+# Disable overscan
+python3 /opt/studio-screen/deployment/set_conf.py /boot/config.txt '' disable_overscan 1
 
 # Check timezones are correct
 echo "Europe/London" > /etc/timezone
