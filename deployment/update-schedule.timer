@@ -1,0 +1,9 @@
+[Unit]
+Description=Update schedule definition
+
+[Timer]
+OnCalendar=*-*-* 0,12,21:15:00
+Persistent=false
+
+[Install]
+WantedBy=timers.target
