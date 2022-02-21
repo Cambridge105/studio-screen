@@ -591,7 +591,7 @@ function checkForAds() {
 
 function checkForIrnInternal() {
     var req = $.ajax({
-        url: "http://fileserver1/trackdata/irnnext",
+        url: "http://c105r-fs1.studio.cambridge105.fm/trackdata/irnnext",
         timeout: 3000
     });
 
@@ -607,7 +607,7 @@ function checkForIrnInternal() {
 
 function checkForWeatherInternal() {
     var req = $.ajax({
-        url: "http://fileserver1/trackdata/weathernext",
+        url: "http://c105r-fs1.studio.cambridge105.fm/trackdata/weathernext",
         timeout: 3000
     });
 
@@ -624,7 +624,7 @@ function checkForWeatherInternal() {
 
 function checkForAdsInternal() {
 	var req = $.ajax({
-        url: "http://fileserver1/trackdata/tothbreak",
+        url: "http://c105r-fs1.studio.cambridge105.fm/trackdata/tothbreak",
         timeout: 3000
     });
 
