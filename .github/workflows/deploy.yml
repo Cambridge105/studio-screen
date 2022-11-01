@@ -5,6 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: 'ssh-add - <<< "${{ secrets.EXT_LINUX_DEPLOY_KEY }}"'
+      - uses: webfactory/ssh-agent@v0.6.0
+        with:
+          ssh-private-key: ${{ secrets.EXT_LINUX_DEPLOY_KEY }}
       - run: 'ssh-keyscan -H ${{ secrets.EXT_LINUX_HOSTNAME }} >> ~/.ssh/known_hosts'
       - run: 'rsync -avz --exclude .github --exclude .git --exclude deployment --exclude fake-data --delete ./ githubactions@${{ secrets.EXT_LINUX_HOSTNAME }}:${{ secrets.WEB_ROOT }}'
