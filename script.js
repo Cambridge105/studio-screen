@@ -29,6 +29,7 @@ var nextTOTHRuleTime = 0;
 var checkedForIrn = false;
 var checkedForAds = false;
 var runningRemote = false;
+var apiBase = "http://c105r-fs1.studio.cambridge105.co.uk/";
 loadScheduledMessages();
 loadSchedule();
 checkRunningStudio();
@@ -36,7 +37,10 @@ loadTOTHRules();
 
 if (window.location.href.indexOf("greenroom") > -1) { loadedFromGreenroom = true; }
 if (window.location.href.indexOf("s3-website") > -1) { runningRemote = true; studioDelay = 3;}
-if (runningRemote) { updateLight('remote', true); }
+if (runningRemote) {
+	apiBase = "https://clock.cambridge105.co.uk/";
+	updateLight('remote', true); 
+}
 
 checkForOBDelay();
 
@@ -550,63 +554,11 @@ function getEngineeringMessage() {
 }
 
 function checkForIrn() {
-	if (runningRemote == false) {
-		checkForIrnInternal();
-	}
-	else {
-		checkForIrnExternal();
-	}
-}
-
-function checkForAds() {
-	if (runningRemote == false) {
-		checkForAdsInternal();
-	}
-	else {
-		checkForAdsExternal();
-	}
-}
-
-
-function checkForIrnInternal() {
-    var req = $.ajax({
-        url: "http://c105r-fs1.studio.cambridge105.fm/trackdata/irnnext",
-        timeout: 3000
-    });
-
-    req.success(function () {
-        hasIrnNextHour = true;
-		checkedForIrn = true;
-    });
-
-    req.fail(function () {
-        hasIrnNextHour = false;
-    });
-}
-
-function checkForAdsInternal() {
-	var req = $.ajax({
-        url: "http://c105r-fs1.studio.cambridge105.fm/trackdata/tothbreak",
-        timeout: 3000
-    });
-
-    req.success(function () {
-        hasTOTHAdSequence = true;
-		checkedForAds = true;
-    });
-
-    req.fail(function () {
-        hasTOTHAdSequence = false;
-    });
-}
-
-
-function checkForIrnExternal() {
 	var req = $.ajax({
 		type: 'GET',
 		crossDomain: true,
 		dataType: 'text',
-		url: "https://admin.cambridge105.co.uk/trackdata/irnnext?nocache=" + (new Date()).getTime(),
+		url: apiBase + "trackdata/irnnext?nocache=" + (new Date()).getTime(),
 		headers: {
 			"Access-Control-Request-Method": "Get",
 			"Access-Control-Request-Headers": "Content-Type"
@@ -628,12 +580,12 @@ function checkForIrnExternal() {
 	});
 }
 
-function checkForAdsExternal() {
+function checkForAds() {
 	var req = $.ajax({
 		type: 'GET',
 		crossDomain: true,
 		dataType: 'text',
-		url: "https://admin.cambridge105.co.uk/trackdata/tothbreak?nocache=" + (new Date()).getTime(),
+		url: apiBase + "trackdata/tothbreak?nocache=" + (new Date()).getTime(),
 		headers: {
 			"Access-Control-Request-Method": "Get",
 			"Access-Control-Request-Headers": "Content-Type"
