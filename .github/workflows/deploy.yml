@@ -5,5 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: 'ssh-keyscan -H ${{ secrets.SSH_TARGET }} >> ~/.ssh/known_hosts'
-      - run: 'rsync -avz --exclude .github --exclude .git --exclude deployment --exclude fake-data --delete ./ githubactions@${{ secrets.SSH_TARGET }}:${{ secrets.WEB_ROOT }}'
+      - uses: shimataro/ssh-key-action@v2
+        with: 
+          key: ${{ secrets.EXT_LINUX_DEPLOY_KEY }}
+      - run: 'ssh-keyscan -H ${{ secrets.EXT_LINUX_HOSTNAME }} >> ~/.ssh/known_hosts'
+      - run: 'rsync -avz --exclude .github --exclude .git --exclude deployment --exclude fake-data --delete ./ githubactions@${{ secrets.EXT_LINUX_HOSTNAME }}:${{ secrets.WEB_ROOT }}'
