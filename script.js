@@ -12,8 +12,6 @@ var tothRules = [];
 var clock = null;
 var hasIrnNextHour = false;
 var hasNewsNextHour = false;
-var hasRecordedWeatherNextHour = false;
-var hasLocalReadWeatherNextHour = false;
 var networkGreenroomOK = true;
 var networkStudioAOK = true;
 var networkExternalOK = true;
@@ -29,7 +27,6 @@ var studioDelay = 0;
 var nextTOTHRuleName = "";
 var nextTOTHRuleTime = 0;
 var checkedForIrn = false;
-var checkedForWeather = false;
 var checkedForAds = false;
 var runningRemote = false;
 loadScheduledMessages();
@@ -193,18 +190,14 @@ function updateTimer() {
 	if ((dateParts[1] == 51) && (dateParts[2] == 15)) {checkForIrn();}
 	// At xx:51:17 check whether ads are scheduled
 	if ((dateParts[1] == 51) && (dateParts[2] == 17)) {checkForAds();}
-	// At xx:51:19 check whether weather is scheduled
-	if ((dateParts[1] == 51) && (dateParts[2] == 19)) {checkForWeather();}
 	// At xx:51:45 check whether IRN is scheduled if failed before
 	if ((dateParts[1] == 51) && (dateParts[2] == 45) && checkedForIrn == false) {checkForIrn();}
 	// At xx:51:47 check whether ads are scheduled if failed before
 	if ((dateParts[1] == 51) && (dateParts[2] == 47) && checkedForAds == false) {checkForAds();}
-	// At xx:51:49 check whether weather is scheduled if failed before
-	if ((dateParts[1] == 51) && (dateParts[2] == 49) && checkedForWeather == false) {checkForWeather();}
 	// At xx:31:00 reload the TOTH rules
 	if (dateParts[1] == 31 && dateParts[2] == 0) {nextTOTHRuleName=""; nextTOTHRuleTime=0; parseTothRules();}
-    // At xx:49:00 unset the IRN/News/weather check
-	if (dateParts[1] == 49 && dateParts[2] == 0) {hasIrnNextHour = false; hasRecordedWeatherNextHour = false; hasLocalReadWeatherNextHour = false; hasTOTHAdSequence = false; hasNewsNextHour = false; checkedForAds = false; checkedForIrn = false; checkedForWeather = false;}
+    // At xx:49:00 unset the IRN/News check
+	if (dateParts[1] == 49 && dateParts[2] == 0) {hasIrnNextHour = false; hasTOTHAdSequence = false; hasNewsNextHour = false; checkedForAds = false; checkedForIrn = false; }
     // At 03:25:00, reload the whole page so we hopefully drop any DOM objects we've leaked
     if (dateParts[0] == 3 && dateParts[1] == 25 && dateParts[2] == 0) { location.reload(true); }
 
@@ -285,7 +278,7 @@ function checkForScheduledNotices(dateParts) {
     messageSet = false;
     if (dateParts[1] >= 52) { calculateTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;} //TODO: Don't actually want to set messageSet here because if the programme continues into the next hour, we shouldn't pause greenroom animations
     else if (dateParts[1] < 2 && hasNewsNextHour == true) {displayNewsStatus(); messageSet = true;}
-    else if (dateParts[1] < 2 && hasIrnNextHour == true) {displayIrnWeatherStatus(); messageSet = true;}
+    else if (dateParts[1] < 2 && hasIrnNextHour == true) {displayIrnStatus(); messageSet = true;}
     else if (dateParts[2] == 1) {
         // Update only once a minute so we don't degrade performance
         // NB: This is a bit of a hack but it's done at xx:xx:01 to ensure we reset after schedule loads at xx:00:00 and xx:30:00
@@ -313,16 +306,11 @@ function checkForScheduledNotices(dateParts) {
     }
 }
         
-function displayIrnWeatherStatus() {
+function displayIrnStatus() {
 	if (!loadedFromGreenroom)
 	{
         $('#footer').css('color', 'yellow');
-        if (hasRecordedWeatherNextHour == true) {
-            $('#footer').html('SKY NEWS + LOCAL NEWS');
-		}
-		else {
-			$('#footer').html('SKY NEWS. No weather follows.');
-		}
+        $('#footer').html('SKY NEWS');
 	}
 	else {
 		displayGreenroomNews('Sky News Centre')
@@ -570,15 +558,6 @@ function checkForIrn() {
 	}
 }
 
-function checkForWeather() {
-	if (runningRemote == false) {
-		checkForWeatherInternal();
-	}
-	else {
-		checkForWeatherExternal();
-	}
-}
-
 function checkForAds() {
 	if (runningRemote == false) {
 		checkForAdsInternal();
@@ -603,23 +582,6 @@ function checkForIrnInternal() {
     req.fail(function () {
         hasIrnNextHour = false;
     });
-}
-
-function checkForWeatherInternal() {
-    var req = $.ajax({
-        url: "http://c105r-fs1.studio.cambridge105.fm/trackdata/weathernext",
-        timeout: 3000
-    });
-
-    req.success(function () {
-        hasRecordedWeatherNextHour = true;
-		checkedForWeather = true;
-    });
-
-    req.fail(function () {
-        hasRecordedWeatherNextHour = false;
-    });
-	
 }
 
 function checkForAdsInternal() {
@@ -666,30 +628,6 @@ function checkForIrnExternal() {
 	});
 }
 
-function checkForWeatherExternal() {
-	var req = $.ajax({
-		type: 'GET',
-		crossDomain: true,
-		dataType: 'text',
-		url: "https://admin.cambridge105.co.uk/trackdata/weathernext?nocache=" + (new Date()).getTime(),
-		headers: {
-			"Access-Control-Request-Method": "Get",
-			"Access-Control-Request-Headers": "Content-Type"
-		},
-		timeout: 3000
-	});
-
-	req.success(function () {
-		hasRecordedWeatherNextHour = true;
-		checkedForWeather = true;
-	});
-
-	req.fail(function () {
-		hasRecordedWeatherNextHour = false;
-	});
-
-}
-
 function checkForAdsExternal() {
 	var req = $.ajax({
 		type: 'GET',
@@ -712,18 +650,6 @@ function checkForAdsExternal() {
 		hasTOTHAdSequence = false;
 	});
 }
-
-
-// This function is no longer called. Left in case we need it in the future.
-function checkForLocalReadWeather() {
-	hasLocalReadWeatherNextHour = false;
-	 $.each(scheduledMessages, function (key, schedMsg) {
-                    if ((dateParts[0]+1) == schedMsg["h"] && schedMsg["m"]==2 && schedMsg["msg"]=="WEATHER")
-                        {hasLocalReadWeatherNextHour = true;}
-                });
-}
-
-
 
 function displayMessage(response) {
 	networkExternalOK = true;
