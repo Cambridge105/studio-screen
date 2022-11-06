@@ -1,22 +1,17 @@
 ﻿var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-var clockTimer = setInterval(function () { updateClock() }, 250);
-var mainTimer = setInterval(function () { updateTimer() }, 1000);
-var thisProg = "";
-var nextProg = "";
-var thisProgIsLive = false;
-var thisProgEnds = 0;
-var nextProgType = "";
-var scheduledMessages = [];
-var tothRules = [];
+const DATEPART_HOUR = 0;
+const DATEPART_MIN = 1;
+const DATEPART_SEC = 2;
+var clockTimer = setInterval(updateClock, 250);
+var mainTimer = setInterval(updateTimer, 1000);
+var minuteTimer = setInterval(function () { checkForIrn(); checkForAds(); getEngineeringMessage(); }, 60 * 1000);
+var halfHourTimer = setInterval(function() { loadSchedule(); loadScheduledMessages(); }, 30 * 60 * 1000);
 var clock = null;
-var hasIrnNextHour = false;
-var hasNewsNextHour = false;
 var networkGreenroomOK = true;
 var networkStudioAOK = true;
 var networkExternalOK = true;
-var hasTOTHAdSequence = false;
-var currentStudio = "";
+var currentStudio = null;
 var loadedFromGreenroom = false;
 var allowGreenroomSlideAnimation = true;
 var maxSlideshowImgs = 0;
@@ -24,32 +19,99 @@ var lastSlideshowImg = -1;
 var secondsSinceSlideChange = 12;
 var runningInStudio = "";
 var studioDelay = 0;
-var nextTOTHRuleName = "";
-var nextTOTHRuleTime = 0;
-var checkedForIrn = false;
-var checkedForAds = false;
 var runningRemote = false;
-var apiBase = "http://c105r-fs1.studio.cambridge105.co.uk/";
+var apiBase = "http://c105r-fs1.studio.cambridge105.fm/";
+var schedule = [];
+
+// Array of scheduled event objects:
+// - timestamp (result of Date.getTime())
+// - label (text label to display)
+// - cssClass (class to apply to text label)
+// - countdownTime (duration to show countdown before event time, ms)
+// - duration (how long to keep event visible)
+var scheduledEvents = [];
+
 loadScheduledMessages();
 loadSchedule();
 checkRunningStudio();
-loadTOTHRules();
+checkForOBDelay();
+checkForIrn();
+checkForAds();
 
 if (window.location.href.indexOf("greenroom") > -1) { loadedFromGreenroom = true; }
-if (window.location.href.indexOf("s3-website") > -1) { runningRemote = true; studioDelay = 3;}
 if (runningRemote) {
 	apiBase = "https://clock.cambridge105.co.uk/";
-	updateLight('remote', true); 
 }
-
-checkForOBDelay();
 
 $(function() {
     createClock();
 	loadSlides();
+	if (runningRemote) {
+		updateLight('remote', true); 
+	}
 });
 
+var fakeDate = null;
+function getDate() {
+	if (fakeDate != null) {
+		return new Date(fakeDate);
+	} else {
+		return new Date();
+	}
+}
 
+// This checks the list of scheduled events for one with the same timestamp; if it
+// finds one, it replaces that event with the supplied one; if not, it appends the
+// new event to the array.
+function insertOrUpdateScheduledEvent(e) {
+	let foundExisting = false;
+	for (let i = 0; i < scheduledEvents.length; i++) {
+		if (scheduledEvents[i].timestamp == e.timestamp) {
+			scheduledEvents[i] = e;
+			foundExisting = true;
+			break;
+		}
+	}
+	if (!foundExisting) {
+		scheduledEvents.push(e);
+	}
+}
+
+// Fetch any scheduled event we should be caring about at the moment:
+// - Get the one with the closest start date in the future, where we are within the countdown period
+// - Or the most recent start date in the past, where we are within the duration period
+function getActiveScheduledEvent() {
+	let nextFutureEvent = null;
+	let mostRecentPastEvent = null;
+	let now = getDate().getTime();
+	for (let i = 0; i < scheduledEvents.length; i++) {
+		let e = scheduledEvents[i];
+		if (e.timestamp >= now) {
+			// Future event. Is it closer to now than our current future event? If not, we don't care.
+			if (nextFutureEvent == null || e.timestamp < nextFutureEvent.timestamp) {
+				// If it is closer, are we within its countdown period?
+				if ((e.timestamp - e.countdownTime) < now) {
+					nextFutureEvent = e;
+				}
+			}
+		} else {
+			// Past event. Is it more recent than our current past event? If not, we don't care.
+			if (mostRecentPastEvent == null || e.timestamp > mostRecentPastEvent.timestamp) {
+				// Are we still within the duration period?
+				if ((e.timestamp + e.duration) >= now) {
+					mostRecentPastEvent = e;
+				}
+			}
+		}
+	}
+
+	// If we have both a future and past event, prefer the future one - what's coming up is more important than what's happened
+	if (nextFutureEvent != null) {
+		return nextFutureEvent;
+	} else {
+		return mostRecentPastEvent;
+	}
+}
 
 function loadSlides() {
 	// Note: tempslides is loaded from http://fileserver1/scratch/GREENROOM%20SCREEN/dirlist.php by the calling page
@@ -88,128 +150,62 @@ function checkForSlideRotate() {
 
 
 function loadScheduledMessages() {
-    d = new Date();
-    scheduledMessages = [];
+    d = getDate();
     messageFile = "messages/"+days[d.getDay()].toLowerCase() + ".js?nocache=" + d.getTime();
     $.ajax({
         url: messageFile, 
         dataType: 'json',
         timeout: 5000
     }).success(function (schedMsgs) {
-        scheduledMessages = schedMsgs;
+        for (let i = 0; i < schedMsgs.length; i++) {
+        	let m = schedMsgs[i];
+			let mDate = getDate();
+			mDate.setHours(m.h);
+			mDate.setMinutes(m.m);
+			mDate.setSeconds(0);
+        	insertOrUpdateScheduledEvent({
+        		timestamp: mDate.getTime(),
+        		label: m.msg,
+        		countdownTime: m.c * 1000,
+        		duration: m.d * 60 * 1000
+        	});
+        }
     });
-}
-
-function loadTOTHRules() {
-    d = new Date();
-    tothRules = [];
-    messageFile = "tothrules.json?nocache=" + d.getTime();
-    $.ajax({
-        url: messageFile, 
-        dataType: 'json',
-        timeout: 5000
-    }).success(function (rulesjson) {
-        tothRules = rulesjson;
-		parseTothRules();
-    });
-}
-
-
-function unloadTimeout() {
-    clearInterval(mainTimer);
-    clearInterval(clockTimer);
 }
 
 function updateClock() {
-    var dateParts = [0, 0, 0, 'Monday', 1, 'January', 1970];
-    dateParts = getDateParts();
+    let dateParts = getDateParts();
     updateTextClock(dateParts);
     refreshClock();
 }
 
-function parseTothRules() {
-	// Note this won't work at midnight at present
-	d = new Date();
-	thisDay = d.getDay() - 1;
-	if (thisDay == -1) {thisDay = 6;} // Because the JSON file starts on Monday but JS doesn't
-	nextHour = d.getHours() + 1;
-	if (nextHour > 23) {nextHour = 0;}
-	todaysRules = tothRules["toths"][thisDay]["hours"];
-	for (var i = 0; i < todaysRules.length; i++) {
-		console.log("Checking " + todaysRules[i]["hour"]);
-		if (todaysRules[i]["hour"] == nextHour)
-		{
-			applyTOTHRule(todaysRules[i]["items"]);
-		}	
-	}
-}
-
-function applyTOTHRule(ruleString) {
-	console.log("Applying rule " + ruleString);
-	if (ruleString.indexOf("LOCAL-NEWS") > -1) {hasNewsNextHour = true;}
-	ruleAr = ruleString.split(",");
-	var tmpDateNow = new Date();
-	for (var i=0; i<ruleAr.length; i++) {
-		var tmpRuleName = ruleAr[i];
-		var tmpRuleDate = new Date();
-		for (var j=0; j<tothRules["timings"].length; j++) {
-			if (tothRules["timings"][j]["name"] == tmpRuleName)
-			{
-				tmpRuleDate.setMinutes(tothRules["timings"][i]["startat"]["minutes"]);
-				tmpRuleDate.setSeconds(tothRules["timings"][i]["startat"]["seconds"]);
-				if (tmpDateNow < tmpRuleDate)
-				{
-					nextTOTHRuleName = tmpRuleName;
-					nextTOTHRuleTime = tmpRuleDate;
-					if (studioDelay > 0) { nextTOTHRuleTime = new Date (nextTOTHRuleTime - (studioDelay * 1000));}
-					console.log ("Set rule " + nextTOTHRuleName + " at " + nextTOTHRuleTime);
-					return true;
-				}
-			}
-		}
-	}
-	return false;
-}
-
 function updateTimer() {
-    var dateParts = [0, 0, 0, 'Monday', 1, 'January', 1970];
-    dateParts = getDateParts();
+    let dateParts = getDateParts();
     micLiveStatus = getMicLiveStatus();
 	getStudioStatus();
-    checkForScheduledNotices(dateParts);
-	if (loadedFromGreenroom && dateParts[1] == 2 && dateParts[2] == 0) 
+	if (loadedFromGreenroom && dateParts[DATEPART_MIN] == 2 && dateParts[DATEPART_SEC] == 0) 
 	{
 		// Reset the slides animation at xx:02:00
 		allowGreenroomSlideAnimation = true; 
 		$('#slideshowOverlay').css("display", "none");
 		$('#specialNotice').css("visibility","hidden");
-	} 
+	}
+	
 	if (loadedFromGreenroom) {checkForSlideRotate();}
 	//displayNetworkMessage();
-    // Only load the schedule at xx:02:01, xx:30:01
-    if (((dateParts[1] == 2 || dateParts[1] == 30) && dateParts[2] == 1)) { loadSchedule();}
-    // Update the engineering notice (repurposed for news) at xx:xx:15
-    if (dateParts[2] == 15 && loadedFromGreenroom==false) { getEngineeringMessage(); }
-	// At xx:51:15 check whether IRN is scheduled
-	if ((dateParts[1] == 51) && (dateParts[2] == 15)) {checkForIrn();}
-	// At xx:51:17 check whether ads are scheduled
-	if ((dateParts[1] == 51) && (dateParts[2] == 17)) {checkForAds();}
-	// At xx:51:45 check whether IRN is scheduled if failed before
-	if ((dateParts[1] == 51) && (dateParts[2] == 45) && checkedForIrn == false) {checkForIrn();}
-	// At xx:51:47 check whether ads are scheduled if failed before
-	if ((dateParts[1] == 51) && (dateParts[2] == 47) && checkedForAds == false) {checkForAds();}
-	// At xx:31:00 reload the TOTH rules
-	if (dateParts[1] == 31 && dateParts[2] == 0) {nextTOTHRuleName=""; nextTOTHRuleTime=0; parseTothRules();}
-    // At xx:49:00 unset the IRN/News check
-	if (dateParts[1] == 49 && dateParts[2] == 0) {hasIrnNextHour = false; hasTOTHAdSequence = false; hasNewsNextHour = false; checkedForAds = false; checkedForIrn = false; }
+	if (!displayScheduledEvent()) {
+		allowGreenroomSlideAnimation = true;
+		displayProgrammeName();
+	}
+
     // At 03:25:00, reload the whole page so we hopefully drop any DOM objects we've leaked
-    if (dateParts[0] == 3 && dateParts[1] == 25 && dateParts[2] == 0) { location.reload(true); }
+    if (dateParts[DATEPART_HOUR] == 3 && dateParts[DATEPART_MIN] == 25 && dateParts[DATEPART_SEC] == 0) { location.reload(true); }
 
     return true;
 }
 
 function getDateParts() {
-	d = new Date();
+	d = getDate();
 	if (studioDelay > 0) {
 		d = new Date(d.getTime() + (studioDelay * 1000));
 	}
@@ -217,10 +213,10 @@ function getDateParts() {
 }
 
 function updateTextClock(dateParts) {
-    $('#time').html(padZeros(dateParts[0]) + ":" + padZeros(dateParts[1]) + ":" + padZeros(dateParts[2]));
+    $('#time').html(padZeros(dateParts[DATEPART_HOUR]) + ":" + padZeros(dateParts[DATEPART_MIN]) + ":" + padZeros(dateParts[DATEPART_SEC]));
 	if (studioDelay > 0)
 	{
-		$('#time').html(padZeros(dateParts[0]) + ":" + padZeros(dateParts[1]) + ":" + padZeros(dateParts[2]) + " (+" + studioDelay + "s)");
+		$('#time').html(padZeros(dateParts[DATEPART_HOUR]) + ":" + padZeros(dateParts[DATEPART_MIN]) + ":" + padZeros(dateParts[DATEPART_SEC]) + " (+" + studioDelay + "s)");
 	}
     $('#date').html(dateParts[3] + ", " + dateParts[4] + " " + dateParts[5] + " " + dateParts[6]);
 }
@@ -252,7 +248,7 @@ function getStudioStatus() {
 		if (data['b'] == '1') {updateLight('studioB',true); newStudio = 'Studio B'; } else {updateLight('studioB',false);}
 		if (data['remote'] == '1') {updateLight('remote',true); newStudio = 'Remote'; } else {updateLight('remote',false);}
 
-        if (newStudio !== currentStudio) {
+        if (currentStudio != null && newStudio !== currentStudio) {
 			$('#flash-container').css('display', 'block');
             $('#flash-message').html('Station output changed to ' + newStudio);
             currentStudio = newStudio;
@@ -277,62 +273,33 @@ function updateLight(divid,status) {
     }
 }
 
+function displayScheduledEvent() {
+	let e = getActiveScheduledEvent();
+	let now = getDate().getTime();
+	let labelHtml = null;
+	if (e != null) {
+		labelHtml = e.label;
+		if (e.timestamp >= now) {
+			// Event is in the future - we're in countdown mode
+			let secsToGo = (e.timestamp - now) / 1000;
+			let minsToGo = Math.floor(secsToGo / 60);
+			secsToGo = Math.floor(secsToGo - (minsToGo * 60));
 
-function checkForScheduledNotices(dateParts) {
-    messageSet = false;
-    if (dateParts[1] >= 52) { calculateTOTHNotice(dateParts[1], dateParts[2]); messageSet = true;} //TODO: Don't actually want to set messageSet here because if the programme continues into the next hour, we shouldn't pause greenroom animations
-    else if (dateParts[1] < 2 && hasNewsNextHour == true) {displayNewsStatus(); messageSet = true;}
-    else if (dateParts[1] < 2 && hasIrnNextHour == true) {displayIrnStatus(); messageSet = true;}
-    else if (dateParts[2] == 1) {
-        // Update only once a minute so we don't degrade performance
-        // NB: This is a bit of a hack but it's done at xx:xx:01 to ensure we reset after schedule loads at xx:00:00 and xx:30:00
-        // Is it time for travel?
-        //console.log("Scheduled messages; " + scheduledMessages);
-        $.each(scheduledMessages, function (key, schedMsg) {
-                    //console.log(schedMsg);
-                    offtime = schedMsg["m"] + schedMsg["d"];
-                    if (dateParts[0] == schedMsg["h"] && dateParts[1] >= schedMsg["m"] && dateParts[1] < offtime)
-                        {displayNotice(schedMsg["msg"],schedMsg["c"]); messageSet = true;}
-                });
-        if (messageSet == false)
-        {
-			allowGreenroomSlideAnimation = true;
-			if (loadedFromGreenroom)
-			{
-				displayProgrammeName();
-			}
-			else
-			{
-                if (dateParts[1] >= 45 && endOfProgInNext15Mins()) { displayNextProgramme(); }
-                else { displayProgrammeName(); }
-			}
-        }
-    }
-}
-        
-function displayIrnStatus() {
-	if (!loadedFromGreenroom)
-	{
-        $('#footer').css('color', 'yellow');
-        $('#footer').html('SKY NEWS');
-	}
-	else {
-		displayGreenroomNews('Sky News Centre')
-	}
-	
-}
+			labelHtml = labelHtml + " <span class=\"countdown\">" + padZeros(minsToGo) + ":" + padZeros(secsToGo);
+		}
 
-function displayNewsStatus() {
-	if (!loadedFromGreenroom)
-	{
-        $('#footer').css('color', 'yellow');
-        $('#footer').html('LOCAL NEWS');
-	}
-	else {
-		displayGreenroomNews('Cambridge newsdesk');
+		if (loadedFromGreenroom) {
+			$('#nextLabel').html(labelHtml);
+		} else {
+			$('#footer').html(labelHtml);
+		}
+		return true;
+	} else {
+		return false;
 	}
 }
 
+// TODO: reinstate this.
 function displayGreenroomNews(type) {
 	if ($('#slideshow').html().indexOf('news.jpg') < 1)
 	{
@@ -349,138 +316,34 @@ function displayGreenroomNews(type) {
 	}
 }
 
-function calculateTOTHNotice(mins,secs) {
-	//Logic
-	var d = new Date();
-	// 0.  If there's a rule set in the past, reload the rules
-	if (nextTOTHRuleTime <= d && nextTOTHRuleTime != 0) {nextTOTHRuleTime  = 0; parseTothRules(); calculateTOTHNotice(mins,secs);}
-	//  1. If there's a rule set in the future, countdown to the next rule 
-	else if (nextTOTHRuleTime >= d) {displayTOTHNotice(nextTOTHRuleName + " in ", mins, secs);}
-	// 2.  If there's an advert (auto played) next, countdown to the advert, starting at xx:58:30
-	else if (hasTOTHAdSequence == true) {displayTOTHNotice("ADVERT SEQUENCE in ", mins, secs);}
-	// 3.  If there's IRN next, countdown to IRN, starting at xx:58:51
-	else if (hasIrnNextHour == true) {displayTOTHNotice("SKY NEWS in ", mins, secs);}
-	// 4. If the end of programme is next, count to end of prog
-	else if (endOfProgInNext15Mins() == true) {displayProgEndCountdown();}
-	// 5. Do nothing (programme continues)
-	return false;
-}
-
-
-
-function displayTOTHNotice(noticeText, mins,secs) {
-    var showCountdown = true;
-	
-	if (!loadedFromGreenroom) 
-	{
-        $('#footer').css('color', 'yellow'); 
-		divToFill = "footer";
-	}
-	else 
-	{
-		divToFill = "onNextBar";
-		$('#nextLabel').html("-");
-	}
-	
-	if (mins > 58 && secs > 47)
-	{
-			showCountdown = false;
-		    if (secs < 53) 
-			{
-				$('#' + divToFill).html('&quot;On your radio, mobile...');
-				if (loadedFromGreenroom == true)
-				{
-					if ($('#slideshowOverlay').html().indexOf('toth.jpg') < 1)
-					{
-						$('#slideshowOverlay').html('<img src="slides/toth.jpg" height="720px" width="1280px">');
-						$('#slideshowOverlay').css("display", "block");
-						allowGreenroomSlideAnimation = false;
-					}
-				}
-			}
-			else
-			{
-				$('#' + divToFill).html('...this is Cambridge 105 Radio&quot;');
-			}
-	}
-	else if (nextTOTHRuleTime == 0 && hasTOTHAdSequence == true)
-	{
-		secsToGo = ((59 - mins) * 60) + (60 - secs);
-		secsToGo = secsToGo - 90; // Advert
-		if (secsToGo < 0) {hasTOTHAdSequence = false;} // Should force fallthrough to hasIrnNextHour
-	}
-	else if (nextTOTHRuleTime == 0 && hasIrnNextHour == true)
-	{
-		secsToGo = ((59 - mins) * 60) + (60 - secs);
-		secsToGo = secsToGo - 12;
-	}
-	else 
-	{
-		var tmpTimeNow = new Date();
-		var tmpTimeDiff = nextTOTHRuleTime.getTime() - tmpTimeNow.getTime(); 
-		secsToGo = tmpTimeDiff / 1000;
-	}
-	if (showCountdown == true)
-	{
-		minsToGo = Math.floor(secsToGo / 60);
-		secsToGo = Math.floor(secsToGo - (minsToGo * 60));
-		countToRule = padZeros(minsToGo) + ":" + padZeros(secsToGo);
-		$('#' + divToFill).html(noticeText + ' <span class="countdown">' + countToRule + '</span>');
-	}
-}
-	
-	
-
-function displayProgEndCountdown() {
-	if (!loadedFromGreenroom)
-    {
-        $('#footer').css('color', 'yellow');
-        d = new Date;
-		secsToEnd = Math.floor((thisProgEnds - d.getTime()) / 1000);
-		if (studioDelay > 0) {
-			secsToEnd = secsToEnd - studioDelay;
-		}
-        minsToEnd = Math.floor(secsToEnd / 60);
-        secsToEnd = secsToEnd - (minsToEnd * 60);
-        countToEnd = padZeros(minsToEnd) + ":" + padZeros(secsToEnd);
-        $('#footer').html('Programme ends in: <span class="countdown">' + countToEnd + '</span>');
-	}
-}
-
-function displayNotice(message,color) {
-    if (!loadedFromGreenroom)
-	{
-        if (color === undefined || color.length<1) {color = "yellow";}
-        $('#footer').css('color', color);
-        $('#footer').html(message);
-	}
-}
-
-function displayNextProgramme() {
-	if (!loadedFromGreenroom)
-	{
-        $('#footer').css('color', 'white');
-        $('#footer').html('<strong>NEXT:</strong> ' + nextProg + " (" + nextProgType + ")");
-        if (nextProg.length < 1) { $('#footer').html('<strong>NEXT:</strong> Failed to load schedule'); }
-	}
-	// Don't need to display next in Greenroom as this is done by displayProgrammeName()
-}
-
 function displayProgrammeName() {
+	let currentProgramme = getCurrentProgramme();
+	let nextProgramme = getNextProgramme();
 	if (loadedFromGreenroom == true)
 	{
-		$('#onNowBar').html(thisProg);
-		$('#onNextBar').html(nextProg);
-		var nextProgTime = new Date(thisProgEnds);
-		var nextProgTime = setLeadingZeros(nextProgTime.getHours()) + ":" + setLeadingZeros(nextProgTime.getMinutes());
-		$('#nextLabel').html(nextProgTime);
-		if (thisProg.length < 1) { $('#onNowBar').html("Failed to load schedule"); $('#onNextBar').html("-"); }
+		if (currentProgramme != null) {
+			$('#onNowBar').html(currentProgramme.title);
+			$('#onNextBar').html(nextProgramme.title);
+			var nextProgTime = new Date(nextProgramme.start * 1000);
+			var nextProgTimeString = setLeadingZeros(nextProgTime.getHours()) + ":" + setLeadingZeros(nextProgTime.getMinutes());
+			$('#nextLabel').html(nextProgTimeString);
+		} else {
+			$('#onNowBar').html("Failed to load schedule");
+			$('#onNextBar').html("-"); 
+		}
 	}
 	else 
 	{
+		let now = getDate().getTime();
         $('#footer').css('color', 'white');
-        $('#footer').html(thisProg);
-        if (thisProg.length < 1) { $('#footer').html("Failed to load schedule"); }
+		if (nextProgramme != null && nextProgramme.start * 1000 < now + 15 * 60 * 1000) {
+			// Next programme starts within 15 mins; count down to that instead
+			$('#footer').html('<strong>NEXT:</strong> ' + nextProgramme.title + ' (' + nextProgramme.type + ')');
+		} else if (currentProgramme != null) {
+        	$('#footer').html(currentProgramme.title);
+		} else {
+			$('#footer').html("Failed to load schedule");
+		}
 	}
 }
 
@@ -491,41 +354,43 @@ function setLeadingZeros(myInt) {
 }
 
 function loadSchedule() {
-    thisProg = "";
-    nextProg = "";
-    thisProgEnds = 0;
-    thisProgIsLive = false;
-    nextProgType = "";
-    timeNow = new Date().getTime() + 5000; // Pretend we're 5 secs in the future to avoid race condition if we load exactly when a prog ends
+    timeNow = getDate().getTime();
     $.ajax({
-        url: "schedule.js?nocache=" + (new Date()).getTime(),
+        url: "schedule.js?nocache=" + (getDate()).getTime(),
         dataType: "json",
         timeout: 10000
     }).success(function (sched) {
-        $.each(sched, function (key, progInfo) {
-            //$.each(progInfo, function (progInfoKey, progInfoValue) {
-                //console.log("Loading: " + progInfo['title']);
-                if ((progInfo['start'] * 1000) <= timeNow && (progInfo['end'] * 1000) > timeNow) {
-                    thisProg = progInfo['title'];
-                    console.log("Current programme " + thisProg);
-                    if (progInfo['type'] == "LIVE") { thisProgIsLive = true; } else { thisProgIsLive = false; }
-                    thisProgEnds = progInfo['end'] * 1000;
-                }
-                else if ((progInfo['start'] * 1000) == thisProgEnds) {
-                    nextProg = progInfo['title'];
-                    nextProgType = progInfo['type'];
-                }
-            //});
-        });
-		displayProgrammeName();
+    	schedule = sched;
     });
 }
 
-function endOfProgInNext15Mins() {
-    timeNow = new Date().getTime();
-    timeRemaining = thisProgEnds - timeNow;
-    if (timeRemaining <= (15 * 60 * 1000)) { return true; }
-    return false;
+function getCurrentProgramme() {
+	if (!schedule) {
+		return null;
+	}
+	let now = getDate().getTime();
+	for (let i = 0; i < schedule.length; i++) {
+		let p = schedule[i];
+		if (p.start * 1000 <= now && p.end * 1000 > now) {
+			return p;
+		}
+	}
+	return null;
+}
+
+function getNextProgramme() {
+	if (!schedule) {
+		return null;
+	}
+	let now = getDate().getTime();
+	let nextProgramme = null;
+	for (let i = 0; i < schedule.length; i++) {
+		let p = schedule[i];
+		if (p.start * 1000 > now && (nextProgramme == null || p.start < nextProgramme.start)) {
+			nextProgramme = p;
+		}
+	}
+	return nextProgramme;
 }
 
 function padZeros(num) {
@@ -537,7 +402,7 @@ function getEngineeringMessage() {
     if (!loadedFromGreenroom && !runningRemote)
 	{
 		 var req = $.ajax({
-			url: "http://www.domsmith.co.uk/c105/screennotice/studioMessage.js?nocache=" + (new Date()).getTime(),
+			url: "http://www.domsmith.co.uk/c105/screennotice/studioMessage.js?nocache=" + (getDate()).getTime(),
 			dataType: "jsonp",
 			timeout: 5000,
 			jsonpCallback: "displayMessage"
@@ -554,11 +419,15 @@ function getEngineeringMessage() {
 }
 
 function checkForIrn() {
+	// Don't check for IRN in the first 45 minutes of the hour: it won't be valid yet
+	if (getDate().getMinutes() < 45)
+		return;
+
 	var req = $.ajax({
 		type: 'GET',
 		crossDomain: true,
 		dataType: 'text',
-		url: apiBase + "trackdata/irnnext?nocache=" + (new Date()).getTime(),
+		url: apiBase + "trackdata/irnnext?nocache=" + (getDate()).getTime(),
 		headers: {
 			"Access-Control-Request-Method": "Get",
 			"Access-Control-Request-Headers": "Content-Type"
@@ -566,26 +435,38 @@ function checkForIrn() {
 		timeout: 3000
 	});
 
-	req.success(function () {
-		console.log("IRN true");
-		console.log(req);
-		hasIrnNextHour = true;
-		checkedForIrn = true;
-	});
+	req.success(scheduleIrnCountdown);
 
 	req.fail(function () {
 		console.log("IRN False");
-		console.log(req);
 		hasIrnNextHour = false;
 	});
 }
 
+function scheduleIrnCountdown() {
+	// Work out the time IRN is going to start - top of the *next* hour
+	let irnStartTime = getDate();
+	irnStartTime.setHours(irnStartTime.getHours() + 1);
+	irnStartTime.setMinutes(0);
+	irnStartTime.setSeconds(0);
+	insertOrUpdateScheduledEvent({
+		timestamp: irnStartTime.getTime(),
+		label: "SKY NEWS",
+		countdownTime: 60 * 1000,
+		duration: 2 * 60 * 1000,
+	});
+}
+
 function checkForAds() {
+	// Don't check for TOTH ads in the first 45 minutes of the hour: it won't be valid yet
+	if (getDate().getMinutes() < 45)
+		return;
+	
 	var req = $.ajax({
 		type: 'GET',
 		crossDomain: true,
 		dataType: 'text',
-		url: apiBase + "trackdata/tothbreak?nocache=" + (new Date()).getTime(),
+		url: apiBase + "trackdata/tothbreak?nocache=" + (getDate()).getTime(),
 		headers: {
 			"Access-Control-Request-Method": "Get",
 			"Access-Control-Request-Headers": "Content-Type"
@@ -593,13 +474,19 @@ function checkForAds() {
 		timeout: 3000
 	});
 
-	req.success(function () {
-		hasTOTHAdSequence = true;
-		checkedForAds = true;
-	});
+	req.success(scheduleAdsCountdown);
+}
 
-	req.fail(function () {
-		hasTOTHAdSequence = false;
+function scheduleAdsCountdown() {
+	// Work out the time the TOTH ads are going to start
+	let tothStartTime = getDate();
+	tothStartTime.setMinutes(58);
+	tothStartTime.setSeconds(30);
+	insertOrUpdateScheduledEvent({
+		timestamp: tothStartTime.getTime(),
+		label: "TOTH SEQUENCE",
+		countdownTime: 5 * 60 * 1000,
+		duration: 90 * 1000,
 	});
 }
 
@@ -662,20 +549,20 @@ function getParameterByName(name, url) {
 }
 
 function checkRunningStudio() {
-	studio = getParameterByName("studio");
+	let studio = getParameterByName("studio");
 	if (!studio) {
-		// Studio not set, so assume 'A' which is default anyway
-		runningInStudio = "a";
-		return;
-	}
-	runningInStudio = studio.toLowerCase();
-	if (runningInStudio == "remote") {
+		// Studio not set, so assume remote
+		runningInStudio = "remote";
 		runningRemote = true;
+		return;
+	} else {
+		runningInStudio = studio.toLowerCase();
+		runningRemote = false;
 	}
 }
 
 function checkForOBDelay() {
-	delay = getParameterByName("delay");
+	let delay = getParameterByName("delay");
 	if (delay != null) {
 		studioDelay = delay;
 	}
