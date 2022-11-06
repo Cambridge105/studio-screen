@@ -9,4 +9,4 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.EXT_LINUX_DEPLOY_KEY }}
       - run: 'ssh-keyscan -H ${{ secrets.EXT_LINUX_HOSTNAME }} >> ~/.ssh/known_hosts'
-      - run: 'rsync -avz --exclude .github --exclude .git --exclude deployment --exclude fake-data --delete ./ githubactions@${{ secrets.EXT_LINUX_HOSTNAME }}:${{ secrets.WEB_ROOT }}'
+      - run: 'rsync -avz --exclude .github --exclude .git --exclude deployment --exclude fake-data --exclude schedule.js --delete ./ githubactions@${{ secrets.EXT_LINUX_HOSTNAME }}:${{ secrets.WEB_ROOT }}'
