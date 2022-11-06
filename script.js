@@ -402,7 +402,7 @@ function getEngineeringMessage() {
     if (!loadedFromGreenroom && !runningRemote)
 	{
 		 var req = $.ajax({
-			url: "studioMessage.js?nocache=" + (getDate()).getTime(),
+			url: "https://clock.cambridge105.co.uk/studioMessage.js?nocache=" + (getDate()).getTime(),
 			dataType: "json",
 			timeout: 5000
 		});
