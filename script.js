@@ -402,15 +402,12 @@ function getEngineeringMessage() {
     if (!loadedFromGreenroom && !runningRemote)
 	{
 		 var req = $.ajax({
-			url: "http://www.domsmith.co.uk/c105/screennotice/studioMessage.js?nocache=" + (getDate()).getTime(),
-			dataType: "jsonp",
-			timeout: 5000,
-			jsonpCallback: "displayMessage"
+			url: "studioMessage.js?nocache=" + (getDate()).getTime(),
+			dataType: "json",
+			timeout: 5000
 		});
 
-		req.success(function () {
-			// Nothing
-		});
+		req.success(displayMessage);
 
 		req.fail(function () {
 			networkExternalOK = false; 
@@ -492,10 +489,11 @@ function scheduleAdsCountdown() {
 
 function displayMessage(response) {
 	networkExternalOK = true;
-	if (response.message.length > 3)
-		{displayMessageText('<span class=\"engNotice\">Important notice:</span><br />' + response.message);}
-	else 
-	{displayMessageText('');}
+	if (response.content && response.content.length > 3) {
+		displayMessageText('<span class=\"' + response.class + '\">' + response.content + '</span>');
+	} else 	{
+		displayMessageText('');
+	}
 }
 
 function displayMessageText(message) {
