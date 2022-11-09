@@ -548,7 +548,7 @@ function getParameterByName(name, url) {
 
 function checkRunningStudio() {
 	let studio = getParameterByName("studio");
-	if (!studio) {
+	if (!studio || studio="remote") {
 		// Studio not set, so assume remote
 		runningInStudio = "remote";
 		runningRemote = true;
