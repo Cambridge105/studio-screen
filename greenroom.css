@@ -197,3 +197,6 @@ div#flash-message {
     animation-iterations: 5;
     animation-direction; reverse;
 }
+.countdown {
+	padding-left: 2vh;
+}
