@@ -117,13 +117,13 @@ function loadSlides() {
 	// Note: tempslides is loaded from http://fileserver1/scratch/GREENROOM%20SCREEN/dirlist.php by the calling page
 	if (loadedFromGreenroom)
 	{
-		slideTxt = "<div id='img0' class='slideimg'><img src='slides/welcome.jpg' height='720px' width='1280px'></div>";
-		slideTxt += "<div id='img1' class='slideimg'><img src='slides/how-to-listen.jpg' height='720px' width='1280px'></div>";
-		slideTxt += "<div id='img2' class='slideimg'><img src='slides/home-of-music.jpg' height='720px' width='1280px'></div>";
-		slideTxt += "<div id='img3' class='slideimg'><img src='slides/news-promo.jpg' height='720px' width='1280px'></div>";
-		slideTxt += "<div id='img4' class='slideimg'><img src='slides/guests.jpg' height='720px' width='1280px'></div>";
-		slideTxt += "<div id='img5' class='slideimg'><img src='slides/travel.jpg' height='720px' width='1280px'></div>";
-		slideTxt += "<div id='img6' class='slideimg'><img src='slides/south-cambs.jpg' height='720px' width='1280px'></div>";
+		slideTxt = "<div id='img0' class='slideimg'><img src='slides/welcome.jpg'></div>";
+		slideTxt += "<div id='img1' class='slideimg'><img src='slides/how-to-listen.jpg'></div>";
+		slideTxt += "<div id='img2' class='slideimg'><img src='slides/home-of-music.jpg'></div>";
+		slideTxt += "<div id='img3' class='slideimg'><img src='slides/news-promo.jpg'></div>";
+		slideTxt += "<div id='img4' class='slideimg'><img src='slides/guests.jpg'></div>";
+		slideTxt += "<div id='img5' class='slideimg'><img src='slides/travel.jpg'></div>";
+		slideTxt += "<div id='img6' class='slideimg'><img src='slides/south-cambs.jpg'></div>";
 		maxSlideshowImgs = 6;
 		if (typeof tempslides != 'undefined' && tempslides instanceof Array)
 		{
@@ -137,10 +137,10 @@ function loadSlides() {
 }
 
 function rotateSlideshow() {
-	$('#img' + lastSlideshowImg).css("visibility","hidden");
+	$('#img' + lastSlideshowImg).css("display","none");
 	if (lastSlideshowImg == maxSlideshowImgs) {lastSlideshowImg = -1;}
 	lastSlideshowImg = lastSlideshowImg + 1;
-	$('#img' + lastSlideshowImg).css("visibility","visible");
+	$('#img' + lastSlideshowImg).css("display","inline");
 }
 
 function checkForSlideRotate() {
@@ -188,7 +188,7 @@ function updateTimer() {
 		// Reset the slides animation at xx:02:00
 		allowGreenroomSlideAnimation = true; 
 		$('#slideshowOverlay').css("display", "none");
-		$('#specialNotice').css("visibility","hidden");
+		$('#specialNoticeContent').css("display","none");
 	}
 	
 	if (loadedFromGreenroom) {checkForSlideRotate();}
@@ -304,14 +304,14 @@ function displayGreenroomNews(type) {
 	if ($('#slideshow').html().indexOf('news.jpg') < 1)
 	{
 		dateParts = getDateParts();
-		$('#slideshowOverlay').html('<img src="slides/news.jpg" height="720px" width="1280px">');
+		$('#slideshowOverlay').html('<img src="slides/news.jpg">');
 		$('#slideshowOverlay').css("display", "block");
 		hours12 = dateParts[0];
 		if (hours12 > 12) {hours12 = hours12 - 12;} // 12-hour clock
 		if (hours12 < 1) {hours12 = 12;}
 		newsintro = "&quot;From the " + type + " at " + hours12 + "...&quot;";
 		$('#specialNoticeContent').html(newsintro);
-		$('#specialNotice').css("visibility","visible");
+		$('#specialNoticeContent').css("display","inline");
 		allowGreenroomSlideAnimation = false;
 	}
 }
@@ -322,14 +322,14 @@ function displayProgrammeName() {
 	if (loadedFromGreenroom == true)
 	{
 		if (currentProgramme != null) {
-			$('#onNowBar').html(currentProgramme.title);
-			$('#onNextBar').html(nextProgramme.title);
+			$('#onNowText').html(currentProgramme.title);
+			$('#onNextText').html(nextProgramme.title);
 			var nextProgTime = new Date(nextProgramme.start * 1000);
 			var nextProgTimeString = setLeadingZeros(nextProgTime.getHours()) + ":" + setLeadingZeros(nextProgTime.getMinutes());
 			$('#nextLabel').html(nextProgTimeString);
 		} else {
-			$('#onNowBar').html("Failed to load schedule");
-			$('#onNextBar').html("-"); 
+			$('#onNowText').html("Failed to load schedule");
+			$('#onNextText').html("-"); 
 		}
 	}
 	else 
