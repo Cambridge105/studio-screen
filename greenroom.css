@@ -85,34 +85,37 @@ div#onNextBar {
 div#contact {
 	grid-row: 4;
 	color:#8ebb38; 
-	text-align:center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.nowNextLabel {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color:#8ebb38; 
+	color: #fff;
+	font-size:90%;
 }
 div#nowLabel {
-	display: inline-block;
 	min-width:150px; 
-	background-color:#8ebb38; 
-	color:#fff; 
-	text-align:center; 
 	border-bottom:1px solid #fff;
-	font-size:90%;
 }
 div#nextLabel {
-	display: inline-block;
 	min-width:150px; 
-	background-color:#8ebb38; 
-	color:#fff; 
-	text-align:center;
-	font-size:90%;
 }
 .nowNextText {
 	grid-row: 1;
 	grid-column: 2;
 	margin-left: 1vh;
 	background: white;
+	display: flex;
+	align-items: center;
 }
 #specialNoticeContent {
 	display: none;
 }
+
 div#clock {
     margin: 0;
     padding: 0;
