@@ -288,7 +288,7 @@ function displayScheduledEvent() {
 		}
 
 		if (loadedFromGreenroom) {
-			$('#nextLabel').html(labelHtml);
+			$('#onNextText').html(labelHtml);
 		} else {
 			$('#footer').html(labelHtml);
 		}
