@@ -118,13 +118,12 @@ function loadSlides() {
 	if (loadedFromGreenroom)
 	{
 		slideTxt = "<div id='img0' class='slideimg'><img src='slides/welcome.jpg'></div>";
-		slideTxt += "<div id='img1' class='slideimg'><img src='slides/how-to-listen.jpg'></div>";
-		slideTxt += "<div id='img2' class='slideimg'><img src='slides/home-of-music.jpg'></div>";
-		slideTxt += "<div id='img3' class='slideimg'><img src='slides/news-promo.jpg'></div>";
-		slideTxt += "<div id='img4' class='slideimg'><img src='slides/guests.jpg'></div>";
-		slideTxt += "<div id='img5' class='slideimg'><img src='slides/travel.jpg'></div>";
-		slideTxt += "<div id='img6' class='slideimg'><img src='slides/south-cambs.jpg'></div>";
-		maxSlideshowImgs = 6;
+		slideTxt += "<div id='img1' class='slideimg'><img src='slides/accrossthecity.jpg'></div>";
+		slideTxt += "<div id='img2' class='slideimg'><img src='slides/awards2022.jpg'></div>";
+		slideTxt += "<div id='img3' class='slideimg'><img src='slides/liveandlocal.jpg'></div>";
+		slideTxt += "<div id='img4' class='slideimg'><img src='slides/localnews.jpg'></div>";
+		slideTxt += "<div id='img5' class='slideimg'><img src='slides/travelnews.jpg'></div>";
+		maxSlideshowImgs = 5;
 		if (typeof tempslides != 'undefined' && tempslides instanceof Array)
 		{
 			for (i = 0; i < tempslides.length; i++) {
