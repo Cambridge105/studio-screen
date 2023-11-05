@@ -114,23 +114,15 @@ function getActiveScheduledEvent() {
 }
 
 function loadSlides() {
-	// Note: tempslides is loaded from http://fileserver1/scratch/GREENROOM%20SCREEN/dirlist.php by the calling page
 	if (loadedFromGreenroom)
 	{
 		slideTxt = "<div id='img0' class='slideimg'><img src='slides/welcome.jpg'></div>";
 		slideTxt += "<div id='img1' class='slideimg'><img src='slides/acrossthecity.jpg'></div>";
-		slideTxt += "<div id='img2' class='slideimg'><img src='slides/awards2022.jpg'></div>";
+		slideTxt += "<div id='img2' class='slideimg'><img src='slides/awards2023.jpg'></div>";
 		slideTxt += "<div id='img3' class='slideimg'><img src='slides/liveandlocal.jpg'></div>";
 		slideTxt += "<div id='img4' class='slideimg'><img src='slides/localnews.jpg'></div>";
 		slideTxt += "<div id='img5' class='slideimg'><img src='slides/travelnews.jpg'></div>";
 		maxSlideshowImgs = 5;
-		if (typeof tempslides != 'undefined' && tempslides instanceof Array)
-		{
-			for (i = 0; i < tempslides.length; i++) {
-				slideTxt += "<div id='img" + (i+7) + "' class='slideimg'><img src='http://fileserver1/scratch/GREENROOM%20SCREEN/" + tempslides[i] + "' height='720px' width='1280px'></div>";
-			}
-			maxSlideshowImgs=tempslides.length + 6;
-		}
 		$('#slideshow').html(slideTxt);
 	}
 }
