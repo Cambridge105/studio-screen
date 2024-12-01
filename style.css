@@ -110,11 +110,14 @@ span.contactInfo {
 }
 div#stationlogo {
 	position:absolute;
-	top:5px;
-	left:5px;
+	top:2%;
+	left:2%;
 	z-index:2;
 	width:200px;
 	height:83px;
+}
+#stationlogo img {
+    width: 100%;
 }
 
 @keyframes pulsing-light-background {
