@@ -1,12 +1,12 @@
 ﻿@font-face {
-    font-family: 'tex_gyre_adventorregular';
-    src: url('texgyreadventor-regular-webfont.woff') format('woff');
+    font-family: 'Istok Web Regular';
+    src: url('IstokWeb-Regular.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
 body {
     background-color: black;
-    font-family: tex_gyre_adventorregular, arial, sans-serif;
+    font-family: Istok Web Regular, arial, sans-serif;
 	font-size: 14pt;
     color:white;
 }
@@ -110,11 +110,14 @@ span.contactInfo {
 }
 div#stationlogo {
 	position:absolute;
-	top:5px;
-	left:5px;
+	top:2%;
+	left:2%;
 	z-index:2;
 	width:200px;
 	height:83px;
+}
+#stationlogo img {
+    width: 100%;
 }
 
 @keyframes pulsing-light-background {

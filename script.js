@@ -147,7 +147,7 @@ function loadScheduledMessages() {
         url: messageFile, 
         dataType: 'json',
         timeout: 5000
-    }).success(function (schedMsgs) {
+    }).done(function (schedMsgs) {
         for (let i = 0; i < schedMsgs.length; i++) {
         	let m = schedMsgs[i];
 			let mDate = getDate();
@@ -350,7 +350,7 @@ function loadSchedule() {
         url: "schedule.js?nocache=" + (getDate()).getTime(),
         dataType: "json",
         timeout: 10000
-    }).success(function (sched) {
+    }).done(function (sched) {
     	schedule = sched;
     });
 }
@@ -423,7 +423,7 @@ function checkForIrn() {
 		timeout: 3000
 	});
 
-	req.success(scheduleIrnCountdown);
+	req.done(scheduleIrnCountdown);
 
 	req.fail(function () {
 		console.log("IRN False");
@@ -462,7 +462,7 @@ function checkForAds() {
 		timeout: 3000
 	});
 
-	req.success(scheduleAdsCountdown);
+	req.done(scheduleAdsCountdown);
 }
 
 function scheduleAdsCountdown() {
