@@ -121,7 +121,9 @@ function loadSlides() {
 		slideTxt += "<div id='img2' class='slideimg'><img src='slides/liveandlocal.jpg'></div>";
 		slideTxt += "<div id='img3' class='slideimg'><img src='slides/localnews.jpg'></div>";
 		slideTxt += "<div id='img4' class='slideimg'><img src='slides/travelnews.jpg'></div>";
-		maxSlideshowImgs = 4;
+		slideTxt += "<div id='img5' class='slideimg'><img src='slides/advertise-2026-01.jpg'></div>";
+		slideTxt += "<div id='img6' class='slideimg'><img src='slides/volunteer-2026-01.jpg'></div>";
+		maxSlideshowImgs = 6;
 		$('#slideshow').html(slideTxt);
 	}
 }
